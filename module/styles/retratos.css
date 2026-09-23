@@ -76,15 +76,15 @@
 #rf-bar.rf-mouth .rf-card.rf-speaking.rf-has-open .rf-closed { opacity: 0; }
 
 /* Uma arte só (estática): aumenta e diminui, quica, ou só o brilho. */
-#rf-bar.rf-single-pulse .rf-card.rf-speaking:not(.rf-has-open) {
-  z-index: 1;
-  animation: rf-pulse 600ms ease-in-out infinite;
+/* Pulsar como caixa de som: só a imagem, crescendo a partir da base. */
+#rf-bar.rf-single-pulse .rf-card.rf-speaking:not(.rf-has-open) .rf-closed {
+  animation: rf-pulse 320ms ease-out infinite;
 }
 @keyframes rf-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.07); }
+  0% { transform: scale(1); }
+  25% { transform: scale(1.09); }
+  100% { transform: scale(1); }
 }
-#rf-bar .rf-card { transform-origin: 50% 100%; }
 #rf-bar.rf-single-bounce .rf-card.rf-speaking:not(.rf-has-open) .rf-closed {
   animation: rf-bounce 420ms ease-in-out infinite;
 }
