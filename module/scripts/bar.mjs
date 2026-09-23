@@ -156,7 +156,7 @@ class PortraitBar {
     const sub = [
       s.level !== undefined ? `${t("Card.Level")} ${s.level}` : "",
       s.className ?? "",
-    ].filter(Boolean).join(" ");
+    ].filter(Boolean).join(" - ");
 
     el.innerHTML = `
       <div class="rf-portrait">
@@ -165,10 +165,12 @@ class PortraitBar {
       </div>
       <div class="rf-plate">
         <span class="rf-name">${esc(card.name)}</span>
-        <span class="rf-player">${esc(card.player)}</span>
+        <div class="rf-player-row">
+          <span class="rf-player">${esc(card.player)}</span>
+          ${sub ? `<span class="rf-sub">${esc(sub)}</span>` : ""}
+        </div>
         ${hp || hero ? `<div class="rf-stats-row">${hp}${hero}</div>` : ""}
       </div>
-      ${sub ? `<div class="rf-sub">${esc(sub)}</div>` : ""}
     `;
   }
 

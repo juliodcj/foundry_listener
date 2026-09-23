@@ -211,24 +211,24 @@
 }
 #rf-bar .rf-hp em { font-style: normal; color: #9fd7ff; }
 
-/* Nível e classe numa aba embaixo da placa, como no overlay de referência. */
+/* Jogador à esquerda, nível e classe à direita, na mesma linha. */
+#rf-bar .rf-player-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+#rf-bar .rf-player-row .rf-player { flex: 0 1 auto; min-width: 0; }
 #rf-bar .rf-sub {
-  align-self: center;
-  max-width: 88%;
-  margin-top: -2px;
-  padding: 1px 10px 2px;
-  background: linear-gradient(180deg, var(--rf-plate), #1c140c);
-  border: 2px solid var(--rf-gold);
-  border-top: none;
-  border-radius: 0 0 6px 6px;
-  box-shadow: inset 0 0 0 1px var(--rf-gold-dark);
-  text-align: center;
-  font-size: 9px;
+  flex: 0 1 auto;
+  margin-left: auto;
+  min-width: 0;
+  font-size: 8.5px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--rf-text);
+  letter-spacing: 0.04em;
+  color: var(--rf-gold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

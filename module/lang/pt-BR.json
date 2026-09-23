@@ -21,7 +21,7 @@
     "Card": {
       "HP": "PV",
       "HeroPoints": "Pontos de Heroísmo",
-      "Level": "Nív.",
+      "Level": "Lvl",
       "GMName": "Mestre"
     },
     "Bridge": {
