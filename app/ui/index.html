@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouvidor</title>
+<style>
+:root{
+  --bg:#f6f5f2; --card:#ffffff; --line:#e4e1db; --line-soft:#efece6; --field:#f6f5f2;
+  --text:#1c1b19; --muted:#5f5b54; --btn-line:#d6d3cc;
+  --accent:#5865f2; --accent-hover:#4752c4;
+  --green:#1f8a4c; --green-tint:#e3f3e8; --green-text:#16693a; --green-line:#b9dfc6;
+  --amber:#b7791f; --amber-tint:#f8eed9; --amber-text:#8a5a12;
+  --red:#c0392b; --red-tint:#fbe7e4; --red-text:#962d22;
+  --grey:#8a857c; --grey-tint:#ebe8e2;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;-webkit-user-select:none;user-select:none}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.42;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{height:100%;min-height:640px;display:flex;flex-direction:column;gap:12px;padding:18px 20px 14px}
+.app > *{flex-shrink:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.eyebrow{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.hidden{display:none !important}
+
+.status{display:flex;align-items:center;gap:12px}
+.status-orb{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--grey-tint);overflow:hidden}
+.status-orb i{width:12px;height:12px;border-radius:6px;background:var(--grey)}
+.status-orb img{width:40px;height:40px;border-radius:20px}
+.status h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.status p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.pulse i{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.row{display:flex;gap:8px}
+.btn{height:40px;border-radius:8px;border:1px solid var(--btn-line);background:#fff;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 12px}
+.btn:not(:disabled):hover{background:#f3f1ed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:not(:disabled):hover{background:var(--accent-hover)}
+.btn.small-btn{height:32px;font-size:13px;padding:0 10px}
+.btn.copied,.btn.copied:hover{background:var(--green-tint);border-color:var(--green-line);color:var(--green-text)}
+.btn.grow{flex-grow:1}
+.alert{border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.45;background:var(--red-tint);color:var(--red-text);-webkit-user-select:text;user-select:text;word-break:break-word;display:flex;flex-direction:column;gap:8px}
+.alert.warn{background:var(--amber-tint);color:var(--amber-text)}
+.cmd{font-family:"Cascadia Mono",Consolas,monospace;font-size:12.5px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.08);border-radius:4px;padding:1px 5px;-webkit-user-select:text;user-select:text;white-space:nowrap}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat span:first-child{font-size:12px;color:var(--muted)}
+.stat strong{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.svc{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.svc + .svc{border-top:1px solid var(--line-soft)}
+.dot{width:8px;height:8px;border-radius:4px;flex-shrink:0;background:var(--grey)}
+.svc-body{display:flex;flex-direction:column;gap:1px;flex-grow:1;min-width:0}
+.svc-body span:first-child{font-weight:500}
+.svc-body .small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.svc-val{font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
+
+.call{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.call-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.members{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.members li{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:16px;background:var(--grey-tint);font-size:13px;transition:background .12s,box-shadow .12s}
+.members li img,.members li .ph{width:24px;height:24px;border-radius:12px;background:#d9d5ce}
+.members li.speaking{background:var(--green-tint);box-shadow:0 0 0 2px var(--green)}
+.voice-controls{display:flex;gap:8px;align-items:center}
+.voice-controls select{flex-grow:1;min-width:0;height:32px;border:1px solid var(--btn-line);border-radius:6px;background:#fff;padding:0 8px}
+
+.app > .events{flex:1 1 0;min-height:110px}
+.events{padding:12px 4px 10px 14px;display:flex;flex-direction:column;gap:8px}
+.events ol{list-style:none;margin:0;padding:0 10px 0 0;display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1 1 0;min-height:0;-webkit-user-select:text;user-select:text}
+.events li{display:flex;gap:10px;font-size:13px;align-items:baseline}
+.events time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;flex-shrink:0}
+.events li.ok span{color:var(--green-text)}
+.events li.warn span{color:var(--amber-text)}
+.events li.err span{color:var(--red-text)}
+.events li.speak span{color:var(--muted)}
+.events-head{display:flex;justify-content:space-between;align-items:center;padding-right:10px}
+.events-head label{font-size:12px;color:var(--muted);display:flex;gap:5px;align-items:center}
+
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.footer{display:flex;align-items:center;gap:8px}
+.icon-btn{width:32px;height:32px;border-radius:6px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.icon-btn:hover,.icon-btn[aria-expanded="true"]{background:#ebe8e2}
+.settings{padding:14px;display:flex;flex-direction:column;gap:10px}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.field label{flex-shrink:0}
+.field input[type=text],.field input[type=password],.field input[type=number]{width:230px;height:34px;border:1px solid var(--btn-line);border-radius:6px;padding:0 10px;background:#fff;font-variant-numeric:tabular-nums;-webkit-user-select:text;user-select:text}
+.field input[type=number]{width:110px}
+.field input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.settings .note{font-size:12px;color:var(--muted);line-height:1.45}
+.settings .err{font-size:12.5px;color:var(--red-text)}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <section class="status" aria-live="polite">
+    <div class="status-orb" id="orb"><i></i></div>
+    <div style="min-width:0">
+      <h1 id="statusLabel">Parado</h1>
+      <p id="statusSub">Bot desligado</p>
+    </div>
+  </section>
+
+  <section id="alert" class="alert hidden" role="alert">
+    <div id="alertMsg"></div>
+    <div id="alertHint" class="small"></div>
+    <div id="alertActions" class="row hidden"></div>
+  </section>
+
+  <section class="stats">
+    <div class="card stat" title="Latência do bot até o Discord">
+      <span>Ping Discord</span><strong id="statPing">—</strong>
+    </div>
+    <div class="card stat" title="Pessoas (fora bots) no canal de voz do bot">
+      <span>Na call</span><strong id="statMembers">—</strong>
+    </div>
+    <div class="card stat" title="Há quanto tempo o bot está rodando">
+      <span>Rodando há</span><strong id="statUptime">—</strong>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Serviços">
+    <div class="svc">
+      <span class="dot" id="dDot"></span>
+      <div class="svc-body"><span>Discord</span><span class="small muted" id="dDetail">—</span></div>
+      <span class="svc-val" id="dVal">—</span>
+    </div>
+    <div class="svc">
+      <span class="dot" id="vDot"></span>
+      <div class="svc-body"><span>Canal de voz</span><span class="small muted" id="vDetail">—</span></div>
+      <span class="svc-val" id="vVal">—</span>
+    </div>
+    <div class="svc" title="O módulo Retratos Falantes conecta aqui a partir do Foundry do mestre">
+      <span class="dot" id="mDot"></span>
+      <div class="svc-body"><span>Módulo no Foundry</span><span class="small muted" id="mDetail">—</span></div>
+      <span class="svc-val" id="mVal">—</span>
+    </div>
+    <div class="svc">
+      <span class="dot" id="fDot"></span>
+      <div class="svc-body"><span>Foundry VTT</span><span class="small muted" id="fDetail">localhost:30000</span></div>
+      <span class="svc-val" id="fVal">—</span>
+    </div>
+  </section>
+
+  <section class="card call" aria-label="Na call">
+    <div class="call-head">
+      <span class="eyebrow">Na call</span>
+      <span class="small muted" id="callHint"></span>
+    </div>
+    <ul class="members" id="members"></ul>
+    <div class="small muted" id="noMembers">Ninguém ainda.</div>
+    <div class="voice-controls">
+      <select id="channelSelect" aria-label="Canal de voz"></select>
+      <button type="button" class="btn small-btn" id="joinBtn">Entrar</button>
+      <button type="button" class="btn small-btn" id="leaveBtn">Sair</button>
+    </div>
+    <div class="row">
+      <button type="button" class="btn small-btn grow" id="inviteBtn" title="Link para convidar o bot ao servidor com as permissões certas">
+        <span id="inviteLabel">Copiar link de convite do bot</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="card events" aria-label="Atividade">
+    <div class="events-head">
+      <span class="eyebrow">Atividade</span>
+      <label><input type="checkbox" id="showSpeak"> mostrar falas</label>
+    </div>
+    <ol id="events"></ol>
+    <div class="small muted" id="noEvents">Nada ainda.</div>
+  </section>
+
+  <section class="controls">
+    <button type="button" class="btn primary" id="startBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>Iniciar
+    </button>
+    <button type="button" class="btn" id="stopBtn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Parar
+    </button>
+    <button type="button" class="btn" id="restartBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Reiniciar
+    </button>
+  </section>
+
+  <form class="card settings hidden" id="settings" aria-label="Configurações" autocomplete="off">
+    <div class="field">
+      <label for="tokenInput">Token do bot</label>
+      <input type="password" id="tokenInput" placeholder="cole o token aqui">
+    </div>
+    <div class="field">
+      <label for="guildInput">ID do servidor</label>
+      <input type="text" id="guildInput" inputmode="numeric" placeholder="123456789012345678">
+    </div>
+    <div class="field">
+      <label for="gmInput">Seu ID do Discord (GM)</label>
+      <input type="text" id="gmInput" inputmode="numeric" placeholder="123456789012345678">
+    </div>
+    <div class="field">
+      <label for="channelInput">Canal de voz fixo (opcional)</label>
+      <input type="text" id="channelInput" inputmode="numeric" placeholder="vazio = segue o GM">
+    </div>
+    <div class="field">
+      <label for="wsPortInput">Porta do bot (WS_PORT)</label>
+      <input type="number" id="wsPortInput" min="1" max="65535">
+    </div>
+    <div class="field">
+      <label for="foundryPortInput">Porta do Foundry</label>
+      <input type="number" id="foundryPortInput" min="1" max="65535">
+    </div>
+    <div class="field">
+      <label for="autoInput">Iniciar o bot ao abrir o app</label>
+      <input type="checkbox" id="autoInput">
+    </div>
+    <div class="err hidden" id="settingsErr"></div>
+    <div class="row">
+      <button type="submit" class="btn primary grow" id="saveBtn">Salvar</button>
+      <button type="button" class="btn" id="folderBtn" title="Abrir a pasta do bot">Pasta do bot</button>
+    </div>
+    <div class="note">Os IDs se copiam no Discord com o Modo Desenvolvedor ligado (Configurações → Avançado): clique direito → Copiar ID. A porta do bot tem que ser a mesma da configuração do módulo no Foundry. Tudo fica em <span class="cmd">%AppData%\Ouvidor\config.json</span>.</div>
+  </form>
+
+  <footer class="footer">
+    <span class="small muted" style="flex-grow:1" id="footerNote">Fechar esta janela encerra o bot.</span>
+    <button type="button" class="icon-btn" id="settingsBtn" aria-label="Configurações" aria-expanded="false" aria-controls="settings" title="Configurações">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </footer>
+</main>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function call(name, arg) {
+    arg = arg == null ? '' : String(arg);
+    if (typeof window.appCall === 'function') return Promise.resolve(window.appCall(name, arg));
+    return fetch('/api/' + name, { method: 'POST', body: arg }).then(function (r) {
+      return r.json().then(function (j) { if (!r.ok) throw new Error(j && j.error); return j; });
+    });
+  }
+  var COLORS = {
+    green: ['var(--green)', 'var(--green-tint)', 'var(--green-text)'],
+    amber: ['var(--amber)', 'var(--amber-tint)', 'var(--amber-text)'],
+    red:   ['var(--red)', 'var(--red-tint)', 'var(--red-text)'],
+    grey:  ['var(--grey)', 'var(--grey-tint)', 'var(--muted)']
+  };
+  var state = null, busy = false, settingsDirty = false, showSpeak = false;
+  try { showSpeak = localStorage.getItem('showSpeak') === '1'; } catch (e) {}
+  $('showSpeak').checked = showSpeak;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function fmtDuration(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    return pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
+  }
+  function fmtTime(t) { var d = new Date(t); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+  function show(id, on) { $(id).classList.toggle('hidden', !on); }
+  function paint(dotId, valId, color, text) {
+    $(dotId).style.background = COLORS[color][0];
+    $(valId).style.color = COLORS[color][2];
+    $(valId).textContent = text;
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function code(text) { return '<span class="cmd">' + text + '</span>'; }
+
+  // Mensagens de ajuda para cada tipo de erro do app ou do bot.
+  var HINTS = {
+    node: 'Instale o Node.js pelo PowerShell com ' + code('winget install OpenJS.NodeJS.LTS') + ' e clique em Iniciar.',
+    'node-old': 'Atualize com ' + code('winget upgrade OpenJS.NodeJS.LTS') + ' e clique em Iniciar.',
+    config: 'Abra a engrenagem, preencha e salve.',
+    token: 'No Discord Developer Portal → sua aplicação → Bot → Reset Token. Cole o novo token na engrenagem.',
+    bot: 'Mantenha a pasta ' + code('bot') + ' ao lado do Ouvidor.exe, como veio no zip.',
+    npm: 'Confira a internet e clique em Iniciar de novo. Se continuar, abra a pasta do bot e rode ' + code('npm install') + '.',
+    port: 'Só uma cópia do bot pode rodar por vez.'
+  };
+
+  function render() {
+    var s = state;
+    if (!s) return;
+    var p = s.phase;
+    var b = s.bot || null;
+    var running = p === 'running' || p === 'starting' || p === 'installing';
+    var discord = b ? b.discord : null;
+    var voice = b ? b.voice : 'idle';
+    var members = (b && b.members) || [];
+    var foundryClients = (b && b.foundry) || [];
+
+    // Cabeçalho
+    var label, sub, color, pulse = false;
+    if (p === 'running' && b) {
+      if (discord === 'online' && b.guildMissing) { label = 'Fora do servidor'; sub = 'Convide o bot com o link abaixo'; color = 'amber'; }
+      else if (discord === 'online') {
+        label = 'Online';
+        sub = (b.bot ? b.bot.tag : 'Bot') + (b.guild ? ' · ' + b.guild.name : '');
+        color = 'green';
+      } else if (discord === 'reconnecting') { label = 'Reconectando'; sub = 'A conexão com o Discord caiu; tentando de novo'; color = 'amber'; pulse = true; }
+      else { label = 'Conectando…'; sub = 'Entrando no Discord'; color = 'amber'; pulse = true; }
+    } else if (p === 'installing') { label = 'Instalando…'; sub = s.message; color = 'amber'; pulse = true; }
+    else if (p === 'starting' || p === 'running') { label = 'Iniciando…'; sub = s.message || 'Abrindo o bot'; color = 'amber'; pulse = true; }
+    else if (p === 'error') { label = 'Erro'; sub = 'O bot não está rodando'; color = 'red'; }
+    else { label = 'Parado'; sub = s.message || 'Bot desligado'; color = 'grey'; }
+    $('statusLabel').textContent = label;
+    $('statusSub').textContent = sub;
+    var orb = $('orb');
+    var avatar = p === 'running' && discord === 'online' && b && b.bot && b.bot.avatar;
+    if (avatar) {
+      if (!orb.firstElementChild || orb.firstElementChild.tagName !== 'IMG' || orb.firstElementChild.src !== avatar) {
+        orb.textContent = '';
+        var img = el('img'); img.src = avatar; img.alt = '';
+        orb.appendChild(img);
+      }
+      orb.style.boxShadow = '0 0 0 2px ' + COLORS[color][0];
+    } else {
+      if (!orb.firstElementChild || orb.firstElementChild.tagName !== 'I') { orb.textContent = ''; orb.appendChild(el('i')); }
+      orb.style.boxShadow = 'none';
+      orb.style.background = COLORS[color][1];
+      orb.firstElementChild.style.background = COLORS[color][0];
+    }
+    orb.classList.toggle('pulse', pulse);
+
+    // Alerta de erro (ou de bot fora do servidor)
+    var alertOn = p === 'error' || (p === 'running' && b && b.guildMissing);
+    show('alert', alertOn);
+    if (alertOn) {
+      var guildMissing = p !== 'error';
+      $('alert').classList.toggle('warn', guildMissing);
+      $('alertMsg').textContent = guildMissing
+        ? 'O bot entrou no Discord, mas não está no servidor configurado.'
+        : (s.message || 'O bot parou.');
+      $('alertHint').innerHTML = guildMissing
+        ? 'Use "Copiar link de convite do bot", abra no navegador e escolha o servidor. Depois clique em Reiniciar.'
+        : (HINTS[s.errorKind] || 'Veja a atividade abaixo e tente Iniciar de novo.');
+    }
+
+    // Números
+    $('statPing').textContent = p === 'running' && b && b.ping != null ? b.ping + ' ms' : '—';
+    $('statMembers').textContent = p === 'running' && b && b.channel ? String(members.length) : '—';
+    $('statUptime').textContent = s.runningAt ? fmtDuration(Date.now() - s.runningAt) : '—';
+
+    // Discord
+    if (!running) { paint('dDot', 'dVal', p === 'error' ? 'red' : 'grey', p === 'error' ? 'Erro' : 'Parado'); $('dDetail').textContent = s.nodeVersion ? 'Node ' + s.nodeVersion : '—'; }
+    else if (discord === 'online') {
+      paint('dDot', 'dVal', b.guildMissing ? 'amber' : 'green', b.guildMissing ? 'Fora do servidor' : 'Conectado');
+      $('dDetail').textContent = [b.bot && b.bot.tag, b.guild && b.guild.name, s.nodeVersion && 'Node ' + s.nodeVersion].filter(Boolean).join(' · ');
+    } else if (discord === 'reconnecting') { paint('dDot', 'dVal', 'amber', 'Reconectando'); }
+    else { paint('dDot', 'dVal', 'amber', 'Conectando…'); $('dDetail').textContent = s.nodeVersion ? 'Node ' + s.nodeVersion : '—'; }
+
+    // Canal de voz
+    if (!running || !b || discord !== 'online') { paint('vDot', 'vVal', 'grey', '—'); $('vDetail').textContent = '—'; }
+    else if (voice === 'ready') { paint('vDot', 'vVal', 'green', 'Ouvindo'); $('vDetail').textContent = b.channel ? b.channel.name : ''; }
+    else if (voice === 'connecting') { paint('vDot', 'vVal', 'amber', 'Entrando…'); $('vDetail').textContent = b.channel ? b.channel.name : ''; }
+    else if (voice === 'reconnecting') { paint('vDot', 'vVal', 'amber', 'Reconectando'); $('vDetail').textContent = b.channel ? b.channel.name : ''; }
+    else { paint('vDot', 'vVal', 'grey', 'Fora da call'); $('vDetail').textContent = b.gmInVoice ? 'O GM está em outro canal' : 'Esperando o GM entrar num canal de voz'; }
+
+    // Módulo no Foundry (quantos clientes do GM conectados ao WebSocket)
+    var port = (b && b.wsPort) || (s.config && s.config.wsPort);
+    if (!running || !b) { paint('mDot', 'mVal', 'grey', '—'); $('mDetail').textContent = 'ws://127.0.0.1:' + port; }
+    else if (foundryClients.length) {
+      var who = foundryClients.map(function (c) { return [c.user, c.world && '"' + c.world + '"'].filter(Boolean).join(' em '); }).filter(Boolean);
+      paint('mDot', 'mVal', 'green', 'Conectado');
+      $('mDetail').textContent = who.length ? who.join(', ') : 'ws://127.0.0.1:' + port;
+    } else { paint('mDot', 'mVal', 'amber', 'Aguardando'); $('mDetail').textContent = 'Abra o mundo no Foundry como GM · porta ' + port; }
+
+    // Foundry (porta local)
+    $('fDetail').textContent = 'localhost:' + s.foundryPort;
+    if (s.foundryUp == null) paint('fDot', 'fVal', 'grey', 'Verificando…');
+    else if (s.foundryUp) paint('fDot', 'fVal', 'green', 'Online');
+    else paint('fDot', 'fVal', 'red', 'Offline');
+
+    // Quem está na call
+    var list = $('members');
+    var key = members.map(function (m) { return m.id + (m.speaking ? '*' : ''); }).join(',');
+    if (list.dataset.key !== key) {
+      list.dataset.key = key;
+      list.textContent = '';
+      members.forEach(function (m) {
+        var li = el('li', m.speaking ? 'speaking' : '');
+        li.title = m.username + ' · ' + m.id;
+        if (m.avatar) { var img = el('img'); img.src = m.avatar; img.alt = ''; li.appendChild(img); }
+        else li.appendChild(el('span', 'ph'));
+        li.appendChild(el('span', '', m.name));
+        list.appendChild(li);
+      });
+    }
+    show('noMembers', members.length === 0);
+    $('noMembers').textContent = running && b && b.channel ? 'Ninguém além do bot.' : 'O bot não está em nenhum canal de voz.';
+    $('callHint').textContent = b && b.channel ? b.channel.name : '';
+
+    // Canais para entrar
+    var sel = $('channelSelect');
+    var channels = (b && b.channels) || [];
+    var ckey = channels.map(function (c) { return c.id; }).join(',');
+    if (sel.dataset.key !== ckey) {
+      var prev = sel.value;
+      sel.dataset.key = ckey;
+      sel.textContent = '';
+      var def = el('option', '', 'Canal do GM');
+      def.value = '';
+      sel.appendChild(def);
+      channels.forEach(function (c) { var o = el('option', '', '🔊 ' + c.name); o.value = c.id; sel.appendChild(o); });
+      sel.value = prev;
+    }
+    var canVoice = p === 'running' && discord === 'online' && b && !b.guildMissing;
+    sel.disabled = !canVoice;
+    $('joinBtn').disabled = !canVoice;
+    $('leaveBtn').disabled = !canVoice || !b.channel;
+    $('inviteBtn').disabled = !(b && b.invite);
+
+    // Atividade
+    var evs = (s.events || []).filter(function (e) { return showSpeak || e.kind !== 'speak'; });
+    var list2 = $('events');
+    var ekey = evs.length + ':' + (evs.length ? evs[evs.length - 1].t + evs[evs.length - 1].text : '');
+    if (list2.dataset.key !== ekey) {
+      var atBottom = list2.scrollHeight - list2.scrollTop - list2.clientHeight < 30;
+      list2.dataset.key = ekey;
+      list2.textContent = '';
+      evs.forEach(function (e) {
+        var li = el('li', e.kind);
+        li.appendChild(el('time', '', fmtTime(e.t)));
+        li.appendChild(el('span', '', e.text));
+        list2.appendChild(li);
+      });
+      if (atBottom) list2.scrollTop = list2.scrollHeight;
+    }
+    show('noEvents', evs.length === 0);
+
+    // Botões
+    $('startBtn').disabled = busy || running;
+    $('stopBtn').disabled = busy || !running;
+    $('restartBtn').disabled = busy || !(p === 'running' || p === 'error');
+
+    // Configurações (sem sobrescrever o que está sendo digitado)
+    var c = s.config || {};
+    if (!settingsDirty) {
+      $('tokenInput').value = '';
+      $('tokenInput').placeholder = c.hasToken ? 'já salvo' : 'cole o token aqui';
+      $('guildInput').value = c.guildId || '';
+      $('gmInput').value = c.gmId || '';
+      $('channelInput').value = c.voiceChannelId || '';
+      $('wsPortInput').value = c.wsPort || 8770;
+      $('foundryPortInput').value = c.foundryPort || 30000;
+      $('autoInput').checked = !!c.autoStart;
+    }
+    if (p === 'stopped' && s.message && !c.hasToken && $('settings').classList.contains('hidden') && !render.opened) {
+      render.opened = true;
+      toggleSettings(true);
+    }
+  }
+
+  function refresh() {
+    return call('state').then(function (s) { state = s; render(); }).catch(function () {});
+  }
+
+  function action(name, arg) {
+    busy = true; render();
+    return call(name, arg).catch(function () {}).then(function () { busy = false; return refresh(); });
+  }
+
+  $('startBtn').addEventListener('click', function () { action('start'); });
+  $('stopBtn').addEventListener('click', function () { action('stop'); });
+  $('restartBtn').addEventListener('click', function () { action('restart'); });
+  $('joinBtn').addEventListener('click', function () { action('join', $('channelSelect').value); });
+  $('leaveBtn').addEventListener('click', function () { action('leave'); });
+  $('showSpeak').addEventListener('change', function (e) {
+    showSpeak = e.target.checked;
+    try { localStorage.setItem('showSpeak', showSpeak ? '1' : '0'); } catch (err) {}
+    $('events').dataset.key = '';
+    render();
+  });
+
+  var copyTimer;
+  $('inviteBtn').addEventListener('click', function () {
+    var url = state && state.bot && state.bot.invite;
+    if (!url) return;
+    call('copy', url).catch(function () {
+      if (navigator.clipboard) return navigator.clipboard.writeText(url);
+      throw new Error('sem área de transferência');
+    }).then(function () {
+      $('inviteBtn').classList.add('copied');
+      $('inviteLabel').textContent = 'Link copiado: cole no navegador';
+    }).catch(function () {
+      call('open', url).catch(function () {});
+    }).then(function () {
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(function () {
+        $('inviteBtn').classList.remove('copied');
+        $('inviteLabel').textContent = 'Copiar link de convite do bot';
+      }, 2500);
+    });
+  });
+
+  function toggleSettings(open) {
+    show('settings', open);
+    $('settingsBtn').setAttribute('aria-expanded', String(open));
+    if (open) $('settings').scrollIntoView({ block: 'nearest' });
+  }
+  $('settingsBtn').addEventListener('click', function () {
+    toggleSettings($('settings').classList.contains('hidden'));
+  });
+  $('settings').addEventListener('input', function () { settingsDirty = true; });
+  $('folderBtn').addEventListener('click', function () { call('openBotFolder').catch(function () {}); });
+  $('settings').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = /^\d{17,20}$/;
+    var data = {
+      token: $('tokenInput').value.trim() || null,
+      guildId: $('guildInput').value.trim(),
+      gmId: $('gmInput').value.trim(),
+      voiceChannelId: $('channelInput').value.trim(),
+      wsPort: parseInt($('wsPortInput').value, 10) || 8770,
+      foundryPort: parseInt($('foundryPortInput').value, 10) || 30000,
+      autoStart: $('autoInput').checked
+    };
+    var errs = [];
+    if (data.guildId && !id.test(data.guildId)) errs.push('ID do servidor');
+    if (data.gmId && !id.test(data.gmId)) errs.push('seu ID do Discord');
+    if (data.voiceChannelId && !id.test(data.voiceChannelId)) errs.push('ID do canal');
+    $('settingsErr').textContent = errs.length ? 'Confira: ' + errs.join(', ') + ' (IDs têm 17 a 20 dígitos).' : '';
+    show('settingsErr', errs.length > 0);
+    if (errs.length) return;
+    call('saveConfig', JSON.stringify(data)).then(function () {
+      settingsDirty = false;
+      $('saveBtn').textContent = 'Salvo';
+      setTimeout(function () { $('saveBtn').textContent = 'Salvar'; }, 1500);
+      return refresh();
+    }).catch(function (err) {
+      $('settingsErr').textContent = 'Não foi possível salvar: ' + (err && err.message || err);
+      show('settingsErr', true);
+    });
+  });
+
+  document.addEventListener('contextmenu', function (e) {
+    if (!e.target.closest('input, .events ol, .alert')) e.preventDefault();
+  });
+
+  refresh();
+  setInterval(refresh, 400);
+})();
+</script>
+</body>
+</html>

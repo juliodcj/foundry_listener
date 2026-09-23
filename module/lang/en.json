@@ -1,0 +1,137 @@
+{
+  "RF": {
+    "Bar": {
+      "Label": "Character portraits",
+      "Smaller": "Smaller",
+      "Bigger": "Bigger",
+      "Orientation": "Horizontal / vertical",
+      "Reset": "Back to the GM's default position",
+      "SetDefault": "Use this position and size as the default for everyone",
+      "Hide": "Hide the bar",
+      "Empty": "Talking Portraits",
+      "Resize": "Drag to resize",
+      "Unlock": "Unlock to move and resize",
+      "Lock": "Lock the bar",
+      "CompactOff": "Show everyone",
+      "CompactOn": "Compact mode: only who is speaking",
+      "ResetDone": "Portrait bar back to the default position.",
+      "HiddenHint": "Portrait bar hidden. To show it again: the token controls button, Alt+Shift+R or Settings.",
+      "DefaultSaved": "Position and size saved as the default for players who never adjusted the bar."
+    },
+    "Card": {
+      "HP": "HP",
+      "HeroPoints": "Hero Points",
+      "Level": "Lvl",
+      "GMName": "Game Master"
+    },
+    "Bridge": {
+      "Lost": "Talking Portraits: lost connection to the bot. Reconnecting…",
+      "Connected": "Discord bot connected",
+      "Disconnected": "Discord bot disconnected (is the bot running?)"
+    },
+    "Controls": {
+      "Toggle": "Talking Portraits: show/hide the bar"
+    },
+    "Keys": {
+      "Toggle": {
+        "Name": "Show/hide the portrait bar",
+        "Hint": "Shows or hides the bar on this screen."
+      },
+      "Reset": {
+        "Name": "Reset bar position",
+        "Hint": "Moves the bar back to the GM's default position."
+      },
+      "Lock": {
+        "Name": "Lock/unlock the bar",
+        "Hint": "When unlocked, the bar can be dragged and resized."
+      }
+    },
+    "Settings": {
+      "Mapping": {
+        "Name": "Players, Discord and art",
+        "Label": "Configure",
+        "Hint": "Links each user to a Discord ID and a character, and picks the mouth closed/open art."
+      },
+      "WsPort": {
+        "Name": "Bot port",
+        "Hint": "WebSocket port of the local bot (WS_PORT). Only the GM client, on the same machine, connects to it."
+      },
+      "ShowGm": {
+        "Name": "GM card",
+        "Hint": "When to show the GM card (or the selected NPC).",
+        "Speaking": "Only while speaking",
+        "Always": "Always",
+        "Never": "Never"
+      },
+      "CardFilter": {
+        "Name": "Which players to show",
+        "Hint": "Every player with a character, or only those with Foundry open.",
+        "All": "Everyone with a character",
+        "Active": "Only players connected to Foundry"
+      },
+      "ShowStats": {
+        "Name": "Show sheet data",
+        "Hint": "HP, level, class and hero points on the cards."
+      },
+      "FlipMs": {
+        "Name": "Mouth speed (ms)",
+        "Hint": "Interval between mouth closed and open while speaking."
+      },
+      "ReleaseMs": {
+        "Name": "Delay after speaking (ms)",
+        "Hint": "Time before the portrait returns to rest, so it doesn't blink between words."
+      },
+      "CombatMode": {
+        "Name": "During combat",
+        "Hint": "What to do with the bar while a combat is running.",
+        "None": "Nothing",
+        "Pause": "Pause the animation",
+        "Hide": "Hide the bar"
+      },
+      "Hidden": {
+        "Name": "Hide the portrait bar",
+        "Hint": "This screen only. You can also use the token controls button or Alt+Shift+R."
+      },
+      "Compact": {
+        "Name": "Compact mode",
+        "Hint": "Shows only who is speaking."
+      },
+      "IdleOpacity": {
+        "Name": "Opacity when nobody speaks",
+        "Hint": "Bar transparency while nobody is speaking."
+      }
+    },
+    "Mapping": {
+      "Title": "Talking Portraits: players and art",
+      "Save": "Save",
+      "CallTitle": "In the Discord call now",
+      "InChannel": "Bot connected, in channel <strong>{channel}</strong>. Use this list to fill in the IDs.",
+      "NoChannel": "Bot connected but not in a voice channel. Join one (the bot follows) or use /entrar.",
+      "BridgeOff": "The bot is not connected to this Foundry. Open Ouvidor (or iniciar.bat) on this machine.",
+      "Players": "Players",
+      "PlayersHint": "Call members without an ID here are ignored. Without a chosen actor, the user's character is used.",
+      "Online": "in Foundry now",
+      "DiscordId": "Discord ID",
+      "DiscordIdPlaceholder": "e.g. 123456789012345678",
+      "PickMember": "Pick from the call",
+      "Actor": "Character",
+      "UserCharacter": "User's character",
+      "NoCharacter": "No character assigned",
+      "Closed": "Art: mouth closed",
+      "Open": "Art: mouth open",
+      "DetectHint": "Look for -closed/-open art next to the character art",
+      "DetectAll": "Look for everyone's art",
+      "DetectAllDone": "Art found for {count} character(s). Check and save.",
+      "NoActor": "Pick a character first.",
+      "DetectNone": "No -closed/-open art found next to {name}'s art.",
+      "DetectFound": "Found art for {name}. Check and save.",
+      "NoPlayers": "No players in this world.",
+      "GM": "Game Master",
+      "GMName": "Name on the card",
+      "UseNpc": "Use the selected NPC",
+      "UseNpcHint": "With an NPC token selected, the GM card shows that NPC.",
+      "BadIds": "Ignored invalid Discord IDs: {names}. An ID has 17 to 20 digits.",
+      "Saved": "Portrait settings saved."
+    }
+  }
+}

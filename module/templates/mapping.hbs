@@ -1,0 +1,98 @@
+<div class="rf-scroll standard-form">
+  <section class="rf-members">
+    <h3><i class="fa-brands fa-discord"></i> {{localize "RF.Mapping.CallTitle"}}</h3>
+    <p class="rf-members-status hint"></p>
+    <ul class="rf-members-list"></ul>
+    <datalist id="rf-discord-members"></datalist>
+  </section>
+
+  <fieldset>
+    <legend>{{localize "RF.Mapping.Players"}}</legend>
+    <p class="hint">{{localize "RF.Mapping.PlayersHint"}}</p>
+    {{#each players}}
+    <div class="rf-player-row" data-user-id="{{id}}">
+      <div class="rf-row-head">
+        <span class="rf-user-dot" style="background:{{color}}"></span>
+        <strong>{{name}}</strong>
+        {{#if active}}<span class="rf-online">{{localize "RF.Mapping.Online"}}</span>{{/if}}
+      </div>
+      <div class="form-group rf-discord-field">
+        <label>{{localize "RF.Mapping.DiscordId"}}</label>
+        <div class="form-fields">
+          <input type="text" name="users.{{id}}.discordId" value="{{discordId}}" list="rf-discord-members"
+                 placeholder="{{localize "RF.Mapping.DiscordIdPlaceholder"}}" inputmode="numeric" autocomplete="off">
+          <button type="button" data-action="useMember" data-tooltip="{{localize "RF.Mapping.PickMember"}}"><i class="fa-solid fa-list"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "RF.Mapping.Actor"}}</label>
+        <div class="form-fields">
+          <select name="users.{{id}}.actorId">
+            <option value="">{{#if defaultActor}}{{localize "RF.Mapping.UserCharacter"}} ({{defaultActor}}){{else}}{{localize "RF.Mapping.NoCharacter"}}{{/if}}</option>
+            {{#each actors}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "RF.Mapping.Closed"}}</label>
+        <div class="form-fields">
+          <file-picker name="users.{{id}}.closed" type="image" value="{{closed}}"></file-picker>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "RF.Mapping.Open"}}</label>
+        <div class="form-fields">
+          <file-picker name="users.{{id}}.open" type="image" value="{{open}}"></file-picker>
+          <button type="button" data-action="detect" data-tooltip="{{localize "RF.Mapping.DetectHint"}}"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+        </div>
+      </div>
+    </div>
+    {{else}}
+    <p class="hint">{{localize "RF.Mapping.NoPlayers"}}</p>
+    {{/each}}
+    {{#if players.length}}
+    <button type="button" data-action="detectAll"><i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "RF.Mapping.DetectAll"}}</button>
+    {{/if}}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "RF.Mapping.GM"}}</legend>
+    {{#each gms}}
+    <div class="form-group rf-discord-field">
+      <label><span class="rf-user-dot" style="background:{{color}}"></span> {{name}} — {{localize "RF.Mapping.DiscordId"}}</label>
+      <div class="form-fields">
+        <input type="text" name="users.{{id}}.discordId" value="{{discordId}}" list="rf-discord-members"
+               placeholder="{{localize "RF.Mapping.DiscordIdPlaceholder"}}" inputmode="numeric" autocomplete="off">
+        <button type="button" data-action="useMember" data-tooltip="{{localize "RF.Mapping.PickMember"}}"><i class="fa-solid fa-list"></i></button>
+      </div>
+    </div>
+    {{/each}}
+    <div class="form-group">
+      <label>{{localize "RF.Mapping.GMName"}}</label>
+      <div class="form-fields">
+        <input type="text" name="gm.name" value="{{gm.name}}" placeholder="{{localize "RF.Card.GMName"}}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>{{localize "RF.Mapping.Closed"}}</label>
+      <div class="form-fields">
+        <file-picker name="gm.closed" type="image" value="{{gm.closed}}"></file-picker>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>{{localize "RF.Mapping.Open"}}</label>
+      <div class="form-fields">
+        <file-picker name="gm.open" type="image" value="{{gm.open}}"></file-picker>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>{{localize "RF.Mapping.UseNpc"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="gm.useNpc" {{#if gm.useNpc}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "RF.Mapping.UseNpcHint"}}</p>
+    </div>
+  </fieldset>
+</div>

@@ -1,0 +1,359 @@
+/* Retratos Falantes: barra de retratos estilo overlay de stream. */
+
+#rf-bar {
+  --rf-scale: 1;
+  --rf-idle-opacity: 0.6;
+  --rf-gold: #c9a14a;
+  --rf-gold-dark: #6b4f1d;
+  --rf-plate: #2a1d12;
+  --rf-plate-2: #3b2a19;
+  --rf-text: #f6efe2;
+  --rf-muted: #d7c7a8;
+  --rf-card-w: 150px;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  user-select: none;
+  font-family: var(--font-body, "Signika", sans-serif);
+  color: var(--rf-text);
+}
+
+#rf-bar.rf-hidden { display: none; }
+
+/* ---- cards --------------------------------------------------------------- */
+
+#rf-bar .rf-cards {
+  zoom: var(--rf-scale);
+  display: flex;
+  gap: 6px;
+  transition: opacity 250ms ease;
+}
+#rf-bar.rf-vertical .rf-cards { flex-direction: column; }
+#rf-bar.rf-idle .rf-cards { opacity: var(--rf-idle-opacity); }
+#rf-bar.rf-idle:hover .rf-cards,
+#rf-bar.rf-unlocked .rf-cards { opacity: 1; }
+
+#rf-bar .rf-card {
+  --rf-color: var(--rf-gold);
+  position: relative;
+  width: var(--rf-card-w);
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* Modo compacto: só quem está falando. GM "ao falar": idem. */
+#rf-bar.rf-compact .rf-card:not(.rf-speaking),
+#rf-bar .rf-card.rf-gm-auto:not(.rf-speaking) { display: none; }
+
+#rf-bar .rf-portrait {
+  position: relative;
+  height: 130px;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.08), transparent 70%);
+}
+
+#rf-bar .rf-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 15%;
+  border: none;
+  transform-origin: 50% 100%;
+}
+#rf-bar .rf-open { opacity: 0; }
+
+/* Duas artes: alterna boca fechada/aberta enquanto fala. */
+#rf-bar.rf-mouth .rf-card.rf-speaking.rf-has-open .rf-open { opacity: 1; }
+#rf-bar.rf-mouth .rf-card.rf-speaking.rf-has-open .rf-closed { opacity: 0; }
+
+/* Uma arte só: quica. */
+#rf-bar .rf-card.rf-speaking:not(.rf-has-open) .rf-closed {
+  animation: rf-bounce 420ms ease-in-out infinite;
+}
+@keyframes rf-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-5px) scale(1.03, 0.98); }
+  65% { transform: translateY(-1px) scale(0.99, 1.02); }
+}
+
+/* Brilho na cor do jogador enquanto fala. */
+#rf-bar .rf-portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 0 var(--rf-color);
+  transition: box-shadow 120ms ease;
+  pointer-events: none;
+}
+#rf-bar .rf-card.rf-speaking .rf-portrait::after {
+  box-shadow: inset 0 0 0 3px var(--rf-color), inset 0 -24px 30px -18px var(--rf-color);
+}
+#rf-bar .rf-card.rf-speaking {
+  filter: drop-shadow(0 0 6px var(--rf-color)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+/* ---- placa com nome, HP etc. ------------------------------------------------ */
+
+#rf-bar .rf-plate {
+  position: relative;
+  padding: 4px 6px 5px;
+  background: linear-gradient(180deg, var(--rf-plate-2), var(--rf-plate));
+  border: 2px solid var(--rf-gold);
+  border-top-color: var(--rf-color);
+  border-radius: 0 0 6px 6px;
+  box-shadow: inset 0 0 0 1px var(--rf-gold-dark);
+}
+
+#rf-bar .rf-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px #000;
+}
+#rf-bar .rf-player {
+  display: block;
+  font-size: 9.5px;
+  line-height: 1.2;
+  color: var(--rf-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#rf-bar .rf-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+}
+#rf-bar .rf-stats-row .rf-hp { flex: 1 1 auto; margin-top: 0; }
+
+/* Pontos de heroísmo: triângulos, como no overlay de referência. */
+#rf-bar .rf-hero {
+  display: flex;
+  gap: 1px;
+  flex-shrink: 0;
+}
+#rf-bar .rf-hero i {
+  width: 10px;
+  height: 9px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: rgba(255, 255, 255, 0.18);
+}
+#rf-bar .rf-hero i.on { background: #e3483a; }
+
+#rf-bar .rf-hp {
+  position: relative;
+  height: 13px;
+  margin-top: 3px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+#rf-bar .rf-hp-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #4fd46a, #22a23d);
+  transition: width 300ms ease;
+}
+#rf-bar .rf-hp-mid .rf-hp-fill { background: linear-gradient(180deg, #f0c247, #c9920f); }
+#rf-bar .rf-hp-low .rf-hp-fill { background: linear-gradient(180deg, #f0604f, #b82717); }
+#rf-bar .rf-hp span {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 13px;
+  text-shadow: 0 1px 1px #000, 0 0 2px #000;
+}
+#rf-bar .rf-hp em { font-style: normal; color: #9fd7ff; }
+
+#rf-bar .rf-sub {
+  margin-top: 3px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rf-muted);
+}
+
+/* ---- barra de ferramentas ------------------------------------------------------ */
+
+#rf-bar .rf-toolbar {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: rgba(20, 14, 8, 0.85);
+  border: 1px solid var(--rf-gold-dark);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 150ms ease;
+}
+#rf-bar.rf-toolbar-below .rf-toolbar {
+  bottom: auto;
+  top: 100%;
+}
+#rf-bar.rf-toolbar-inside .rf-toolbar {
+  bottom: auto;
+  top: 2px;
+  left: 2px;
+  z-index: 1;
+}
+#rf-bar:hover .rf-toolbar,
+#rf-bar.rf-unlocked .rf-toolbar,
+#rf-bar .rf-toolbar:focus-within {
+  opacity: 1;
+  visibility: visible;
+}
+#rf-bar .rf-toolbar button {
+  width: 24px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--rf-text);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+#rf-bar .rf-toolbar button:hover { background: rgba(255, 255, 255, 0.12); }
+#rf-bar .rf-toolbar button.active { color: var(--rf-gold); }
+#rf-bar .rf-unlocked-only { display: none; align-items: center; gap: 2px; }
+#rf-bar.rf-unlocked .rf-unlocked-only { display: inline-flex; }
+#rf-bar .rf-scale-label {
+  min-width: 34px;
+  text-align: center;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+#rf-bar:not(.rf-is-gm) .rf-gm-only { display: none; }
+
+/* Status da ponte com o bot: só para o GM. */
+#rf-bar .rf-status {
+  display: none;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px 0 2px;
+  border-radius: 50%;
+  background: #d9412f;
+  box-shadow: 0 0 4px #d9412f;
+}
+#rf-bar .rf-status.ok { background: #37c25a; box-shadow: 0 0 4px #37c25a; }
+#rf-bar.rf-is-gm .rf-status { display: inline-block; }
+
+/* ---- destravada: mover e redimensionar ------------------------------------------ */
+
+#rf-bar.rf-unlocked {
+  outline: 1px dashed rgba(201, 161, 74, 0.8);
+  outline-offset: 3px;
+  cursor: move;
+}
+#rf-bar.rf-dragging,
+#rf-bar.rf-dragging * { cursor: grabbing !important; }
+
+#rf-bar .rf-grip {
+  display: none;
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--rf-gold);
+  color: #1b130a;
+  font-size: 9px;
+  cursor: nwse-resize;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+#rf-bar.rf-unlocked .rf-grip { display: flex; }
+
+/* Sem cards (ou modo compacto sem ninguém falando): um alvo mínimo para
+   poder destravar e arrastar. */
+#rf-bar .rf-empty {
+  display: none;
+  zoom: var(--rf-scale);
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--rf-muted);
+  background: rgba(20, 14, 8, 0.6);
+  border-radius: 6px;
+}
+#rf-bar.rf-unlocked.rf-no-cards .rf-empty,
+#rf-bar.rf-unlocked.rf-compact.rf-idle .rf-empty { display: block; }
+#rf-bar.rf-locked.rf-no-cards { min-width: 40px; min-height: 16px; }
+
+/* ---- janela de mapeamento --------------------------------------------------- */
+
+.rf-mapping .rf-scroll {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.rf-mapping .rf-members ul {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rf-mapping .rf-members li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.rf-mapping .rf-members li.speaking { background: rgba(55, 194, 90, 0.2); }
+.rf-mapping .rf-members img { width: 20px; height: 20px; border-radius: 50%; border: none; }
+.rf-mapping .rf-member-name { min-width: 120px; }
+.rf-mapping .rf-member-map { opacity: 0.75; }
+.rf-mapping .rf-player-row {
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.2));
+  border-radius: 6px;
+}
+.rf-mapping .rf-row-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.rf-mapping .rf-user-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+.rf-mapping .rf-online { font-size: 11px; opacity: 0.7; }
+.rf-mapping .form-fields button { flex: 0 0 auto; width: auto; }

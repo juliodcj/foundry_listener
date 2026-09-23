@@ -1,0 +1,94 @@
+name: build
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Windows: o node_modules do bot tem um binário nativo (@snazzah/davey,
+    # criptografia DAVE do Discord) que precisa ser o de win32-x64.
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: app/go.mod
+          cache-dependency-path: app/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Versão
+        id: ver
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then v="${GITHUB_REF#refs/tags/v}"; else v="$(node -p "require('./module/module.json').version")"; fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Test (app)
+        working-directory: app
+        run: go test ./...
+      - name: Vet (app)
+        working-directory: app
+        run: go vet ./...
+      - name: Build Ouvidor.exe
+        working-directory: app
+        run: go build -trimpath -ldflags "-H=windowsgui -s -w" -o ../dist/Ouvidor/Ouvidor.exe .
+
+      - name: Bot (dependências)
+        working-directory: bot
+        run: |
+          npm ci --omit=dev --no-audit --no-fund
+          npm run check
+      - name: Montar pasta do Ouvidor
+        run: |
+          mkdir -p dist/Ouvidor/bot
+          cp -r bot/index.js bot/src bot/package.json bot/package-lock.json bot/.env.example bot/iniciar.bat bot/iniciar-tudo.bat bot/node_modules dist/Ouvidor/bot/
+          cp README.md dist/Ouvidor/LEIA-ME.md
+          (cd dist && 7z a -tzip Ouvidor.zip Ouvidor > /dev/null)
+
+      - name: Módulo
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          REPO: ${{ github.repository }}
+        run: |
+          for f in module/scripts/*.mjs; do node --check "$f"; done
+          node -e "
+            const fs = require('fs');
+            const m = JSON.parse(fs.readFileSync('module/module.json'));
+            m.version = process.env.VERSION;
+            if (process.env.GITHUB_REF.startsWith('refs/tags/v')) {
+              m.download = 'https://github.com/' + process.env.REPO + '/releases/download/v' + m.version + '/retratos-falantes.zip';
+            }
+            fs.writeFileSync('module/module.json', JSON.stringify(m, null, 2) + '\n');
+          "
+          cp module/module.json dist/module.json
+          (cd module && 7z a -tzip ../dist/retratos-falantes.zip module.json scripts styles templates lang > /dev/null)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ouvidor
+          path: dist/Ouvidor/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: retratos-falantes-modulo
+          path: |
+            dist/retratos-falantes.zip
+            dist/module.json
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Ouvidor.zip
+            dist/retratos-falantes.zip
+            dist/module.json

@@ -1,0 +1,137 @@
+{
+  "RF": {
+    "Bar": {
+      "Label": "Retratos dos personagens",
+      "Smaller": "Diminuir",
+      "Bigger": "Aumentar",
+      "Orientation": "Horizontal / vertical",
+      "Reset": "Voltar à posição padrão do mestre",
+      "SetDefault": "Usar esta posição e tamanho como padrão para todos",
+      "Hide": "Esconder a barra",
+      "Empty": "Retratos Falantes",
+      "Resize": "Arraste para mudar o tamanho",
+      "Unlock": "Destravar para mover e redimensionar",
+      "Lock": "Travar a barra",
+      "CompactOff": "Mostrar todos",
+      "CompactOn": "Modo compacto: só quem está falando",
+      "ResetDone": "Barra de retratos de volta à posição padrão.",
+      "HiddenHint": "Barra de retratos escondida. Para mostrar de novo: botão na barra de tokens, Alt+Shift+R ou Configurações.",
+      "DefaultSaved": "Posição e tamanho salvos como padrão para todos os jogadores que não ajustaram a barra."
+    },
+    "Card": {
+      "HP": "PV",
+      "HeroPoints": "Pontos de Heroísmo",
+      "Level": "Nív.",
+      "GMName": "Mestre"
+    },
+    "Bridge": {
+      "Lost": "Retratos Falantes: conexão com o bot perdida. Tentando reconectar…",
+      "Connected": "Bot do Discord conectado",
+      "Disconnected": "Bot do Discord desconectado (o bot está aberto?)"
+    },
+    "Controls": {
+      "Toggle": "Retratos Falantes: mostrar/esconder a barra"
+    },
+    "Keys": {
+      "Toggle": {
+        "Name": "Mostrar/esconder a barra de retratos",
+        "Hint": "Mostra ou esconde a barra nesta tela."
+      },
+      "Reset": {
+        "Name": "Resetar posição da barra",
+        "Hint": "Volta a barra para a posição padrão definida pelo mestre."
+      },
+      "Lock": {
+        "Name": "Travar/destravar a barra",
+        "Hint": "Destravada, a barra pode ser arrastada e redimensionada."
+      }
+    },
+    "Settings": {
+      "Mapping": {
+        "Name": "Jogadores, Discord e artes",
+        "Label": "Configurar",
+        "Hint": "Liga cada usuário ao ID do Discord e ao personagem, e escolhe as artes de boca fechada e aberta."
+      },
+      "WsPort": {
+        "Name": "Porta do bot",
+        "Hint": "Porta do WebSocket do bot local (WS_PORT). Só o cliente do mestre, na mesma máquina, conecta nela."
+      },
+      "ShowGm": {
+        "Name": "Card do mestre",
+        "Hint": "Quando mostrar o card do mestre (ou do NPC selecionado).",
+        "Speaking": "Só quando está falando",
+        "Always": "Sempre",
+        "Never": "Nunca"
+      },
+      "CardFilter": {
+        "Name": "Quais jogadores mostrar",
+        "Hint": "Todos os jogadores com personagem, ou só quem está com o Foundry aberto.",
+        "All": "Todos com personagem",
+        "Active": "Só quem está conectado no Foundry"
+      },
+      "ShowStats": {
+        "Name": "Mostrar dados da ficha",
+        "Hint": "PV, nível, classe e pontos de heroísmo nos cards."
+      },
+      "FlipMs": {
+        "Name": "Velocidade da boca (ms)",
+        "Hint": "Intervalo entre boca fechada e aberta enquanto a pessoa fala."
+      },
+      "ReleaseMs": {
+        "Name": "Espera ao parar de falar (ms)",
+        "Hint": "Tempo antes de o retrato voltar ao normal, para não piscar entre palavras."
+      },
+      "CombatMode": {
+        "Name": "Durante o combate",
+        "Hint": "O que fazer com a barra enquanto houver um combate iniciado.",
+        "None": "Nada",
+        "Pause": "Pausar a animação",
+        "Hide": "Esconder a barra"
+      },
+      "Hidden": {
+        "Name": "Esconder a barra de retratos",
+        "Hint": "Só nesta tela. Também dá para usar o botão na barra de tokens ou Alt+Shift+R."
+      },
+      "Compact": {
+        "Name": "Modo compacto",
+        "Hint": "Mostra só quem está falando."
+      },
+      "IdleOpacity": {
+        "Name": "Opacidade quando ninguém fala",
+        "Hint": "Transparência da barra enquanto ninguém está falando."
+      }
+    },
+    "Mapping": {
+      "Title": "Retratos Falantes: jogadores e artes",
+      "Save": "Salvar",
+      "CallTitle": "Na call do Discord agora",
+      "InChannel": "Bot conectado, no canal <strong>{channel}</strong>. Use a lista para preencher os IDs.",
+      "NoChannel": "Bot conectado, mas fora de canal de voz. Entre num canal (o bot vai junto) ou use /entrar.",
+      "BridgeOff": "O bot não está conectado a este Foundry. Abra o Ouvidor (ou iniciar.bat) nesta máquina.",
+      "Players": "Jogadores",
+      "PlayersHint": "Participantes da call sem ID aqui são ignorados. Sem ator escolhido, vale o personagem do usuário.",
+      "Online": "no Foundry agora",
+      "DiscordId": "ID do Discord",
+      "DiscordIdPlaceholder": "ex.: 123456789012345678",
+      "PickMember": "Escolher entre quem está na call",
+      "Actor": "Personagem",
+      "UserCharacter": "Personagem do usuário",
+      "NoCharacter": "Nenhum personagem atribuído",
+      "Closed": "Arte: boca fechada",
+      "Open": "Arte: boca aberta",
+      "DetectHint": "Procurar artes -closed/-open ao lado da arte do personagem",
+      "DetectAll": "Procurar artes de todos",
+      "DetectAllDone": "Artes encontradas para {count} personagem(ns). Confira e salve.",
+      "NoActor": "Escolha um personagem primeiro.",
+      "DetectNone": "Nenhuma arte -closed/-open encontrada ao lado da arte de {name}.",
+      "DetectFound": "Artes de {name} encontradas. Confira e salve.",
+      "NoPlayers": "Nenhum jogador neste mundo.",
+      "GM": "Mestre",
+      "GMName": "Nome no card",
+      "UseNpc": "Usar o NPC selecionado",
+      "UseNpcHint": "Com um token de NPC selecionado, o card do mestre mostra esse NPC.",
+      "BadIds": "IDs do Discord inválidos ignorados: {names}. Um ID tem 17 a 20 dígitos.",
+      "Saved": "Configuração dos retratos salva."
+    }
+  }
+}

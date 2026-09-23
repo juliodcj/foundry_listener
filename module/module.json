@@ -1,0 +1,25 @@
+{
+  "id": "retratos-falantes",
+  "title": "Retratos Falantes",
+  "description": "<p>Barra de retratos dos personagens com animação de quem está falando no Discord, usando um bot local.</p>",
+  "version": "1.0.0",
+  "authors": [{ "name": "Julio", "flags": {} }],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [{ "id": "pf2e", "type": "system", "compatibility": {} }]
+  },
+  "socket": true,
+  "esmodules": ["scripts/main.mjs"],
+  "styles": ["styles/retratos.css"],
+  "languages": [
+    { "lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json" },
+    { "lang": "en", "name": "English", "path": "lang/en.json" }
+  ],
+  "url": "https://github.com/juliodcj/ouvidor",
+  "manifest": "https://github.com/juliodcj/ouvidor/releases/latest/download/module.json",
+  "download": "https://github.com/juliodcj/ouvidor/releases/latest/download/retratos-falantes.zip",
+  "license": "MIT"
+}
