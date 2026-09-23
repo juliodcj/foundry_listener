@@ -62,6 +62,16 @@ export function registerSettings() {
     onChange: () => bar.restartFlip(),
   });
 
+  reg("portraitStyle", {
+    name: "RF.Settings.PortraitStyle.Name", hint: "RF.Settings.PortraitStyle.Hint",
+    scope: "world", config: true, type: String, default: "cutout",
+    choices: {
+      cutout: "RF.Settings.PortraitStyle.Cutout",
+      frame: "RF.Settings.PortraitStyle.Frame",
+    },
+    onChange: apply,
+  });
+
   reg("singleArtAnimation", {
     name: "RF.Settings.SingleArt.Name", hint: "RF.Settings.SingleArt.Hint",
     scope: "world", config: true, type: String, default: "pulse",

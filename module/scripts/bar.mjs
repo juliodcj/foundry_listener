@@ -167,8 +167,8 @@ class PortraitBar {
         <span class="rf-name">${esc(card.name)}</span>
         <span class="rf-player">${esc(card.player)}</span>
         ${hp || hero ? `<div class="rf-stats-row">${hp}${hero}</div>` : ""}
-        ${sub ? `<div class="rf-sub">${esc(sub)}</div>` : ""}
       </div>
+      ${sub ? `<div class="rf-sub">${esc(sub)}</div>` : ""}
     `;
   }
 
@@ -230,6 +230,9 @@ class PortraitBar {
     this.el.classList.toggle("rf-locked", locked);
     this.el.classList.toggle("rf-unlocked", !locked);
     this.el.classList.toggle("rf-compact", compact);
+    const style = getSetting("portraitStyle");
+    this.el.classList.toggle("rf-style-cutout", style !== "frame");
+    this.el.classList.toggle("rf-style-frame", style === "frame");
     const single = getSetting("singleArtAnimation");
     for (const mode of ["pulse", "bounce", "none"]) this.el.classList.toggle(`rf-single-${mode}`, single === mode);
     this.el.style.setProperty("--rf-idle-opacity", clamp(Number(getSetting("idleOpacity")), 0, 1));

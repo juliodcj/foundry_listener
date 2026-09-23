@@ -211,14 +211,54 @@
 }
 #rf-bar .rf-hp em { font-style: normal; color: #9fd7ff; }
 
+/* Nível e classe numa aba embaixo da placa, como no overlay de referência. */
 #rf-bar .rf-sub {
-  margin-top: 3px;
+  align-self: center;
+  max-width: 88%;
+  margin-top: -2px;
+  padding: 1px 10px 2px;
+  background: linear-gradient(180deg, var(--rf-plate), #1c140c);
+  border: 2px solid var(--rf-gold);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: inset 0 0 0 1px var(--rf-gold-dark);
   text-align: center;
   font-size: 9px;
   font-weight: 700;
+  line-height: 1.3;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--rf-muted);
+  color: var(--rf-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- estilo "recorte": PNG sem fundo em pé sobre a placa ------------------- */
+
+#rf-bar.rf-style-cutout .rf-portrait {
+  height: 175px;
+  overflow: visible;
+  background: none;
+  border-radius: 0;
+  margin-bottom: -2px;
+}
+#rf-bar.rf-style-cutout .rf-img {
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+#rf-bar.rf-style-cutout .rf-portrait::after { display: none; }
+#rf-bar.rf-style-cutout .rf-plate { border-radius: 4px; }
+/* A sombra segue o contorno da arte (canal alfa do PNG). */
+#rf-bar.rf-style-cutout .rf-card { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7)); }
+#rf-bar.rf-style-cutout .rf-card.rf-speaking .rf-portrait {
+  filter: drop-shadow(0 0 3px var(--rf-color)) drop-shadow(0 0 7px var(--rf-color));
+}
+#rf-bar.rf-style-cutout .rf-card.rf-speaking {
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7));
+}
+#rf-bar.rf-style-cutout .rf-card.rf-speaking .rf-plate {
+  box-shadow: inset 0 0 0 1px var(--rf-gold-dark), 0 0 8px var(--rf-color);
 }
 
 /* ---- barra de ferramentas ------------------------------------------------------ */

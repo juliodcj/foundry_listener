@@ -110,6 +110,12 @@
       "HeroIcon": {
         "Name": "Hero point icon",
         "Hint": "Image used instead of circles. Empty = circles. Spent points are dimmed."
+      },
+      "PortraitStyle": {
+        "Name": "Portrait style",
+        "Hint": "Cutout: the art (transparent PNG) stands on the plate with no frame, stream-overlay style. Frame: the art sits inside a box.",
+        "Cutout": "Cutout (transparent PNG)",
+        "Frame": "Frame"
       }
     },
     "Mapping": {

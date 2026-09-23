@@ -110,6 +110,12 @@
       "HeroIcon": {
         "Name": "Ícone dos pontos de heroísmo",
         "Hint": "Imagem usada no lugar dos círculos. Vazio = círculos. Pontos gastos aparecem apagados."
+      },
+      "PortraitStyle": {
+        "Name": "Estilo do retrato",
+        "Hint": "Recorte: a arte (PNG sem fundo) fica em pé sobre a placa, sem moldura, como em overlay de stream. Moldura: a arte fica dentro de um quadro.",
+        "Cutout": "Recorte (PNG sem fundo)",
+        "Frame": "Moldura"
       }
     },
     "Mapping": {

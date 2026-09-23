@@ -153,6 +153,7 @@ Quem está na call sem ID configurado é ignorado.
 | Card do mestre | mundo | Mostrar o card do mestre só quando fala, sempre ou nunca. |
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
+| Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. |
 | Velocidade da troca de arte | mundo | Intervalo entre a arte 1 e a arte 2 (padrão 150 ms). |
 | Animação com uma arte só | mundo | Aumentar e diminuir (padrão), quicar, ou só o brilho. |
 | Ícone dos pontos de heroísmo | mundo | Imagem no lugar dos círculos; pontos gastos ficam apagados. |
