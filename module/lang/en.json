@@ -120,6 +120,10 @@
       "FadeSilent": {
         "Name": "Fade who isn't speaking",
         "Hint": "The art of anyone not speaking is dimmed and returns to normal while they speak. The name/HP plate is unchanged."
+      },
+      "SpeakingGlow": {
+        "Name": "Glow on who is speaking",
+        "Hint": "Outline in the player's color around the character while they speak."
       }
     },
     "Mapping": {

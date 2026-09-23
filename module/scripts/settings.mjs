@@ -72,6 +72,12 @@ export function registerSettings() {
     onChange: apply,
   });
 
+  reg("speakingGlow", {
+    name: "RF.Settings.SpeakingGlow.Name", hint: "RF.Settings.SpeakingGlow.Hint",
+    scope: "world", config: true, type: Boolean, default: true,
+    onChange: apply,
+  });
+
   reg("fadeSilent", {
     name: "RF.Settings.FadeSilent.Name", hint: "RF.Settings.FadeSilent.Hint",
     scope: "world", config: true, type: Boolean, default: true,

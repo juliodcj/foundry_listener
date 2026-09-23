@@ -271,6 +271,14 @@
   box-shadow: inset 0 0 0 1px var(--rf-gold-dark), 0 0 8px var(--rf-color);
 }
 
+/* Opção "Brilho em quem fala" desligada: sem contorno colorido. */
+#rf-bar.rf-no-glow .rf-card.rf-speaking .rf-portrait::after { box-shadow: none; }
+#rf-bar.rf-no-glow .rf-card.rf-speaking { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)); }
+#rf-bar.rf-no-glow.rf-style-cutout .rf-card.rf-speaking .rf-portrait { filter: none; }
+#rf-bar.rf-no-glow.rf-style-cutout .rf-card.rf-speaking .rf-plate {
+  box-shadow: inset 0 0 0 1px var(--rf-gold-dark);
+}
+
 /* ---- barra de ferramentas ------------------------------------------------------ */
 
 #rf-bar .rf-toolbar {

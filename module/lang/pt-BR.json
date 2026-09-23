@@ -120,6 +120,10 @@
       "FadeSilent": {
         "Name": "Esmaecer quem não fala",
         "Hint": "A arte de quem não está falando fica mais apagada; ao falar, volta ao normal. A placa com nome e PV não muda."
+      },
+      "SpeakingGlow": {
+        "Name": "Brilho em quem fala",
+        "Hint": "Contorno na cor do jogador em volta do personagem enquanto ele fala."
       }
     },
     "Mapping": {

@@ -233,6 +233,7 @@ class PortraitBar {
     this.el.classList.toggle("rf-unlocked", !locked);
     this.el.classList.toggle("rf-compact", compact);
     this.el.classList.toggle("rf-fade-silent", getSetting("fadeSilent"));
+    this.el.classList.toggle("rf-no-glow", !getSetting("speakingGlow"));
     const style = getSetting("portraitStyle");
     this.el.classList.toggle("rf-style-cutout", style !== "frame");
     this.el.classList.toggle("rf-style-frame", style === "frame");
