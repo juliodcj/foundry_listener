@@ -179,6 +179,13 @@ para ver os botões:
   direito também redimensiona, arrastando.
 - ↔ / ↕: barra horizontal ou vertical.
 - **Compacto**: só quem está falando.
+- ⌃ **Recolher**: esconde os retratos e deixa só uma abinha "Retratos" (clique
+  nela para voltar). Serve para ver algo que está atrás da barra; vale só na
+  sua tela.
+- 👁 **Esconder dos jogadores** (só o mestre vê): some com a barra na tela de
+  todos os jogadores, por exemplo no começo de um combate. Clique de novo para
+  mostrar. Enquanto estiver escondida, o mestre continua vendo a barra, meio
+  apagada e com o aviso "oculta para os jogadores".
 - ↺ **Resetar**: volta para a posição e o tamanho padrão do mestre (útil se
   a barra sumiu da vista).
 - 👁 **Esconder**. Para mostrar de novo: botão **Retratos Falantes** na barra de

@@ -16,7 +16,15 @@
       "CompactOn": "Compact mode: only who is speaking",
       "ResetDone": "Portrait bar back to the default position.",
       "HiddenHint": "Portrait bar hidden. To show it again: the token controls button, Alt+Shift+R or Settings.",
-      "DefaultSaved": "Position and size saved as the default for players who never adjusted the bar."
+      "DefaultSaved": "Position and size saved as the default for players who never adjusted the bar.",
+      "Collapse": "Collapse the bar",
+      "Expand": "Show the portraits",
+      "Collapsed": "Portraits",
+      "PlayersHide": "Hide the bar from players",
+      "PlayersShow": "Show the bar to players",
+      "PlayersHidden": "Portrait bar hidden from players.",
+      "PlayersShown": "Portrait bar visible to players.",
+      "PlayersOffBadge": "hidden from players"
     },
     "Card": {
       "HP": "HP",

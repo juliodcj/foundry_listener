@@ -51,6 +51,8 @@ class PortraitBar {
       <div class="rf-toolbar" role="toolbar">
         <span class="rf-status" data-tooltip=""></span>
         <button type="button" data-action="lock"><i class="fa-solid fa-lock"></i></button>
+        <button type="button" data-action="collapse"><i class="fa-solid fa-chevron-up"></i></button>
+        <button type="button" data-action="playersView" class="rf-gm-only"><i class="fa-solid fa-eye"></i></button>
         <span class="rf-unlocked-only">
           <button type="button" data-action="smaller" data-tooltip="${esc(t("Bar.Smaller"))}"><i class="fa-solid fa-minus"></i></button>
           <span class="rf-scale-label"></span>
@@ -63,6 +65,10 @@ class PortraitBar {
         </span>
       </div>
       <div class="rf-cards"></div>
+      <button type="button" class="rf-collapsed-tab" data-action="collapse" data-tooltip="${esc(t("Bar.Expand"))}">
+        <i class="fa-solid fa-users-rectangle"></i><span>${esc(t("Bar.Collapsed"))}</span><i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <span class="rf-players-off-badge rf-gm-only"><i class="fa-solid fa-eye-slash"></i> ${esc(t("Bar.PlayersOffBadge"))}</span>
       <div class="rf-empty">${esc(t("Bar.Empty"))}</div>
       <div class="rf-grip" data-tooltip="${esc(t("Bar.Resize"))}"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
     `;
@@ -228,7 +234,13 @@ class PortraitBar {
     const hiddenByCombat = this.combatActive && getSetting("combatMode") === "hide";
     const locked = getSetting("locked");
     const compact = getSetting("compact");
-    this.el.classList.toggle("rf-hidden", getSetting("hidden") || hiddenByCombat);
+    // O mestre pode esconder a barra de todos os jogadores (ele continua vendo).
+    const hiddenForPlayers = getSetting("hiddenForPlayers");
+    const hiddenByGm = hiddenForPlayers && !game.user.isGM;
+    const collapsed = getSetting("collapsed");
+    this.el.classList.toggle("rf-hidden", getSetting("hidden") || hiddenByCombat || hiddenByGm);
+    this.el.classList.toggle("rf-players-off", hiddenForPlayers);
+    this.el.classList.toggle("rf-collapsed", collapsed);
     this.el.classList.toggle("rf-locked", locked);
     this.el.classList.toggle("rf-unlocked", !locked);
     this.el.classList.toggle("rf-compact", compact);
@@ -245,6 +257,13 @@ class PortraitBar {
     lockBtn.innerHTML = `<i class="fa-solid ${locked ? "fa-lock" : "fa-lock-open"}"></i>`;
     lockBtn.dataset.tooltip = locked ? t("Bar.Unlock") : t("Bar.Lock");
     lockBtn.classList.toggle("active", !locked);
+    const collapseBtn = this.el.querySelector('.rf-toolbar [data-action="collapse"]');
+    collapseBtn.innerHTML = `<i class="fa-solid ${collapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i>`;
+    collapseBtn.dataset.tooltip = collapsed ? t("Bar.Expand") : t("Bar.Collapse");
+    const eyeBtn = this.el.querySelector('[data-action="playersView"]');
+    eyeBtn.innerHTML = `<i class="fa-solid ${hiddenForPlayers ? "fa-eye-slash" : "fa-eye"}"></i>`;
+    eyeBtn.dataset.tooltip = hiddenForPlayers ? t("Bar.PlayersShow") : t("Bar.PlayersHide");
+    eyeBtn.classList.toggle("active", hiddenForPlayers);
     const compactBtn = this.el.querySelector('[data-action="compact"]');
     compactBtn.dataset.tooltip = compact ? t("Bar.CompactOff") : t("Bar.CompactOn");
     compactBtn.classList.toggle("active", compact);
@@ -362,6 +381,16 @@ class PortraitBar {
       case "reset":
         await this.resetPosition();
         break;
+      case "collapse":
+        await setSetting("collapsed", !getSetting("collapsed"));
+        break;
+      case "playersView": {
+        if (!game.user.isGM) return;
+        const off = !getSetting("hiddenForPlayers");
+        await setSetting("hiddenForPlayers", off);
+        ui.notifications.info(off ? t("Bar.PlayersHidden") : t("Bar.PlayersShown"));
+        break;
+      }
       case "hide":
         await this.toggleHidden(true);
         break;

@@ -355,6 +355,46 @@
 #rf-bar .rf-status.ok { background: #37c25a; box-shadow: 0 0 4px #37c25a; }
 #rf-bar.rf-is-gm .rf-status { display: inline-block; }
 
+/* ---- recolhida e escondida dos jogadores -------------------------------------- */
+
+#rf-bar .rf-collapsed-tab {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--rf-gold-dark);
+  border-radius: 6px;
+  background: rgba(20, 14, 8, 0.85);
+  color: var(--rf-text);
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+#rf-bar .rf-collapsed-tab:hover { border-color: var(--rf-gold); }
+#rf-bar.rf-collapsed .rf-cards,
+#rf-bar.rf-collapsed .rf-empty,
+#rf-bar.rf-collapsed .rf-grip { display: none !important; }
+#rf-bar.rf-collapsed .rf-collapsed-tab { display: inline-flex; }
+
+/* Aviso só para o mestre: os jogadores não estão vendo a barra. */
+#rf-bar .rf-players-off-badge {
+  display: none;
+  align-self: flex-start;
+  margin-top: 3px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(150, 40, 30, 0.9);
+  color: #fff;
+  font-size: 10px;
+  white-space: nowrap;
+}
+#rf-bar.rf-is-gm.rf-players-off .rf-players-off-badge { display: inline-block; }
+#rf-bar.rf-is-gm.rf-players-off .rf-cards { opacity: 0.55; }
+
 /* ---- destravada: mover e redimensionar ------------------------------------------ */
 
 #rf-bar.rf-unlocked {

@@ -16,7 +16,15 @@
       "CompactOn": "Modo compacto: só quem está falando",
       "ResetDone": "Barra de retratos de volta à posição padrão.",
       "HiddenHint": "Barra de retratos escondida. Para mostrar de novo: botão na barra de tokens, Alt+Shift+R ou Configurações.",
-      "DefaultSaved": "Posição e tamanho salvos como padrão para todos os jogadores que não ajustaram a barra."
+      "DefaultSaved": "Posição e tamanho salvos como padrão para todos os jogadores que não ajustaram a barra.",
+      "Collapse": "Recolher a barra",
+      "Expand": "Mostrar os retratos",
+      "Collapsed": "Retratos",
+      "PlayersHide": "Esconder a barra dos jogadores",
+      "PlayersShow": "Mostrar a barra para os jogadores",
+      "PlayersHidden": "Barra de retratos escondida para os jogadores.",
+      "PlayersShown": "Barra de retratos visível para os jogadores.",
+      "PlayersOffBadge": "oculta para os jogadores"
     },
     "Card": {
       "HP": "PV",

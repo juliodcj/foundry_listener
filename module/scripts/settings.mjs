@@ -118,6 +118,12 @@ export function registerSettings() {
     onChange: () => bar.updateCombat(),
   });
 
+  // Botão de olho do mestre: esconde a barra de todos os jogadores.
+  reg("hiddenForPlayers", {
+    scope: "world", config: false, type: Boolean, default: false,
+    onChange: apply,
+  });
+
   // Posição, escala e orientação que valem para quem nunca mexeu na barra.
   reg("defaultLayout", {
     scope: "world", config: false, type: Object, default: {},
@@ -145,6 +151,12 @@ export function registerSettings() {
     name: "RF.Settings.IdleOpacity.Name", hint: "RF.Settings.IdleOpacity.Hint",
     scope: "client", config: true, type: Number, default: 0.6,
     range: { min: 0.1, max: 1, step: 0.05 },
+    onChange: apply,
+  });
+
+  // Barra recolhida numa abinha (cada pessoa na própria tela).
+  reg("collapsed", {
+    scope: "client", config: false, type: Boolean, default: false,
     onChange: apply,
   });
 
