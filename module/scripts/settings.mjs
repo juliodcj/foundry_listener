@@ -72,6 +72,12 @@ export function registerSettings() {
     onChange: apply,
   });
 
+  reg("fadeSilent", {
+    name: "RF.Settings.FadeSilent.Name", hint: "RF.Settings.FadeSilent.Hint",
+    scope: "world", config: true, type: Boolean, default: true,
+    onChange: apply,
+  });
+
   reg("singleArtAnimation", {
     name: "RF.Settings.SingleArt.Name", hint: "RF.Settings.SingleArt.Hint",
     scope: "world", config: true, type: String, default: "pulse",

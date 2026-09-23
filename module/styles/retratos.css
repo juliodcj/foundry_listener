@@ -243,15 +243,20 @@
   border-radius: 0;
   margin-bottom: -2px;
 }
-/* A arte pode passar da largura do card (e invadir um pouco o vizinho),
-   como no overlay de referência; artes altas continuam limitadas pela altura. */
+/* A arte cabe dentro da placa, com a placa sobrando um pouco de cada lado. */
 #rf-bar.rf-style-cutout .rf-img {
-  left: -22%;
-  width: 144%;
+  left: 7%;
+  width: 86%;
   object-fit: contain;
   object-position: 50% 100%;
 }
-#rf-bar.rf-style-cutout .rf-card.rf-speaking { z-index: 1; }
+
+/* Quem não está falando fica esmaecido (opção "Esmaecer quem não fala"). */
+#rf-bar .rf-portrait { transition: opacity 200ms ease, filter 200ms ease; }
+#rf-bar.rf-fade-silent .rf-card:not(.rf-speaking) .rf-portrait {
+  opacity: 0.45;
+  filter: saturate(0.6) brightness(0.85);
+}
 #rf-bar.rf-style-cutout .rf-portrait::after { display: none; }
 #rf-bar.rf-style-cutout .rf-plate { border-radius: 4px; }
 /* A sombra segue o contorno da arte (canal alfa do PNG). */

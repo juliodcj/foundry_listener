@@ -116,6 +116,10 @@
         "Hint": "Recorte: a arte (PNG sem fundo) fica em pé sobre a placa, sem moldura, como em overlay de stream. Moldura: a arte fica dentro de um quadro.",
         "Cutout": "Recorte (PNG sem fundo)",
         "Frame": "Moldura"
+      },
+      "FadeSilent": {
+        "Name": "Esmaecer quem não fala",
+        "Hint": "A arte de quem não está falando fica mais apagada; ao falar, volta ao normal. A placa com nome e PV não muda."
       }
     },
     "Mapping": {

@@ -116,6 +116,10 @@
         "Hint": "Cutout: the art (transparent PNG) stands on the plate with no frame, stream-overlay style. Frame: the art sits inside a box.",
         "Cutout": "Cutout (transparent PNG)",
         "Frame": "Frame"
+      },
+      "FadeSilent": {
+        "Name": "Fade who isn't speaking",
+        "Hint": "The art of anyone not speaking is dimmed and returns to normal while they speak. The name/HP plate is unchanged."
       }
     },
     "Mapping": {
