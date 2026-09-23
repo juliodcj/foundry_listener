@@ -50,7 +50,7 @@
       "Mapping": {
         "Name": "Players, Discord and art",
         "Label": "Configure",
-        "Hint": "Links each user to a Discord ID and a character, and picks the mouth closed/open art."
+        "Hint": "Links each user to a Discord ID and a character, and picks art 1 and 2."
       },
       "WsPort": {
         "Name": "Bot port",
@@ -74,8 +74,8 @@
         "Hint": "HP, level, class and hero points on the cards."
       },
       "FlipMs": {
-        "Name": "Mouth speed (ms)",
-        "Hint": "Interval between mouth closed and open while speaking."
+        "Name": "Art swap speed (ms)",
+        "Hint": "Interval between art 1 and art 2 while speaking."
       },
       "ReleaseMs": {
         "Name": "Delay after speaking (ms)",
@@ -99,6 +99,17 @@
       "IdleOpacity": {
         "Name": "Opacity when nobody speaks",
         "Hint": "Bar transparency while nobody is speaking."
+      },
+      "SingleArt": {
+        "Name": "Single-art animation",
+        "Hint": "For characters with a single (static) art: what to do while they speak. The glow in the player's color is always shown.",
+        "Pulse": "Grow and shrink",
+        "Bounce": "Bounce",
+        "None": "Glow only"
+      },
+      "HeroIcon": {
+        "Name": "Hero point icon",
+        "Hint": "Image used instead of circles. Empty = circles. Spent points are dimmed."
       }
     },
     "Mapping": {
@@ -109,7 +120,7 @@
       "NoChannel": "Bot connected but not in a voice channel. Join one (the bot follows) or use /entrar.",
       "BridgeOff": "The bot is not connected to this Foundry. Open Ouvidor (or iniciar.bat) on this machine.",
       "Players": "Players",
-      "PlayersHint": "Call members without an ID here are ignored. Without a chosen actor, the user's character is used.",
+      "PlayersHint": "Call members without an ID here are ignored. Without a chosen actor, the user's character is used. With two arts, the portrait alternates between art 1 and art 2 while speaking; with one, it uses the animation chosen in the settings.",
       "Online": "in Foundry now",
       "DiscordId": "Discord ID",
       "DiscordIdPlaceholder": "e.g. 123456789012345678",
@@ -117,9 +128,9 @@
       "Actor": "Character",
       "UserCharacter": "User's character",
       "NoCharacter": "No character assigned",
-      "Closed": "Art: mouth closed",
-      "Open": "Art: mouth open",
-      "DetectHint": "Look for -closed/-open art next to the character art",
+      "Closed": "Art 1",
+      "Open": "Art 2 (optional)",
+      "DetectHint": "Look for -closed/-open art (art 1/art 2) next to the character art",
       "DetectAll": "Look for everyone's art",
       "DetectAllDone": "Art found for {count} character(s). Check and save.",
       "NoActor": "Pick a character first.",

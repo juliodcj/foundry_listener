@@ -146,9 +146,12 @@ class PortraitBar {
         <div class="rf-hp-fill" style="width:${s.hp.pct}%"></div>
         <span>${esc(t("Card.HP"))}: ${s.hp.value}/${s.hp.max}${s.hp.temp ? ` <em>+${s.hp.temp}</em>` : ""}</span>
       </div>` : "";
+    const heroIcon = getSetting("heroIcon");
     const hero = s.hero ? `
       <div class="rf-hero" data-tooltip="${esc(t("Card.HeroPoints"))}: ${s.hero.value}/${s.hero.max}">
-        ${s.hero.pips.map(on => `<i class="${on ? "on" : ""}"></i>`).join("")}
+        ${s.hero.pips.map(on => heroIcon
+          ? `<img class="${on ? "on" : ""}" src="${esc(heroIcon)}" alt="" draggable="false">`
+          : `<i class="${on ? "on" : ""}"></i>`).join("")}
       </div>` : "";
     const sub = [
       s.level !== undefined ? `${t("Card.Level")} ${s.level}` : "",
@@ -162,7 +165,7 @@ class PortraitBar {
       </div>
       <div class="rf-plate">
         <span class="rf-name">${esc(card.name)}</span>
-        <span class="rf-player">@${esc(card.player)}</span>
+        <span class="rf-player">${esc(card.player)}</span>
         ${hp || hero ? `<div class="rf-stats-row">${hp}${hero}</div>` : ""}
         ${sub ? `<div class="rf-sub">${esc(sub)}</div>` : ""}
       </div>
@@ -227,6 +230,8 @@ class PortraitBar {
     this.el.classList.toggle("rf-locked", locked);
     this.el.classList.toggle("rf-unlocked", !locked);
     this.el.classList.toggle("rf-compact", compact);
+    const single = getSetting("singleArtAnimation");
+    for (const mode of ["pulse", "bounce", "none"]) this.el.classList.toggle(`rf-single-${mode}`, single === mode);
     this.el.style.setProperty("--rf-idle-opacity", clamp(Number(getSetting("idleOpacity")), 0, 1));
 
     const lockBtn = this.el.querySelector('[data-action="lock"]');

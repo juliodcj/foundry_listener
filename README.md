@@ -2,7 +2,8 @@
 
 Uma barra com os retratos dos personagens dentro do Foundry, no estilo dos
 overlays de stream. Quando alguém fala no canal de voz do Discord, o retrato
-dessa pessoa se anima (boca abrindo e fechando, ou quicando), e todos os
+dessa pessoa se anima (alternando entre duas artes, ou aumentando e diminuindo
+de tamanho), e todos os
 jogadores veem isso no próprio Foundry.
 
 São três peças:
@@ -131,8 +132,10 @@ Ative o módulo **Retratos Falantes** no mundo (Manage Modules).
 - Para cada jogador:
   - **ID do Discord** (clique no botão de lista para escolher entre quem está na call);
   - **Personagem** (vazio = o personagem atribuído ao usuário no Foundry);
-  - **Arte: boca fechada** e **Arte: boca aberta**. Sem arte, usa o retrato
-    do ator. Com uma arte só, o retrato quica enquanto a pessoa fala.
+  - **Arte 1** e **Arte 2 (opcional)**. Com as duas, o retrato alterna entre
+    elas enquanto a pessoa fala (ex.: boca fechada e boca aberta). Com uma arte
+    só (estática), o retrato aumenta e diminui de tamanho (ou quica, ou só
+    brilha: veja *Animação com uma arte só*). Sem arte, usa o retrato do ator.
   - O botão de varinha procura artes com sufixo ao lado da arte do ator ou do
     token: `ezren.webp` → `ezren-closed.webp` e `ezren-open.webp` (qualquer
     extensão). **Procurar artes de todos** faz isso para todo mundo.
@@ -149,8 +152,10 @@ Quem está na call sem ID configurado é ignorado.
 | Porta do bot | mundo | Porta do WebSocket do bot (igual à do Ouvidor). |
 | Card do mestre | mundo | Mostrar o card do mestre só quando fala, sempre ou nunca. |
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
-| Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (PF2e). |
-| Velocidade da boca | mundo | Intervalo entre boca fechada e aberta (padrão 150 ms). |
+| Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
+| Velocidade da troca de arte | mundo | Intervalo entre a arte 1 e a arte 2 (padrão 150 ms). |
+| Animação com uma arte só | mundo | Aumentar e diminuir (padrão), quicar, ou só o brilho. |
+| Ícone dos pontos de heroísmo | mundo | Imagem no lugar dos círculos; pontos gastos ficam apagados. |
 | Espera ao parar de falar | mundo | Atraso antes de voltar ao normal, para não piscar entre palavras (padrão 300 ms). |
 | Durante o combate | mundo | Nada, pausar a animação ou esconder a barra. |
 | Esconder a barra | cliente | Cada pessoa esconde na própria tela. |
@@ -219,7 +224,7 @@ alguns segundos. Jogadores que recarregam a página recebem o estado atual.
 - **A barra sumiu**: botão da barra de tokens, Alt+Shift+R ou Resetar.
 
 Observação: o Discord só informa "começou/parou de falar", sem áudio. Por
-isso a boca alterna fechada/aberta num ritmo fixo; sincronia labial por fonema
+isso as artes alternam num ritmo fixo; sincronia labial por fonema
 não faz parte desta versão.
 
 ---

@@ -62,6 +62,23 @@ export function registerSettings() {
     onChange: () => bar.restartFlip(),
   });
 
+  reg("singleArtAnimation", {
+    name: "RF.Settings.SingleArt.Name", hint: "RF.Settings.SingleArt.Hint",
+    scope: "world", config: true, type: String, default: "pulse",
+    choices: {
+      pulse: "RF.Settings.SingleArt.Pulse",
+      bounce: "RF.Settings.SingleArt.Bounce",
+      none: "RF.Settings.SingleArt.None",
+    },
+    onChange: apply,
+  });
+
+  reg("heroIcon", {
+    name: "RF.Settings.HeroIcon.Name", hint: "RF.Settings.HeroIcon.Hint",
+    scope: "world", config: true, type: String, default: "", filePicker: "image",
+    onChange: rebuild,
+  });
+
   reg("releaseMs", {
     name: "RF.Settings.ReleaseMs.Name", hint: "RF.Settings.ReleaseMs.Hint",
     scope: "world", config: true, type: Number, default: 300,

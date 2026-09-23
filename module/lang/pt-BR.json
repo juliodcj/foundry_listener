@@ -50,7 +50,7 @@
       "Mapping": {
         "Name": "Jogadores, Discord e artes",
         "Label": "Configurar",
-        "Hint": "Liga cada usuário ao ID do Discord e ao personagem, e escolhe as artes de boca fechada e aberta."
+        "Hint": "Liga cada usuário ao ID do Discord e ao personagem, e escolhe as artes 1 e 2."
       },
       "WsPort": {
         "Name": "Porta do bot",
@@ -74,8 +74,8 @@
         "Hint": "PV, nível, classe e pontos de heroísmo nos cards."
       },
       "FlipMs": {
-        "Name": "Velocidade da boca (ms)",
-        "Hint": "Intervalo entre boca fechada e aberta enquanto a pessoa fala."
+        "Name": "Velocidade da troca de arte (ms)",
+        "Hint": "Intervalo entre a arte 1 e a arte 2 enquanto a pessoa fala."
       },
       "ReleaseMs": {
         "Name": "Espera ao parar de falar (ms)",
@@ -99,6 +99,17 @@
       "IdleOpacity": {
         "Name": "Opacidade quando ninguém fala",
         "Hint": "Transparência da barra enquanto ninguém está falando."
+      },
+      "SingleArt": {
+        "Name": "Animação com uma arte só",
+        "Hint": "Para quem tem só uma arte (estática): o que fazer enquanto a pessoa fala. O brilho na cor do jogador aparece sempre.",
+        "Pulse": "Aumentar e diminuir",
+        "Bounce": "Quicar",
+        "None": "Só o brilho"
+      },
+      "HeroIcon": {
+        "Name": "Ícone dos pontos de heroísmo",
+        "Hint": "Imagem usada no lugar dos círculos. Vazio = círculos. Pontos gastos aparecem apagados."
       }
     },
     "Mapping": {
@@ -109,7 +120,7 @@
       "NoChannel": "Bot conectado, mas fora de canal de voz. Entre num canal (o bot vai junto) ou use /entrar.",
       "BridgeOff": "O bot não está conectado a este Foundry. Abra o Ouvidor (ou iniciar.bat) nesta máquina.",
       "Players": "Jogadores",
-      "PlayersHint": "Participantes da call sem ID aqui são ignorados. Sem ator escolhido, vale o personagem do usuário.",
+      "PlayersHint": "Participantes da call sem ID aqui são ignorados. Sem ator escolhido, vale o personagem do usuário. Com duas artes, o retrato alterna entre a arte 1 e a arte 2 enquanto a pessoa fala; com uma só, usa a animação escolhida nas configurações.",
       "Online": "no Foundry agora",
       "DiscordId": "ID do Discord",
       "DiscordIdPlaceholder": "ex.: 123456789012345678",
@@ -117,9 +128,9 @@
       "Actor": "Personagem",
       "UserCharacter": "Personagem do usuário",
       "NoCharacter": "Nenhum personagem atribuído",
-      "Closed": "Arte: boca fechada",
-      "Open": "Arte: boca aberta",
-      "DetectHint": "Procurar artes -closed/-open ao lado da arte do personagem",
+      "Closed": "Arte 1",
+      "Open": "Arte 2 (opcional)",
+      "DetectHint": "Procurar artes -closed/-open (arte 1/arte 2) ao lado da arte do personagem",
       "DetectAll": "Procurar artes de todos",
       "DetectAllDone": "Artes encontradas para {count} personagem(ns). Confira e salve.",
       "NoActor": "Escolha um personagem primeiro.",
