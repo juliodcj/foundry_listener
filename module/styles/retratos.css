@@ -243,10 +243,15 @@
   border-radius: 0;
   margin-bottom: -2px;
 }
+/* A arte pode passar da largura do card (e invadir um pouco o vizinho),
+   como no overlay de referência; artes altas continuam limitadas pela altura. */
 #rf-bar.rf-style-cutout .rf-img {
+  left: -22%;
+  width: 144%;
   object-fit: contain;
   object-position: 50% 100%;
 }
+#rf-bar.rf-style-cutout .rf-card.rf-speaking { z-index: 1; }
 #rf-bar.rf-style-cutout .rf-portrait::after { display: none; }
 #rf-bar.rf-style-cutout .rf-plate { border-radius: 4px; }
 /* A sombra segue o contorno da arte (canal alfa do PNG). */
