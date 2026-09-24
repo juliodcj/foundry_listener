@@ -154,6 +154,7 @@ Quem está na call sem ID configurado é ignorado.
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
 | Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. **Moldura com fundo**: igual, com um fundo opaco atrás da arte, para partes transparentes do personagem não se misturarem com o cenário. |
+| Zoom da arte na moldura | mundo | Nos estilos com moldura: 1 = arte inteira dentro do quadro (mesma altura do recorte); mais que isso aproxima, mirando perto do rosto. |
 | Tamanho da placa | mundo | Aumenta ou diminui a placa (nome, PV, nível) sem mexer na arte. O + e − da barra aumentam tudo junto. |
 | Tamanho do personagem | mundo | Aumenta ou diminui a arte do personagem sem mexer na placa. |
 | Virar para quem fala | mundo | Desligado por padrão. Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só na barra horizontal). O mestre fica de fora: não vira e não conta como parte da conversa. Diga para que lado as artes olham: se olham para a direita, vira o card mais à direita; se para a esquerda, o mais à esquerda. Só conta quem falou pelo menos meio segundo, e cada card fica pelo menos 1,5 s virado antes de mudar de novo. |
@@ -166,10 +167,10 @@ Quem está na call sem ID configurado é ignorado.
 | Tolerância para começar a falar | mundo | O retrato só anima se o som durar pelo menos esse tempo (padrão 0 = desligado). Aumente (200 a 400 ms) se cliques, teclado ou barulhos do microfone animam o retrato. Para barulho contínuo, ajuste a Sensibilidade de entrada no Discord. |
 | Espera ao parar de falar | mundo | Atraso antes de voltar ao normal, para não piscar entre palavras (padrão 300 ms). |
 | Durante o combate | mundo | Nada, pausar a animação ou esconder a barra. |
-| Esconder a barra | cliente | Cada pessoa esconde na própria tela. |
-| Modo compacto | cliente | Placa só com nome, jogador e pontos de heroísmo; cards colados, com cantos retos. |
-| Só quem está falando aparece | cliente | Esconde os cards de quem não está falando. |
-| Apagar a barra inteira quando ninguém fala | cliente | Opacidade da barra toda em repouso (volta ao normal com o mouse em cima). Padrão 1 = desligado. |
+| Esconder a barra (mestre) | cliente | Só na tela do mestre. Jogadores recolhem em vez de esconder. |
+| Modo compacto | mundo | Placa só com nome, jogador e pontos de heroísmo; cards colados, com cantos retos. |
+| Só quem está falando aparece | mundo | Esconde os cards de quem não está falando. |
+| Apagar a barra inteira quando ninguém fala | mundo | Opacidade da barra toda em repouso (volta ao normal com o mouse em cima). Padrão 1 = desligado. |
 
 ---
 
@@ -203,14 +204,15 @@ para ver os botões:
   esquerda), **Alt+Shift+R**, ou nas Configurações. O mestre ganha um ícone
   redondo de retratos no lugar onde a barra estava: um clique e ela volta.
 - Duplo clique num card abre a ficha (se você tiver permissão).
-- **Pontos de heroísmo**: clique dá um ponto, botão direito tira um (o mestre e
-  o dono do personagem).
+- **Pontos de heroísmo** (só o mestre): clique dá um ponto, botão direito tira um.
 
-**Posição de cada um, padrão do mestre.** Cada jogador pode mover e
-redimensionar a barra na própria tela, e isso fica salvo só para ele. Quem
-nunca mexeu usa a posição que o mestre definiu: o mestre ajusta a barra dele e
-clica em **Usar esta posição e tamanho como padrão para todos** (botão que só o
-mestre vê). Quem mexeu e quer voltar ao padrão clica em **Resetar**.
+**O que é de cada jogador, o que é do mestre.** Jogadores só **recolhem**,
+**travam/destravam** e **movem** a barra (e **Resetar** volta para a posição
+padrão); a posição fica salva só para eles. Todo o resto segue o mestre:
+tamanho, horizontal/vertical, modo compacto, só quem fala, transparência e
+esconder. Quando o mestre muda o tamanho ou a orientação, muda para todos. A
+posição de quem nunca mexeu é a que o mestre definiu em **Usar esta posição e
+tamanho como padrão para todos** (botão que só o mestre vê).
 
 Só o mestre vê a bolinha de status na barra: **verde** = conectado ao bot,
 **vermelha** = sem bot (a barra continua aparecendo, só não anima).

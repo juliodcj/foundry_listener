@@ -118,8 +118,8 @@
         "Hide": "Esconder a barra"
       },
       "Hidden": {
-        "Name": "Esconder a barra de retratos",
-        "Hint": "Só nesta tela. Também dá para usar o botão na barra de tokens ou Alt+Shift+R."
+        "Name": "Esconder a barra de retratos (mestre)",
+        "Hint": "Só na tela do mestre. Jogadores não escondem a barra: eles recolhem, e quem esconde dos jogadores é o olho do mestre."
       },
       "HiddenForPlayers": {
         "Name": "Esconder a barra dos jogadores",
@@ -127,15 +127,15 @@
       },
       "Slim": {
         "Name": "Modo compacto",
-        "Hint": "Placa só com o nome do personagem, do jogador e os pontos de heroísmo; os cards ficam colados, com cantos retos."
+        "Hint": "Placa só com o nome do personagem, do jogador e os pontos de heroísmo; os cards ficam colados, com cantos retos. Só o mestre muda; vale para todos."
       },
       "Compact": {
         "Name": "Só quem está falando aparece",
-        "Hint": "Esconde os cards de quem não está falando."
+        "Hint": "Esconde os cards de quem não está falando. Só o mestre muda; vale para todos."
       },
       "IdleOpacity": {
         "Name": "Apagar a barra inteira quando ninguém fala",
-        "Hint": "Só nesta tela. Opacidade da barra toda enquanto ninguém fala; ela volta ao normal com o mouse em cima. 1 = desligado."
+        "Hint": "Opacidade da barra toda enquanto ninguém fala; ela volta ao normal com o mouse em cima. 1 = desligado. Só o mestre muda; vale para todos."
       },
       "SingleArt": {
         "Name": "Animação com uma arte só",
@@ -165,6 +165,10 @@
         "Cutout": "Recorte (PNG sem fundo)",
         "Frame": "Moldura",
         "FrameBg": "Moldura com fundo"
+      },
+      "FrameZoom": {
+        "Name": "Zoom da arte na moldura",
+        "Hint": "Nos estilos com moldura. 1 = a arte inteira dentro do quadro; valores maiores aproximam, mirando perto do rosto."
       },
       "PlateScale": {
         "Name": "Tamanho da placa",

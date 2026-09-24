@@ -91,6 +91,14 @@ export function registerSettings() {
   });
 
   // Proporção entre a placa (nome, PV) e a arte do personagem, para todos.
+  // Estilos com moldura: 1 = arte inteira; mais que isso aproxima (perto do rosto).
+  reg("frameZoom", {
+    name: "RF.Settings.FrameZoom.Name", hint: "RF.Settings.FrameZoom.Hint",
+    scope: "world", config: true, type: Number, default: 1,
+    range: { min: 1, max: 3, step: 0.05 },
+    onChange: apply,
+  });
+
   reg("plateScale", {
     name: "RF.Settings.PlateScale.Name", hint: "RF.Settings.PlateScale.Hint",
     scope: "world", config: true, type: Number, default: 1,
@@ -203,20 +211,20 @@ export function registerSettings() {
   // Modo compacto: placa só com nome, jogador e heroísmo, cards colados.
   reg("slim", {
     name: "RF.Settings.Slim.Name", hint: "RF.Settings.Slim.Hint",
-    scope: "client", config: true, type: Boolean, default: false,
+    scope: "world", config: true, type: Boolean, default: false,
     onChange: apply,
   });
 
   // Chave antiga do "modo compacto"; hoje é "só quem está falando aparece".
   reg("compact", {
     name: "RF.Settings.Compact.Name", hint: "RF.Settings.Compact.Hint",
-    scope: "client", config: true, type: Boolean, default: false,
+    scope: "world", config: true, type: Boolean, default: false,
     onChange: apply,
   });
 
   reg("idleOpacity", {
     name: "RF.Settings.IdleOpacity.Name", hint: "RF.Settings.IdleOpacity.Hint",
-    scope: "client", config: true, type: Number, default: 1,
+    scope: "world", config: true, type: Number, default: 1,
     range: { min: 0.1, max: 1, step: 0.05 },
     onChange: apply,
   });
@@ -224,7 +232,10 @@ export function registerSettings() {
   // Barra recolhida numa abinha (cada pessoa na própria tela).
   reg("collapsed", {
     scope: "client", config: false, type: Boolean, default: false,
-    onChange: apply,
+    onChange: () => {
+      apply();
+      ui.controls?.render();
+    },
   });
 
   reg("locked", {

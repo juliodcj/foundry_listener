@@ -62,15 +62,17 @@ class PortraitBar {
         <button type="button" data-action="collapse"><i class="fa-solid fa-chevron-up"></i></button>
         <button type="button" data-action="playersView" class="rf-gm-only"><i class="fa-solid fa-eye"></i></button>
         <span class="rf-unlocked-only">
+          <span class="rf-gm-only rf-gm-tools">
           <button type="button" data-action="smaller" data-tooltip="${esc(t("Bar.Smaller"))}"><i class="fa-solid fa-minus"></i></button>
           <span class="rf-scale-label"></span>
           <button type="button" data-action="bigger" data-tooltip="${esc(t("Bar.Bigger"))}"><i class="fa-solid fa-plus"></i></button>
           <button type="button" data-action="orientation" data-tooltip="${esc(t("Bar.Orientation"))}"><i class="fa-solid fa-arrows-left-right"></i></button>
           <button type="button" data-action="compact"><i class="fa-solid fa-compress"></i></button>
           <button type="button" data-action="speakersOnly"><i class="fa-solid fa-microphone-lines"></i></button>
+          </span>
           <button type="button" data-action="reset" data-tooltip="${esc(t("Bar.Reset"))}"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" data-action="setDefault" class="rf-gm-only" data-tooltip="${esc(t("Bar.SetDefault"))}"><i class="fa-solid fa-users-viewfinder"></i></button>
-          <button type="button" data-action="hide" data-tooltip="${esc(t("Bar.Hide"))}"><i class="fa-solid fa-rectangle-xmark"></i></button>
+          <button type="button" data-action="hide" class="rf-gm-only" data-tooltip="${esc(t("Bar.Hide"))}"><i class="fa-solid fa-rectangle-xmark"></i></button>
         </span>
       </div>
       <div class="rf-cards"></div>
@@ -183,7 +185,7 @@ class PortraitBar {
         <span>${esc(t("Card.HP"))}: ${s.hp.value}/${s.hp.max}${s.hp.temp ? ` <em>+${s.hp.temp}</em>` : ""}</span>
       </div>` : "";
     const heroIcon = getSetting("heroIcon");
-    const heroEdit = !!s.hero && !!game.actors.get(card.actorId)?.isOwner;
+    const heroEdit = !!s.hero && game.user.isGM;
     const heroTip = `${t("Card.HeroPoints")}: ${s.hero?.value}/${s.hero?.max}${heroEdit ? `<br>${t("Card.HeroEdit")}` : ""}`;
     const hero = s.hero ? `
       <div class="rf-hero${heroEdit ? " rf-hero-edit" : ""}" data-tooltip="${esc(heroTip)}">
@@ -341,7 +343,8 @@ class PortraitBar {
     const hiddenForPlayers = getSetting("hiddenForPlayers");
     const hiddenByGm = hiddenForPlayers && !game.user.isGM;
     const collapsed = getSetting("collapsed");
-    const hiddenHere = getSetting("hidden");
+    // Jogadores não escondem a própria barra (só recolhem): quem esconde é o mestre.
+    const hiddenHere = getSetting("hidden") && game.user.isGM;
     this.el.classList.toggle("rf-hidden", hiddenHere || hiddenByCombat || hiddenByGm);
     this.restoreEl.classList.toggle("rf-show", game.user.isGM && hiddenHere);
     this.el.classList.toggle("rf-players-off", hiddenForPlayers);
@@ -360,6 +363,7 @@ class PortraitBar {
     const single = getSetting("singleArtAnimation");
     for (const mode of ["pulse", "bounce", "none"]) this.el.classList.toggle(`rf-single-${mode}`, single === mode);
     this.el.style.setProperty("--rf-plate-scale", clamp(Number(getSetting("plateScale")) || 1, 0.6, 2));
+    this.el.style.setProperty("--rf-frame-zoom", clamp(Number(getSetting("frameZoom")) || 1, 1, 3));
     this.el.style.setProperty("--rf-art-scale", clamp(Number(getSetting("artScale")) || 1, 0.5, 2));
     this.el.style.setProperty("--rf-idle-opacity", clamp(Number(getSetting("idleOpacity")), 0, 1));
 
@@ -385,11 +389,13 @@ class PortraitBar {
 
   /** Layout em uso: padrão do GM, com o que este cliente mudou por cima. */
   layout() {
-    return {
-      ...DEFAULT_LAYOUT,
-      ...validLayout(getSetting("defaultLayout")),
-      ...validLayout(getSetting("layout")),
-    };
+    const base = { ...DEFAULT_LAYOUT, ...validLayout(getSetting("defaultLayout")) };
+    const own = validLayout(getSetting("layout"));
+    if (game.user.isGM) return { ...base, ...own };
+    // Jogadores: só a posição é deles; tamanho e orientação seguem o mestre.
+    if ("xFrac" in own) base.xFrac = own.xFrac;
+    if ("yFrac" in own) base.yFrac = own.yFrac;
+    return base;
   }
 
   applyLayout(layout = this.layout()) {
@@ -443,6 +449,12 @@ class PortraitBar {
   async saveOwnLayout(changes) {
     const own = { ...validLayout(getSetting("layout")), ...changes };
     await setSetting("layout", own);
+    // Tamanho e orientação do mestre valem para todos os jogadores.
+    if (!game.user.isGM) return;
+    const shared = validLayout({ scale: changes.scale, orientation: changes.orientation });
+    if (Object.keys(shared).length) {
+      await setSetting("defaultLayout", { ...validLayout(getSetting("defaultLayout")), ...shared });
+    }
   }
 
   async resetPosition() {
@@ -460,6 +472,13 @@ class PortraitBar {
   }
 
   async toggleHidden(force) {
+    // Jogadores não escondem a barra: o botão e o atalho recolhem.
+    if (!game.user.isGM) {
+      const collapsed = force ?? !getSetting("collapsed");
+      await setSetting("collapsed", collapsed);
+      if (!collapsed) this._explainStillHidden();
+      return;
+    }
     const hidden = force ?? !getSetting("hidden");
     await setSetting("hidden", hidden);
     if (hidden) ui.notifications.info(t(game.user.isGM ? "Bar.HiddenHintGm" : "Bar.HiddenHint"));
@@ -504,6 +523,8 @@ class PortraitBar {
     ev.preventDefault();
     btn.blur();
     const layout = this.layout();
+    // Jogadores só travam, recolhem e voltam à posição padrão; o resto é do mestre.
+    if (!game.user.isGM && !["lock", "collapse", "reset"].includes(btn.dataset.action)) return;
     switch (btn.dataset.action) {
       case "lock":
         await setSetting("locked", !getSetting("locked"));
@@ -543,7 +564,7 @@ class PortraitBar {
     }
   }
 
-  /** Clique no ponto de heroísmo: +1; botão direito: −1. Só quem pode editar o personagem. */
+  /** Clique no ponto de heroísmo: +1; botão direito: −1. Só o mestre. */
   async _onHeroClick(ev, delta) {
     const heroEl = ev.target.closest(".rf-hero.rf-hero-edit");
     if (!heroEl) return;
@@ -551,7 +572,7 @@ class PortraitBar {
     ev.stopPropagation();
     const actor = game.actors.get(heroEl.closest(".rf-card")?.dataset.actorId);
     const hero = actor?.system?.resources?.heroPoints;
-    if (!hero || !actor.isOwner) return;
+    if (!hero || !game.user.isGM) return;
     const max = Number(hero.max) || 3;
     const value = Math.min(max, Math.max(0, (Number(hero.value) || 0) + delta));
     if (value === hero.value) return;
@@ -569,7 +590,7 @@ class PortraitBar {
     if (ev.button !== 0) return;
     const grip = ev.target.closest(".rf-grip");
     const locked = getSetting("locked");
-    if (grip && !locked) return this._startResize(ev);
+    if (grip && !locked && game.user.isGM) return this._startResize(ev);
     if (ev.target.closest("button, .rf-hero-edit")) return;
     // Destravada: arrasta por qualquer parte. Travada: só com Alt.
     if (locked && !ev.altKey) return;

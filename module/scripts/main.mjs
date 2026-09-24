@@ -75,7 +75,8 @@ Hooks.on("getSceneControlButtons", controls => {
     icon: "fa-solid fa-users-rectangle",
     order: Object.keys(tokens.tools).length,
     toggle: true,
-    active: !getSetting("hidden"),
+    // Jogadores recolhem em vez de esconder.
+    active: game.user.isGM ? !getSetting("hidden") : !getSetting("collapsed"),
     onChange: (_event, active) => bar.toggleHidden(!active),
   };
 });

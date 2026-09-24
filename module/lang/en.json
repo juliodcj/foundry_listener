@@ -118,8 +118,8 @@
         "Hide": "Hide the bar"
       },
       "Hidden": {
-        "Name": "Hide the portrait bar",
-        "Hint": "This screen only. You can also use the token controls button or Alt+Shift+R."
+        "Name": "Hide the portrait bar (GM)",
+        "Hint": "GM screen only. Players don't hide the bar: they collapse it, and hiding it from players is the GM's eye button."
       },
       "HiddenForPlayers": {
         "Name": "Hide the bar from players",
@@ -127,15 +127,15 @@
       },
       "Slim": {
         "Name": "Compact mode",
-        "Hint": "Plate with only the character name, player and hero points; cards sit side by side with square corners."
+        "Hint": "Plate with only the character name, player and hero points; cards sit side by side with square corners. GM only; applies to everyone."
       },
       "Compact": {
         "Name": "Only speakers appear",
-        "Hint": "Hides the cards of people who are not speaking."
+        "Hint": "Hides the cards of people who are not speaking. GM only; applies to everyone."
       },
       "IdleOpacity": {
         "Name": "Dim the whole bar when nobody speaks",
-        "Hint": "This screen only. Opacity of the whole bar while nobody speaks; it returns to normal on mouse hover. 1 = off."
+        "Hint": "Opacity of the whole bar while nobody speaks; it returns to normal on mouse hover. 1 = off. GM only; applies to everyone."
       },
       "SingleArt": {
         "Name": "Single-art animation",
@@ -165,6 +165,10 @@
         "Cutout": "Cutout (transparent PNG)",
         "Frame": "Frame",
         "FrameBg": "Frame with background"
+      },
+      "FrameZoom": {
+        "Name": "Art zoom in frame",
+        "Hint": "Framed styles only. 1 = the whole art inside the frame; higher values zoom in, aiming near the face."
       },
       "PlateScale": {
         "Name": "Plate size",
