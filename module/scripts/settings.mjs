@@ -91,7 +91,7 @@ export function registerSettings() {
   });
 
   // Proporção entre a placa (nome, PV) e a arte do personagem, para todos.
-  // Estilos com moldura: 1 = arte inteira; mais que isso aproxima (perto do rosto).
+  // Estilos com moldura: 1 = arte inteira; mais que isso aproxima (a partir do centro).
   reg("frameZoom", {
     name: "RF.Settings.FrameZoom.Name", hint: "RF.Settings.FrameZoom.Hint",
     scope: "world", config: true, type: Number, default: 1,

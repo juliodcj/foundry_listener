@@ -168,7 +168,7 @@
       },
       "FrameZoom": {
         "Name": "Art zoom in frame",
-        "Hint": "Framed styles only. 1 = the whole art inside the frame; higher values zoom in, aiming near the face."
+        "Hint": "Framed styles only. 1 = the whole art inside the frame; higher values zoom in from the center of the image."
       },
       "PlateScale": {
         "Name": "Plate size",

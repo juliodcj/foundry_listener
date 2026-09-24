@@ -240,12 +240,12 @@
 }
 
 /* Molduras: mesma altura do recorte, com a arte inteira dentro do quadro.
-   "Zoom da arte na moldura" aproxima a partir de um ponto perto do rosto. */
+   "Zoom da arte na moldura" aproxima a partir do centro da imagem. */
 #rf-bar.rf-style-frame .rf-portrait { height: calc(175px * var(--rf-art-scale)); }
 #rf-bar.rf-style-frame .rf-img {
   inset: auto;
   left: calc(50% - 50% * var(--rf-frame-zoom, 1));
-  top: calc(20% - 20% * var(--rf-frame-zoom, 1));
+  top: calc(50% - 50% * var(--rf-frame-zoom, 1));
   width: calc(100% * var(--rf-frame-zoom, 1));
   height: calc(100% * var(--rf-frame-zoom, 1));
   object-fit: contain;

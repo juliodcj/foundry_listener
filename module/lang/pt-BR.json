@@ -168,7 +168,7 @@
       },
       "FrameZoom": {
         "Name": "Zoom da arte na moldura",
-        "Hint": "Nos estilos com moldura. 1 = a arte inteira dentro do quadro; valores maiores aproximam, mirando perto do rosto."
+        "Hint": "Nos estilos com moldura. 1 = a arte inteira dentro do quadro; valores maiores aproximam a partir do centro da imagem."
       },
       "PlateScale": {
         "Name": "Tamanho da placa",

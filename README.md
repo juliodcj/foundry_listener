@@ -154,7 +154,7 @@ Quem está na call sem ID configurado é ignorado.
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
 | Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. **Moldura com fundo**: igual, com um fundo opaco atrás da arte, para partes transparentes do personagem não se misturarem com o cenário. |
-| Zoom da arte na moldura | mundo | Nos estilos com moldura: 1 = arte inteira dentro do quadro (mesma altura do recorte); mais que isso aproxima, mirando perto do rosto. |
+| Zoom da arte na moldura | mundo | Nos estilos com moldura: 1 = arte inteira dentro do quadro (mesma altura do recorte); mais que isso aproxima a partir do centro da imagem. |
 | Tamanho da placa | mundo | Aumenta ou diminui a placa (nome, PV, nível) sem mexer na arte. O + e − da barra aumentam tudo junto. |
 | Tamanho do personagem | mundo | Aumenta ou diminui a arte do personagem sem mexer na placa. |
 | Virar para quem fala | mundo | Desligado por padrão. Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só na barra horizontal). O mestre fica de fora: não vira e não conta como parte da conversa. Diga para que lado as artes olham: se olham para a direita, vira o card mais à direita; se para a esquerda, o mais à esquerda. Só conta quem falou pelo menos meio segundo, e cada card fica pelo menos 1,5 s virado antes de mudar de novo. |
