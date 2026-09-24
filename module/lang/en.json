@@ -99,6 +99,10 @@
         "Name": "Art swap speed (ms)",
         "Hint": "Interval between art 1 and art 2 while speaking."
       },
+      "StartMs": {
+        "Name": "Start tolerance (ms)",
+        "Hint": "The portrait only animates if the sound lasts at least this long. Raise it if clicks, typing or mic noises animate the portrait (try 200 to 400). 0 = off. For continuous noise (fan, background), adjust Input Sensitivity in Discord."
+      },
       "ReleaseMs": {
         "Name": "Delay after speaking (ms)",
         "Hint": "Time before the portrait returns to rest, so it doesn't blink between words."

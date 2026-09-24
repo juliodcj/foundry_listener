@@ -163,6 +163,7 @@ Quem está na call sem ID configurado é ignorado.
 | Esmaecer quem não fala | mundo | A arte de quem está calado fica mais apagada (ligado por padrão). |
 | Animação com uma arte só | mundo | Aumentar e diminuir (padrão), quicar, ou só o brilho. |
 | Ícone dos pontos de heroísmo | mundo | Imagem no lugar dos círculos; pontos gastos ficam apagados. |
+| Tolerância para começar a falar | mundo | O retrato só anima se o som durar pelo menos esse tempo (padrão 0 = desligado). Aumente (200 a 400 ms) se cliques, teclado ou barulhos do microfone animam o retrato. Para barulho contínuo, ajuste a Sensibilidade de entrada no Discord. |
 | Espera ao parar de falar | mundo | Atraso antes de voltar ao normal, para não piscar entre palavras (padrão 300 ms). |
 | Durante o combate | mundo | Nada, pausar a animação ou esconder a barra. |
 | Esconder a barra | cliente | Cada pessoa esconde na própria tela. |

@@ -5,7 +5,8 @@ import { getSetting } from "./const.mjs";
  * Nada aqui vai para o banco de dados: é só estado em memória.
  *
  * "Falando" tem um atraso na saída (releaseMs) para o retrato não piscar
- * entre uma palavra e outra.
+ * entre uma palavra e outra, e uma tolerância na entrada (startMs): som mais
+ * curto que isso (clique, teclado, tosse) é ignorado.
  */
 class SpeakingStore {
   constructor() {
@@ -14,6 +15,7 @@ class SpeakingStore {
     this.raw = new Set();       // falando agora, segundo o bot
     this.visible = new Set();   // falando para a barra (com atraso na saída)
     this.timers = new Map();    // discordId → timeout da saída
+    this.starts = new Map();    // discordId → timeout da entrada (tolerância a ruído)
     this.bridgeConnected = false;
     this.listeners = new Set();
   }
@@ -43,13 +45,25 @@ class SpeakingStore {
       clearTimeout(this.timers.get(id));
       this.timers.delete(id);
       this.raw.add(id);
-      if (!this.visible.has(id)) {
+      if (this.visible.has(id) || this.starts.has(id)) return;
+      const show = () => {
+        this.starts.delete(id);
+        if (!this.raw.has(id) || this.visible.has(id)) return;
         this.visible.add(id);
         this._emit("speaking");
-      }
+      };
+      const tolerance = Number(getSetting("startMs")) || 0;
+      if (tolerance <= 0) show();
+      else this.starts.set(id, setTimeout(show, tolerance));
       return;
     }
     this.raw.delete(id);
+    // Parou antes de passar da tolerância: era ruído, nem chega a aparecer.
+    if (this.starts.has(id)) {
+      clearTimeout(this.starts.get(id));
+      this.starts.delete(id);
+      return;
+    }
     if (!this.visible.has(id) || this.timers.has(id)) return;
     const delay = Number(getSetting("releaseMs")) || 0;
     const release = () => {
@@ -80,6 +94,8 @@ class SpeakingStore {
   clear() {
     for (const timer of this.timers.values()) clearTimeout(timer);
     this.timers.clear();
+    for (const timer of this.starts.values()) clearTimeout(timer);
+    this.starts.clear();
     this.raw.clear();
     this.visible.clear();
     this.members.clear();

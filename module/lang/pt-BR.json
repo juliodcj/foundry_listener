@@ -99,6 +99,10 @@
         "Name": "Velocidade da troca de arte (ms)",
         "Hint": "Intervalo entre a arte 1 e a arte 2 enquanto a pessoa fala."
       },
+      "StartMs": {
+        "Name": "Tolerância para começar a falar (ms)",
+        "Hint": "O retrato só anima se o som durar pelo menos esse tempo. Aumente se cliques, teclado ou barulhos do microfone estão animando o retrato (experimente 200 a 400). 0 = desligado. Para barulhos contínuos (ventilador, fundo), ajuste a Sensibilidade de entrada no Discord."
+      },
       "ReleaseMs": {
         "Name": "Espera ao parar de falar (ms)",
         "Hint": "Tempo antes de o retrato voltar ao normal, para não piscar entre palavras."

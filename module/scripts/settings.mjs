@@ -152,6 +152,12 @@ export function registerSettings() {
     onChange: rebuild,
   });
 
+  reg("startMs", {
+    name: "RF.Settings.StartMs.Name", hint: "RF.Settings.StartMs.Hint",
+    scope: "world", config: true, type: Number, default: 0,
+    range: { min: 0, max: 1000, step: 50 },
+  });
+
   reg("releaseMs", {
     name: "RF.Settings.ReleaseMs.Name", hint: "RF.Settings.ReleaseMs.Hint",
     scope: "world", config: true, type: Number, default: 300,
