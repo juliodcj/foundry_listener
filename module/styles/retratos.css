@@ -260,7 +260,9 @@
 }
 
 /* Quem não está falando fica esmaecido (opção "Esmaecer quem não fala"). */
-#rf-bar .rf-portrait { transition: opacity 200ms ease, filter 200ms ease; }
+#rf-bar .rf-portrait { transition: opacity 200ms ease, filter 200ms ease, transform 350ms ease; }
+/* "Virar para quem fala": a arte espelha para olhar para o outro card. */
+#rf-bar .rf-card.rf-facing .rf-portrait { transform: scaleX(-1); }
 #rf-bar.rf-fade-silent .rf-card:not(.rf-speaking) .rf-portrait {
   opacity: 0.45;
   filter: saturate(0.6) brightness(0.85);

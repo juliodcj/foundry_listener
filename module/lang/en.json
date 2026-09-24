@@ -133,6 +133,17 @@
         "Bounce": "Bounce",
         "None": "Glow only"
       },
+      "FaceSpeaker": {
+        "Name": "Turn toward the speaker",
+        "Hint": "When two people talk, one of them mirrors the art to face the other (horizontal bar only). Choose which way the art normally faces: if it faces right, the rightmost card turns; if left, the leftmost.",
+        "Off": "Off",
+        "Right": "On: art faces right",
+        "Left": "On: art faces left"
+      },
+      "FaceWindow": {
+        "Name": "Conversation window (seconds)",
+        "Hint": "Two people are talking to each other if both spoke within this time. After that, the art turns back. Larger values turn less often."
+      },
       "HeroIcon": {
         "Name": "Hero point icon",
         "Hint": "Image used instead of circles. Empty = circles. Spent points are dimmed."

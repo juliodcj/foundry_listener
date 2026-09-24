@@ -127,6 +127,25 @@ export function registerSettings() {
     onChange: apply,
   });
 
+  // Duas pessoas conversando: uma delas espelha a arte para olhar para a outra.
+  reg("faceSpeaker", {
+    name: "RF.Settings.FaceSpeaker.Name", hint: "RF.Settings.FaceSpeaker.Hint",
+    scope: "world", config: true, type: String, default: "off",
+    choices: {
+      off: "RF.Settings.FaceSpeaker.Off",
+      right: "RF.Settings.FaceSpeaker.Right",
+      left: "RF.Settings.FaceSpeaker.Left",
+    },
+    onChange: () => bar.updateFacing(),
+  });
+
+  reg("faceWindow", {
+    name: "RF.Settings.FaceWindow.Name", hint: "RF.Settings.FaceWindow.Hint",
+    scope: "world", config: true, type: Number, default: 6,
+    range: { min: 2, max: 20, step: 1 },
+    onChange: () => bar.updateFacing(),
+  });
+
   reg("heroIcon", {
     name: "RF.Settings.HeroIcon.Name", hint: "RF.Settings.HeroIcon.Hint",
     scope: "world", config: true, type: String, default: "", filePicker: "image",

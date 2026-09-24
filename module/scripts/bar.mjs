@@ -5,6 +5,11 @@ import { buildCards, trackedActorIds } from "./cards.mjs";
 const MIN_SCALE = 0.4;
 const MAX_SCALE = 2.5;
 const SCALE_STEP = 0.1;
+// Virar para quem fala: só conta quem falou pelo menos isso (ignora "hã" e ruído)…
+const FACE_MIN_TALK_MS = 500;
+// …e cada card fica pelo menos isso virado (ou desvirado) antes de mudar de novo.
+const FACE_HOLD_MS = 1500;
+const FACE_TICK_MS = 250;
 const DEFAULT_LAYOUT = { xFrac: 0.5, yFrac: 0, scale: 1, orientation: "horizontal" };
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({
@@ -38,6 +43,9 @@ class PortraitBar {
     this.drag = null;
     this.tracked = new Set();
     this.combatActive = false;
+    this.talk = new Map();   // key → { since, last }: quando começou a falar e quando falou por último
+    this.facing = new Map(); // key → { on, at }: virado ou não, e desde quando
+    this.faceTimer = null;
   }
 
   // ---- ciclo de vida -------------------------------------------------------
@@ -134,6 +142,8 @@ class PortraitBar {
       if (!keep.has(key)) {
         el.remove();
         this.cardEls.delete(key);
+        this.talk.delete(key);
+        this.facing.delete(key);
       }
     }
     this.el.classList.toggle("rf-no-cards", this.cards.length === 0);
@@ -160,6 +170,7 @@ class PortraitBar {
     el.classList.toggle("rf-gm-always", card.isGM && card.gmMode === "always");
     el.classList.toggle("rf-has-open", !!card.open);
     el.classList.toggle("rf-no-discord", !card.discordId);
+    el.classList.toggle("rf-facing", !!this.facing.get(card.key)?.on);
 
     const s = card.stats;
     const hp = s.hp ? `
@@ -202,11 +213,13 @@ class PortraitBar {
     const paused = this.combatActive && getSetting("combatMode") === "pause";
     let any = false;
     let anyFlip = false;
+    const now = Date.now();
     for (const card of this.cards) {
       const el = this.cardEls.get(card.key);
       if (!el) continue;
       const speaking = !paused && store.isSpeaking(card.discordId);
       el.classList.toggle("rf-speaking", speaking);
+      this._trackTalk(card.key, speaking, now);
       if (speaking) {
         any = true;
         if (card.open) anyFlip = true;
@@ -214,6 +227,72 @@ class PortraitBar {
     }
     this.el.classList.toggle("rf-idle", !any);
     this._setFlipping(anyFlip);
+    this.updateFacing();
+  }
+
+  // ---- virar para quem fala ------------------------------------------------------
+
+  _trackTalk(key, speaking, now) {
+    let talk = this.talk.get(key);
+    if (!talk) this.talk.set(key, talk = { since: null, last: 0 });
+    if (speaking) {
+      talk.since ??= now;
+    } else if (talk.since !== null) {
+      if (now - talk.since >= FACE_MIN_TALK_MS) talk.last = now;
+      talk.since = null;
+    }
+  }
+
+  /** Última vez que o card "falou de verdade" (agora, se ainda está falando há tempo suficiente). */
+  _talkedAt(key, now) {
+    const talk = this.talk.get(key);
+    if (!talk) return 0;
+    if (talk.since !== null && now - talk.since >= FACE_MIN_TALK_MS) return now;
+    return talk.last;
+  }
+
+  /**
+   * Regra: entre as duas pessoas que falaram por último dentro da janela de
+   * conversa, vira a que está olhando para o lado de fora. Com as artes
+   * olhando para a direita, o card mais à direita espelha e passa a olhar
+   * para a esquerda (para o outro); com as artes olhando para a esquerda, o
+   * card mais à esquerda. Só na barra horizontal.
+   */
+  updateFacing() {
+    if (!this.el) return;
+    const mode = getSetting("faceSpeaker");
+    const enabled = mode === "right" || mode === "left";
+    const now = Date.now();
+    const want = new Set();
+    if (enabled && this.layout().orientation !== "vertical") {
+      const windowMs = clamp(Number(getSetting("faceWindow")) || 6, 1, 30) * 1000;
+      const recent = this.cards
+        .map((card, i) => ({ key: card.key, i, at: this._talkedAt(card.key, now) }))
+        .filter(r => r.at && now - r.at <= windowMs && this.cardEls.get(r.key)?.getClientRects().length)
+        .sort((a, b) => b.at - a.at)
+        .slice(0, 2);
+      if (recent.length === 2) {
+        const [left, right] = recent.sort((a, b) => a.i - b.i);
+        want.add(mode === "right" ? right.key : left.key);
+      }
+    }
+    for (const card of this.cards) {
+      const el = this.cardEls.get(card.key);
+      if (!el) continue;
+      const state = this.facing.get(card.key) ?? { on: false, at: 0 };
+      const on = want.has(card.key);
+      if (on === state.on) continue;
+      // Desligado: desvira na hora. Ligado: espera o tempo mínimo para não ficar piscando.
+      if (enabled && now - state.at < FACE_HOLD_MS) continue;
+      this.facing.set(card.key, { on, at: now });
+      el.classList.toggle("rf-facing", on);
+    }
+    // A janela de conversa acaba sem nenhum evento de fala: confere de tempos em tempos.
+    if (enabled && !this.faceTimer) this.faceTimer = setInterval(() => this.updateFacing(), FACE_TICK_MS);
+    else if (!enabled && this.faceTimer) {
+      clearInterval(this.faceTimer);
+      this.faceTimer = null;
+    }
   }
 
   _setFlipping(on) {

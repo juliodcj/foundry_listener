@@ -133,6 +133,17 @@
         "Bounce": "Quicar",
         "None": "Só o brilho"
       },
+      "FaceSpeaker": {
+        "Name": "Virar para quem fala",
+        "Hint": "Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só com a barra na horizontal). Escolha para que lado as artes olham normalmente: se olham para a direita, vira o card mais à direita; se olham para a esquerda, vira o mais à esquerda.",
+        "Off": "Desligado",
+        "Right": "Ligado: as artes olham para a direita",
+        "Left": "Ligado: as artes olham para a esquerda"
+      },
+      "FaceWindow": {
+        "Name": "Tempo de conversa (segundos)",
+        "Hint": "Duas pessoas estão conversando se as duas falaram dentro desse tempo. Depois disso, a arte desvira. Valores maiores viram menos vezes."
+      },
       "HeroIcon": {
         "Name": "Ícone dos pontos de heroísmo",
         "Hint": "Imagem usada no lugar dos círculos. Vazio = círculos. Pontos gastos aparecem apagados."

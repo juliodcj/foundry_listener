@@ -156,6 +156,8 @@ Quem está na call sem ID configurado é ignorado.
 | Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. |
 | Tamanho da placa | mundo | Aumenta ou diminui a placa (nome, PV, nível) sem mexer na arte. O + e − da barra aumentam tudo junto. |
 | Tamanho do personagem | mundo | Aumenta ou diminui a arte do personagem sem mexer na placa. |
+| Virar para quem fala | mundo | Desligado por padrão. Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só na barra horizontal). Diga para que lado as artes olham: se olham para a direita, vira o card mais à direita; se para a esquerda, o mais à esquerda. Só conta quem falou pelo menos meio segundo, e cada card fica pelo menos 1,5 s virado antes de mudar de novo. |
+| Tempo de conversa | mundo | Duas pessoas estão conversando se as duas falaram dentro desse tempo (padrão 6 s). Depois disso a arte desvira. |
 | Velocidade da troca de arte | mundo | Intervalo entre a arte 1 e a arte 2 (padrão 150 ms). |
 | Brilho em quem fala | mundo | Contorno na cor do jogador em volta de quem está falando (ligado por padrão). |
 | Esmaecer quem não fala | mundo | A arte de quem está calado fica mais apagada (ligado por padrão). |
