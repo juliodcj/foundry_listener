@@ -117,8 +117,8 @@
         "Hint": "Mostra só quem está falando."
       },
       "IdleOpacity": {
-        "Name": "Opacidade quando ninguém fala",
-        "Hint": "Transparência da barra enquanto ninguém está falando."
+        "Name": "Apagar a barra inteira quando ninguém fala",
+        "Hint": "Só nesta tela. Opacidade da barra toda enquanto ninguém fala; ela volta ao normal com o mouse em cima. 1 = desligado."
       },
       "SingleArt": {
         "Name": "Animação com uma arte só",

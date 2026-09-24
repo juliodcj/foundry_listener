@@ -2,7 +2,7 @@
 
 #rf-bar {
   --rf-scale: 1;
-  --rf-idle-opacity: 0.6;
+  --rf-idle-opacity: 1;
   --rf-gold: #c9a14a;
   --rf-gold-dark: #6b4f1d;
   --rf-plate: #2a1d12;

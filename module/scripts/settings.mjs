@@ -150,7 +150,7 @@ export function registerSettings() {
 
   reg("idleOpacity", {
     name: "RF.Settings.IdleOpacity.Name", hint: "RF.Settings.IdleOpacity.Hint",
-    scope: "client", config: true, type: Number, default: 0.6,
+    scope: "client", config: true, type: Number, default: 1,
     range: { min: 0.1, max: 1, step: 0.05 },
     onChange: apply,
   });

@@ -163,7 +163,7 @@ Quem está na call sem ID configurado é ignorado.
 | Durante o combate | mundo | Nada, pausar a animação ou esconder a barra. |
 | Esconder a barra | cliente | Cada pessoa esconde na própria tela. |
 | Modo compacto | cliente | Mostra só quem está falando. |
-| Opacidade quando ninguém fala | cliente | Transparência da barra em repouso. |
+| Apagar a barra inteira quando ninguém fala | cliente | Opacidade da barra toda em repouso (volta ao normal com o mouse em cima). Padrão 1 = desligado. |
 
 ---
 

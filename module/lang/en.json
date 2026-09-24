@@ -117,8 +117,8 @@
         "Hint": "Shows only who is speaking."
       },
       "IdleOpacity": {
-        "Name": "Opacity when nobody speaks",
-        "Hint": "Bar transparency while nobody is speaking."
+        "Name": "Dim the whole bar when nobody speaks",
+        "Hint": "This screen only. Opacity of the whole bar while nobody speaks; it returns to normal on mouse hover. 1 = off."
       },
       "SingleArt": {
         "Name": "Single-art animation",
