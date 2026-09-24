@@ -139,7 +139,7 @@
       },
       "FaceSpeaker": {
         "Name": "Turn toward the speaker",
-        "Hint": "When two people talk, one of them mirrors the art to face the other (horizontal bar only). Choose which way the art normally faces: if it faces right, the rightmost card turns; if left, the leftmost.",
+        "Hint": "When two people talk, one of them mirrors the art to face the other (horizontal bar only; the GM is left out). Choose which way the art normally faces: if it faces right, the rightmost card turns; if left, the leftmost.",
         "Off": "Off",
         "Right": "On: art faces right",
         "Left": "On: art faces left"

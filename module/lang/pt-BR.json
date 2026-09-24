@@ -139,7 +139,7 @@
       },
       "FaceSpeaker": {
         "Name": "Virar para quem fala",
-        "Hint": "Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só com a barra na horizontal). Escolha para que lado as artes olham normalmente: se olham para a direita, vira o card mais à direita; se olham para a esquerda, vira o mais à esquerda.",
+        "Hint": "Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só com a barra na horizontal; o mestre fica de fora). Escolha para que lado as artes olham normalmente: se olham para a direita, vira o card mais à direita; se olham para a esquerda, vira o mais à esquerda.",
         "Off": "Desligado",
         "Right": "Ligado: as artes olham para a direita",
         "Left": "Ligado: as artes olham para a esquerda"

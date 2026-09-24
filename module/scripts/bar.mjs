@@ -256,7 +256,8 @@ class PortraitBar {
    * conversa, vira a que está olhando para o lado de fora. Com as artes
    * olhando para a direita, o card mais à direita espelha e passa a olhar
    * para a esquerda (para o outro); com as artes olhando para a esquerda, o
-   * card mais à esquerda. Só na barra horizontal.
+   * card mais à esquerda. Só na barra horizontal. O mestre fica de fora:
+   * não vira e não conta como alguém com quem se conversa.
    */
   updateFacing() {
     if (!this.el) return;
@@ -267,8 +268,8 @@ class PortraitBar {
     if (enabled && this.layout().orientation !== "vertical") {
       const windowMs = clamp(Number(getSetting("faceWindow")) || 6, 1, 30) * 1000;
       const recent = this.cards
-        .map((card, i) => ({ key: card.key, i, at: this._talkedAt(card.key, now) }))
-        .filter(r => r.at && now - r.at <= windowMs && this.cardEls.get(r.key)?.getClientRects().length)
+        .map((card, i) => ({ key: card.key, i, gm: card.isGM, at: this._talkedAt(card.key, now) }))
+        .filter(r => !r.gm && r.at && now - r.at <= windowMs && this.cardEls.get(r.key)?.getClientRects().length)
         .sort((a, b) => b.at - a.at)
         .slice(0, 2);
       if (recent.length === 2) {
