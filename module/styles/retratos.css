@@ -10,6 +10,8 @@
   --rf-text: #f6efe2;
   --rf-muted: #d7c7a8;
   --rf-card-w: 150px;
+  --rf-plate-scale: 1;
+  --rf-art-scale: 1;
 
   position: fixed;
   left: 0;
@@ -41,7 +43,8 @@
 #rf-bar .rf-card {
   --rf-color: var(--rf-gold);
   position: relative;
-  width: var(--rf-card-w);
+  /* A placa manda na largura do card; a arte tem o próprio tamanho. */
+  width: calc(var(--rf-card-w) * var(--rf-plate-scale));
   display: flex;
   flex-direction: column;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
@@ -53,7 +56,7 @@
 
 #rf-bar .rf-portrait {
   position: relative;
-  height: 130px;
+  height: calc(130px * var(--rf-art-scale));
   overflow: hidden;
   border-radius: 8px 8px 0 0;
   background: radial-gradient(ellipse at 50% 80%, rgba(255, 255, 255, 0.08), transparent 70%);
@@ -115,6 +118,8 @@
 
 #rf-bar .rf-plate {
   position: relative;
+  /* Tamanho da placa: texto, PV e bordas crescem juntos, ocupando a largura do card. */
+  zoom: var(--rf-plate-scale);
   padding: 4px 6px 5px;
   background: linear-gradient(180deg, var(--rf-plate-2), var(--rf-plate));
   border: 2px solid var(--rf-gold);
@@ -237,16 +242,19 @@
 /* ---- estilo "recorte": PNG sem fundo em pé sobre a placa ------------------- */
 
 #rf-bar.rf-style-cutout .rf-portrait {
-  height: 175px;
+  height: calc(175px * var(--rf-art-scale));
   overflow: visible;
   background: none;
   border-radius: 0;
   margin-bottom: -2px;
 }
-/* A arte cabe dentro da placa, com a placa sobrando um pouco de cada lado. */
+/* A arte cabe dentro da placa, com a placa sobrando um pouco de cada lado.
+   O tamanho do personagem não depende do tamanho da placa: fica centrado e,
+   se for maior que a placa, passa um pouco dos lados. */
 #rf-bar.rf-style-cutout .rf-img {
-  left: 7%;
-  width: 86%;
+  --rf-art-w: calc(var(--rf-card-w) * 0.86 * var(--rf-art-scale));
+  left: calc(50% - var(--rf-art-w) / 2);
+  width: var(--rf-art-w);
   object-fit: contain;
   object-position: 50% 100%;
 }

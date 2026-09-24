@@ -72,6 +72,21 @@ export function registerSettings() {
     onChange: apply,
   });
 
+  // Proporção entre a placa (nome, PV) e a arte do personagem, para todos.
+  reg("plateScale", {
+    name: "RF.Settings.PlateScale.Name", hint: "RF.Settings.PlateScale.Hint",
+    scope: "world", config: true, type: Number, default: 1,
+    range: { min: 0.6, max: 2, step: 0.05 },
+    onChange: apply,
+  });
+
+  reg("artScale", {
+    name: "RF.Settings.ArtScale.Name", hint: "RF.Settings.ArtScale.Hint",
+    scope: "world", config: true, type: Number, default: 1,
+    range: { min: 0.5, max: 2, step: 0.05 },
+    onChange: apply,
+  });
+
   reg("speakingGlow", {
     name: "RF.Settings.SpeakingGlow.Name", hint: "RF.Settings.SpeakingGlow.Hint",
     scope: "world", config: true, type: Boolean, default: true,

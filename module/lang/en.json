@@ -137,6 +137,14 @@
         "Cutout": "Cutout (transparent PNG)",
         "Frame": "Frame"
       },
+      "PlateScale": {
+        "Name": "Plate size",
+        "Hint": "Size of the plate with name, HP and level, without changing the character art. To grow everything together, use + and − on the unlocked bar."
+      },
+      "ArtScale": {
+        "Name": "Character size",
+        "Hint": "Size of the character art, without changing the plate."
+      },
       "FadeSilent": {
         "Name": "Fade who isn't speaking",
         "Hint": "The art of anyone not speaking is dimmed and returns to normal while they speak. The name/HP plate is unchanged."

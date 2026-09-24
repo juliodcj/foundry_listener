@@ -137,6 +137,14 @@
         "Cutout": "Recorte (PNG sem fundo)",
         "Frame": "Moldura"
       },
+      "PlateScale": {
+        "Name": "Tamanho da placa",
+        "Hint": "Tamanho da placa com nome, PV e nível, sem mudar a arte do personagem. Para aumentar tudo junto, use o + e − da barra destravada."
+      },
+      "ArtScale": {
+        "Name": "Tamanho do personagem",
+        "Hint": "Tamanho da arte do personagem, sem mudar a placa."
+      },
       "FadeSilent": {
         "Name": "Esmaecer quem não fala",
         "Hint": "A arte de quem não está falando fica mais apagada; ao falar, volta ao normal. A placa com nome e PV não muda."

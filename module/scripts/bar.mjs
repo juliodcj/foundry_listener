@@ -268,6 +268,8 @@ class PortraitBar {
     this.el.classList.toggle("rf-style-frame", style === "frame");
     const single = getSetting("singleArtAnimation");
     for (const mode of ["pulse", "bounce", "none"]) this.el.classList.toggle(`rf-single-${mode}`, single === mode);
+    this.el.style.setProperty("--rf-plate-scale", clamp(Number(getSetting("plateScale")) || 1, 0.6, 2));
+    this.el.style.setProperty("--rf-art-scale", clamp(Number(getSetting("artScale")) || 1, 0.5, 2));
     this.el.style.setProperty("--rf-idle-opacity", clamp(Number(getSetting("idleOpacity")), 0, 1));
 
     const lockBtn = this.el.querySelector('[data-action="lock"]');

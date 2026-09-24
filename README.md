@@ -154,6 +154,8 @@ Quem está na call sem ID configurado é ignorado.
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
 | Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. |
+| Tamanho da placa | mundo | Aumenta ou diminui a placa (nome, PV, nível) sem mexer na arte. O + e − da barra aumentam tudo junto. |
+| Tamanho do personagem | mundo | Aumenta ou diminui a arte do personagem sem mexer na placa. |
 | Velocidade da troca de arte | mundo | Intervalo entre a arte 1 e a arte 2 (padrão 150 ms). |
 | Brilho em quem fala | mundo | Contorno na cor do jogador em volta de quem está falando (ligado por padrão). |
 | Esmaecer quem não fala | mundo | A arte de quem está calado fica mais apagada (ligado por padrão). |
