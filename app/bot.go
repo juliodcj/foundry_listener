@@ -27,7 +27,7 @@ const (
 	PhaseError      Phase = "error"
 )
 
-const ipcPrefix = "@@OUVIDOR "
+const ipcPrefix = "@@FOUNDRY_LISTENER "
 
 // Minimum Node for @discordjs/voice.
 const minNodeMajor, minNodeMinor = 22, 12
@@ -254,7 +254,7 @@ func (m *Manager) run(gen int, cfg Config) {
 
 	dir, err := locateBot()
 	if err != nil {
-		m.fail(gen, "bot", "A pasta do bot não foi encontrada ao lado do Ouvidor.exe.")
+		m.fail(gen, "bot", "A pasta do bot não foi encontrada ao lado do FoundryListener.exe.")
 		return
 	}
 	m.mu.Lock()
@@ -277,7 +277,7 @@ func (m *Manager) run(gen int, cfg Config) {
 	cmd := exec.Command(node, "index.js")
 	cmd.Dir = dir
 	cmd.Env = append(os.Environ(),
-		"OUVIDOR_IPC=1",
+		"FOUNDRY_LISTENER_IPC=1",
 		"DISCORD_TOKEN="+cfg.Token,
 		"GUILD_ID="+cfg.GuildID,
 		"GM_DISCORD_ID="+cfg.GMID,

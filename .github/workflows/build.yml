@@ -51,21 +51,21 @@ jobs:
       - name: Vet (app)
         working-directory: app
         run: go vet ./...
-      - name: Build Ouvidor.exe
+      - name: Build FoundryListener.exe
         working-directory: app
-        run: go build -trimpath -ldflags "-H=windowsgui -s -w" -o ../dist/Ouvidor/Ouvidor.exe .
+        run: go build -trimpath -ldflags "-H=windowsgui -s -w" -o ../dist/FoundryListener/FoundryListener.exe .
 
       - name: Bot (dependências)
         working-directory: bot
         run: |
           npm ci --omit=dev --no-audit --no-fund
           npm run check
-      - name: Montar pasta do Ouvidor
+      - name: Montar pasta do Foundry Listener
         run: |
-          mkdir -p dist/Ouvidor/bot
-          cp -r bot/index.js bot/src bot/package.json bot/package-lock.json bot/.env.example bot/iniciar.bat bot/iniciar-tudo.bat bot/node_modules dist/Ouvidor/bot/
-          cp README.md dist/Ouvidor/LEIA-ME.md
-          (cd dist && 7z a -tzip Ouvidor.zip Ouvidor > /dev/null)
+          mkdir -p dist/FoundryListener/bot
+          cp -r bot/index.js bot/src bot/package.json bot/package-lock.json bot/.env.example bot/iniciar.bat bot/iniciar-tudo.bat bot/node_modules dist/FoundryListener/bot/
+          cp README.md dist/FoundryListener/LEIA-ME.md
+          (cd dist && 7z a -tzip FoundryListener.zip FoundryListener > /dev/null)
 
       - name: Módulo
         env:
@@ -88,8 +88,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Ouvidor
-          path: dist/Ouvidor/
+          name: FoundryListener
+          path: dist/FoundryListener/
       - uses: actions/upload-artifact@v4
         with:
           name: retratos-falantes-modulo
@@ -106,6 +106,6 @@ jobs:
           name: Retratos Falantes v${{ steps.ver.outputs.version }}
           make_latest: true
           files: |
-            dist/Ouvidor.zip
+            dist/FoundryListener.zip
             dist/retratos-falantes.zip
             dist/module.json

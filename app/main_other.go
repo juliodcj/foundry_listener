@@ -30,6 +30,9 @@ func copyToClipboard(text string) error { return errors.New("área de transferê
 
 func openURL(url string) error { return exec.Command("xdg-open", url).Start() }
 
+// isDocked is only true in the Windows build, inside the Foundry Dock.
+func isDocked() bool { return false }
+
 func main() {
 	addr := flag.String("addr", "127.0.0.1:8766", "endereço da interface de desenvolvimento")
 	flag.Parse()

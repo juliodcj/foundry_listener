@@ -1,4 +1,4 @@
-module ouvidor
+module foundrylistener
 
 go 1.26.0
 

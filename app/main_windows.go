@@ -40,7 +40,7 @@ var (
 
 func messageBox(text string) {
 	t, _ := windows.UTF16PtrFromString(text)
-	c, _ := windows.UTF16PtrFromString("Ouvidor")
+	c, _ := windows.UTF16PtrFromString("Foundry Listener")
 	windows.MessageBox(0, t, c, windows.MB_ICONINFORMATION)
 }
 
@@ -143,35 +143,46 @@ func windowSize(w, h int) (int, int) {
 }
 
 func main() {
-	name, _ := windows.UTF16PtrFromString("Local\\OuvidorSingleInstance")
+	name, _ := windows.UTF16PtrFromString("Local\\FoundryListenerSingleInstance")
 	if _, err := windows.CreateMutex(nil, false, name); err == windows.ERROR_ALREADY_EXISTS {
-		messageBox("O Ouvidor já está aberto.")
+		messageBox("O Foundry Listener já está aberto.")
 		return
 	}
 
 	initJob()
 	app := NewApp()
-	width, height := windowSize(480, 860)
+	width, height := windowSize(470, 860)
 	minW, minH := windowSize(420, 600)
 
+	// Opened by the Foundry Dock: start off screen, then move inside it.
+	dockParent := dockParentArg()
+	unhook := func() {}
+	if dockParent != 0 {
+		unhook = hookOffscreen()
+	}
 	w := webview2.NewWithOptions(webview2.WebViewOptions{
 		DataPath:  filepath.Join(dataDir(), "webview"),
 		AutoFocus: true,
 		WindowOptions: webview2.WindowOptions{
-			Title:  "Ouvidor · Retratos Falantes",
+			Title:  "Foundry Listener · Retratos Falantes",
 			Width:  uint(width),
 			Height: uint(height),
 			IconId: 1,
 			Center: true,
 		},
 	})
+	unhook()
 	if w == nil {
 		messageBox("Não foi possível abrir a janela: o Microsoft Edge WebView2 Runtime não foi encontrado.\n\n" +
-			"Instale-o em https://developer.microsoft.com/microsoft-edge/webview2/ e abra o Ouvidor de novo.")
+			"Instale-o em https://developer.microsoft.com/microsoft-edge/webview2/ e abra o Foundry Listener de novo.")
 		os.Exit(1)
 	}
 	defer w.Destroy()
+	mainHwnd = uintptr(w.Window())
 	w.SetSize(minW, minH, webview2.HintMin)
+	if dockParent != 0 {
+		enterDock(mainHwnd, dockParent)
+	}
 	_ = w.Bind("appCall", func(name, arg string) (any, error) {
 		return app.Call(name, arg)
 	})

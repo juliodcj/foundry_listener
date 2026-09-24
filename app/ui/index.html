@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ouvidor</title>
+<title>Foundry Listener</title>
 <style>
 :root{
   --bg:#f6f5f2; --card:#ffffff; --line:#e4e1db; --line-soft:#efece6; --field:#f6f5f2;
@@ -63,7 +63,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .svc-body .small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .svc-val{font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
 
-.call{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.call{padding:14px;display:flex;flex-direction:column;gap:10px}
 .call-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .members{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .members li{display:flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:16px;background:var(--grey-tint);font-size:13px;transition:background .12s,box-shadow .12s}
@@ -116,37 +116,14 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </section>
 
   <section class="stats">
-    <div class="card stat" title="Latência do bot até o Discord">
-      <span>Ping Discord</span><strong id="statPing">—</strong>
-    </div>
     <div class="card stat" title="Pessoas (fora bots) no canal de voz do bot">
       <span>Na call</span><strong id="statMembers">—</strong>
     </div>
     <div class="card stat" title="Há quanto tempo o bot está rodando">
-      <span>Rodando há</span><strong id="statUptime">—</strong>
+      <span>No ar há</span><strong id="statUptime">—</strong>
     </div>
-  </section>
-
-  <section class="card" aria-label="Serviços">
-    <div class="svc">
-      <span class="dot" id="dDot"></span>
-      <div class="svc-body"><span>Discord</span><span class="small muted" id="dDetail">—</span></div>
-      <span class="svc-val" id="dVal">—</span>
-    </div>
-    <div class="svc">
-      <span class="dot" id="vDot"></span>
-      <div class="svc-body"><span>Canal de voz</span><span class="small muted" id="vDetail">—</span></div>
-      <span class="svc-val" id="vVal">—</span>
-    </div>
-    <div class="svc" title="O módulo Retratos Falantes conecta aqui a partir do Foundry do mestre">
-      <span class="dot" id="mDot"></span>
-      <div class="svc-body"><span>Módulo no Foundry</span><span class="small muted" id="mDetail">—</span></div>
-      <span class="svc-val" id="mVal">—</span>
-    </div>
-    <div class="svc">
-      <span class="dot" id="fDot"></span>
-      <div class="svc-body"><span>Foundry VTT</span><span class="small muted" id="fDetail">localhost:30000</span></div>
-      <span class="svc-val" id="fVal">—</span>
+    <div class="card stat" title="Latência do bot até o Discord">
+      <span>Latência</span><strong id="statPing">—</strong>
     </div>
   </section>
 
@@ -157,14 +134,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
     <ul class="members" id="members"></ul>
     <div class="small muted" id="noMembers">Ninguém ainda.</div>
-  </section>
-
-  <section class="card call" aria-label="Controle do bot">
-    <div class="call-head">
-      <span class="eyebrow">Controle do bot</span>
-      <span class="small muted">Normalmente o bot segue você sozinho</span>
-    </div>
-    <div class="voice-controls">
+    <div class="voice-controls" title="Normalmente o bot segue você sozinho">
       <select id="channelSelect" aria-label="Canal de voz"></select>
       <button type="button" class="btn small-btn" id="joinBtn">Entrar</button>
       <button type="button" class="btn small-btn" id="leaveBtn">Sair</button>
@@ -173,6 +143,29 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="button" class="btn small-btn grow" id="inviteBtn" title="Link para convidar o bot ao servidor com as permissões certas">
         <span id="inviteLabel">Copiar link de convite do bot</span>
       </button>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Serviços">
+    <div class="svc">
+      <span class="dot" id="fDot"></span>
+      <div class="svc-body"><span>Foundry VTT</span><span class="small muted" id="fDetail">localhost:30000</span></div>
+      <span class="svc-val" id="fVal">—</span>
+    </div>
+    <div class="svc" title="O módulo Retratos Falantes conecta aqui a partir do Foundry do mestre">
+      <span class="dot" id="mDot"></span>
+      <div class="svc-body"><span>Módulo no Foundry</span><span class="small muted" id="mDetail">—</span></div>
+      <span class="svc-val" id="mVal">—</span>
+    </div>
+    <div class="svc">
+      <span class="dot" id="dDot"></span>
+      <div class="svc-body"><span>Discord</span><span class="small muted" id="dDetail">—</span></div>
+      <span class="svc-val" id="dVal">—</span>
+    </div>
+    <div class="svc">
+      <span class="dot" id="vDot"></span>
+      <div class="svc-body"><span>Canal de voz</span><span class="small muted" id="vDetail">—</span></div>
+      <span class="svc-val" id="vVal">—</span>
     </div>
   </section>
 
@@ -231,7 +224,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="submit" class="btn primary grow" id="saveBtn">Salvar</button>
       <button type="button" class="btn" id="folderBtn" title="Abrir a pasta do bot">Pasta do bot</button>
     </div>
-    <div class="note">Os IDs se copiam no Discord com o Modo Desenvolvedor ligado (Configurações → Avançado): clique direito → Copiar ID. A porta do bot tem que ser a mesma da configuração do módulo no Foundry. Tudo fica em <span class="cmd">%AppData%\Ouvidor\config.json</span>.</div>
+    <div class="note">Os IDs se copiam no Discord com o Modo Desenvolvedor ligado (Configurações → Avançado): clique direito → Copiar ID. A porta do bot tem que ser a mesma da configuração do módulo no Foundry. Tudo fica em <span class="cmd">%AppData%\FoundryListener\config.json</span>.</div>
   </form>
 
   <footer class="footer">
@@ -288,7 +281,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     'node-old': 'Atualize com ' + code('winget upgrade OpenJS.NodeJS.LTS') + ' e clique em Iniciar.',
     config: 'Abra a engrenagem, preencha e salve.',
     token: 'Cole o token novo na engrenagem, salve e clique em Iniciar.',
-    bot: 'Mantenha a pasta ' + code('bot') + ' ao lado do Ouvidor.exe, como veio no zip.',
+    bot: 'Mantenha a pasta ' + code('bot') + ' ao lado do FoundryListener.exe, como veio no zip.',
     npm: 'Confira a internet e clique em Iniciar de novo. Se continuar, abra a pasta do bot e rode ' + code('npm install') + '.',
     port: 'Só uma cópia do bot pode rodar por vez.'
   };
@@ -426,11 +419,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     $('inviteBtn').disabled = !(b && b.invite);
 
     // Atividade
-    var evs = (s.events || []).filter(function (e) { return showSpeak || e.kind !== 'speak'; });
+    // Newest first, like the Foundry Tunnel.
+    var evs = (s.events || []).filter(function (e) { return showSpeak || e.kind !== 'speak'; }).reverse();
     var list2 = $('events');
-    var ekey = evs.length + ':' + (evs.length ? evs[evs.length - 1].t + evs[evs.length - 1].text : '');
+    var ekey = evs.length + ':' + (evs.length ? evs[0].t + evs[0].text : '');
     if (list2.dataset.key !== ekey) {
-      var atBottom = list2.scrollHeight - list2.scrollTop - list2.clientHeight < 30;
       list2.dataset.key = ekey;
       list2.textContent = '';
       evs.forEach(function (e) {
@@ -439,11 +432,13 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
         li.appendChild(el('span', '', e.text));
         list2.appendChild(li);
       });
-      if (atBottom) list2.scrollTop = list2.scrollHeight;
     }
     show('noEvents', evs.length === 0);
 
     // Botões
+    // Inside the Foundry Dock its frame says it all.
+    $('footerNote').style.visibility = s.docked ? 'hidden' : '';
+
     $('startBtn').disabled = busy || running;
     $('stopBtn').disabled = busy || !running;
     $('restartBtn').disabled = busy || !(p === 'running' || p === 'error');

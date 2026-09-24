@@ -71,10 +71,10 @@ func newTestManager() *Manager {
 
 func TestHandleLineStatusAndLogs(t *testing.T) {
 	m := newTestManager()
-	m.handleLine(1, `@@OUVIDOR {"ev":"log","level":"ok","text":"Conectado"}`)
-	m.handleLine(1, `@@OUVIDOR {"ev":"status","discord":"online","members":[]}`)
+	m.handleLine(1, `@@FOUNDRY_LISTENER {"ev":"log","level":"ok","text":"Conectado"}`)
+	m.handleLine(1, `@@FOUNDRY_LISTENER {"ev":"status","discord":"online","members":[]}`)
 	m.handleLine(1, "(node:123) Warning: algo")
-	m.handleLine(2, `@@OUVIDOR {"ev":"log","level":"ok","text":"de outra geração"}`)
+	m.handleLine(2, `@@FOUNDRY_LISTENER {"ev":"log","level":"ok","text":"de outra geração"}`)
 	s := m.Snapshot()
 	if s.Phase != PhaseRunning || s.RunningAt == 0 {
 		t.Fatalf("phase %s runningAt %d", s.Phase, s.RunningAt)
@@ -90,7 +90,7 @@ func TestHandleLineStatusAndLogs(t *testing.T) {
 
 func TestHandleLineFatal(t *testing.T) {
 	m := newTestManager()
-	m.handleLine(1, `@@OUVIDOR {"ev":"fatal","kind":"token","text":"token ruim"}`)
+	m.handleLine(1, `@@FOUNDRY_LISTENER {"ev":"fatal","kind":"token","text":"token ruim"}`)
 	if m.fatalKind != "token" || m.fatalText != "token ruim" {
 		t.Fatalf("fatal not recorded: %q %q", m.fatalKind, m.fatalText)
 	}

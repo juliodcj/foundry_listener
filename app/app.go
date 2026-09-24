@@ -12,7 +12,10 @@ import (
 	"sync"
 )
 
-const appName = "Ouvidor"
+const appName = "FoundryListener"
+
+// oldAppName is where versions from before the rename kept their config.
+const oldAppName = "Ouvidor"
 
 type Config struct {
 	Token          string `json:"token"`
@@ -83,6 +86,9 @@ func (c Config) Validate() error {
 func loadConfig() Config {
 	cfg := defaultConfig()
 	if b, err := os.ReadFile(configPath()); err == nil {
+		_ = json.Unmarshal(b, &cfg)
+	} else if b, err := os.ReadFile(filepath.Join(filepath.Dir(filepath.Dir(configPath())), oldAppName, "config.json")); err == nil {
+		// Configuração do tempo em que o app se chamava Ouvidor.
 		_ = json.Unmarshal(b, &cfg)
 	} else if dir, err := locateBot(); err == nil {
 		// Primeira vez: aproveita o .env de quem já usava o iniciar.bat.
@@ -161,6 +167,7 @@ type uiConfig struct {
 type uiState struct {
 	State
 	Config uiConfig `json:"config"`
+	Docked bool     `json:"docked"` // inside the Foundry Dock
 }
 
 type configInput struct {
@@ -183,7 +190,7 @@ func (a *App) Call(name, arg string) (any, error) {
 		return uiState{State: a.mgr.Snapshot(), Config: uiConfig{
 			HasToken: c.Token != "", GuildID: c.GuildID, GMID: c.GMID, VoiceChannelID: c.VoiceChannelID,
 			WSPort: c.WSPort, FoundryPort: c.FoundryPort, AutoStart: c.AutoStart,
-		}}, nil
+		}, Docked: isDocked()}, nil
 	case "start":
 		a.mgr.Start()
 	case "stop":

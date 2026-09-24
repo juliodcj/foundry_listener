@@ -1,8 +1,8 @@
-// Logs do console e, quando o bot roda dentro do Ouvidor.exe (OUVIDOR_IPC=1),
-// linhas "@@OUVIDOR {json}" que o app lê para montar a tela de status.
+// Logs do console e, quando o bot roda dentro do FoundryListener.exe (FOUNDRY_LISTENER_IPC=1),
+// linhas "@@FOUNDRY_LISTENER {json}" que o app lê para montar a tela de status.
 
-const IPC_PREFIX = "@@OUVIDOR ";
-const ipc = process.env.OUVIDOR_IPC === "1";
+const IPC_PREFIX = "@@FOUNDRY_LISTENER ";
+const ipc = process.env.FOUNDRY_LISTENER_IPC === "1";
 
 const colors = { info: "\x1b[36m", ok: "\x1b[32m", warn: "\x1b[33m", err: "\x1b[31m", speak: "\x1b[35m" };
 

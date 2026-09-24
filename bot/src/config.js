@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-// Variáveis já definidas (por exemplo, pelo Ouvidor.exe) têm prioridade sobre o .env.
+// Variáveis já definidas (por exemplo, pelo FoundryListener.exe) têm prioridade sobre o .env.
 loadEnv({ path: path.join(root, ".env"), quiet: true });
 
 const snowflake = /^\d{17,20}$/;
@@ -34,6 +34,6 @@ export function loadConfig() {
     voiceChannelId: readId("VOICE_CHANNEL_ID", { required: false }),
     port,
     extraOrigins,
-    ipc: process.env.OUVIDOR_IPC === "1",
+    ipc: process.env.FOUNDRY_LISTENER_IPC === "1",
   };
 }

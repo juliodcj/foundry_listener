@@ -10,8 +10,8 @@ São três peças:
 
 | Pasta     | O que é | Onde roda |
 |-----------|---------|-----------|
-| `app/`    | **Ouvidor.exe**: janela do Windows que liga o bot e mostra o status (Discord, canal de voz, quem está na call, conexão com o Foundry). | PC do mestre |
-| `bot/`    | Bot do Discord (Node.js) que entra na call e avisa quem começou e parou de falar. Não grava nem decodifica áudio. | PC do mestre (o Ouvidor.exe abre ele escondido) |
+| `app/`    | **FoundryListener.exe**: janela do Windows que liga o bot e mostra o status (Discord, canal de voz, quem está na call, conexão com o Foundry). | PC do mestre |
+| `bot/`    | Bot do Discord (Node.js) que entra na call e avisa quem começou e parou de falar. Não grava nem decodifica áudio. | PC do mestre (o FoundryListener.exe abre ele escondido) |
 | `module/` | Módulo **Retratos Falantes** do Foundry (v13 e v14). Mostra a barra para todo mundo. | Mundo do Foundry |
 
 ```
@@ -27,7 +27,7 @@ o módulo estar ativo no mundo.
 ## 1. Criar o bot no Discord (uma vez só)
 
 1. Abra o [Discord Developer Portal](https://discord.com/developers/applications)
-   → **New Application** → dê um nome (ex.: *Ouvidor*) → **Create**.
+   → **New Application** → dê um nome (ex.: *Foundry Listener*) → **Create**.
 2. No menu da esquerda, **Bot**:
    - clique em **Reset Token** → **Copy**. Esse é o **token**; guarde, ele
      só aparece uma vez. Não mostre para ninguém (quem tem o token controla o bot).
@@ -42,7 +42,7 @@ o módulo estar ativo no mundo.
 
 ### Convidar o bot para o servidor
 
-Jeito mais fácil: abra o Ouvidor (passo 2), configure o token e clique em
+Jeito mais fácil: abra o Foundry Listener (passo 2), configure o token e clique em
 **Copiar link de convite do bot**. Cole o link no navegador e escolha o servidor.
 
 Se preferir montar o link: Developer Portal → **OAuth2** → **URL Generator**:
@@ -55,14 +55,14 @@ cargo do bot as permissões *Ver canal* e *Conectar* nesse canal.
 
 ---
 
-## 2. Instalar o Ouvidor (PC do mestre)
+## 2. Instalar o Foundry Listener (PC do mestre)
 
 1. Instale o **Node.js 22.12 ou mais novo** (uma vez só). No PowerShell:
    `winget install OpenJS.NodeJS.LTS`
-2. Baixe o **Ouvidor.zip** (página de *Releases* do repositório, ou aba
-   *Actions* → último build → artefato `Ouvidor`) e extraia numa pasta
-   qualquer. Mantenha a pasta `bot` ao lado do `Ouvidor.exe`.
-3. Abra o `Ouvidor.exe`. Na **engrenagem**, preencha:
+2. Baixe o **FoundryListener.zip** (página de *Releases* do repositório, ou aba
+   *Actions* → último build → artefato `FoundryListener`) e extraia numa pasta
+   qualquer. Mantenha a pasta `bot` ao lado do `FoundryListener.exe`.
+3. Abra o `FoundryListener.exe`. Na **engrenagem**, preencha:
    - **Token do bot**
    - **ID do servidor**
    - **Seu ID do Discord (GM)**
@@ -72,29 +72,42 @@ cargo do bot as permissões *Ver canal* e *Conectar* nesse canal.
    - **Porta do Foundry** (padrão `30000`): só para o indicador "Foundry online".
 4. **Salvar** e **Iniciar**.
 
-A configuração fica em `%AppData%\Ouvidor\config.json`. Se você já usava um
-`bot\.env`, o Ouvidor importa os valores dele na primeira vez.
+A configuração fica em `%AppData%\FoundryListener\config.json`. Se você já usava um
+`bot\.env`, o Foundry Listener importa os valores dele na primeira vez. Quem
+vinha da versão com o nome antigo (Ouvidor) não precisa configurar de novo: a
+configuração em `%AppData%\Ouvidor\config.json` é lida enquanto não existir a nova.
 
 ### O que aparece na janela
 
+A janela segue a mesma ordem da do [Foundry Tunnel](https://github.com/juliodcj/foundry_server),
+para os dois ficarem harmônicos lado a lado no [Foundry Dock](https://github.com/juliodcj/foundry_dock):
+
 - **Status** do bot (online, conectando, reconectando, erro), com o nome do bot
   e do servidor.
-- **Ping Discord**, **Na call** (quantas pessoas no canal do bot) e **Rodando há**.
-- **Discord**, **Canal de voz** (ouvindo / fora da call), **Módulo no Foundry**
-  (se o Foundry do mestre está conectado no bot, com o nome do usuário e do
-  mundo) e **Foundry VTT** (se a porta local responde).
+- **Na call** (quantas pessoas no canal do bot), **No ar há** e **Latência**
+  (até o Discord).
 - **Na call**: quem está no canal, com destaque verde em quem está falando agora.
-  Dá para mandar o bot **Entrar** num canal (ou no canal onde você está) e **Sair**.
-- **Copiar link de convite do bot**.
-- **Atividade**: conexões, entradas e saídas da call, erros. Marque
-  *mostrar falas* para ver cada começo/fim de fala.
+  Dá para mandar o bot **Entrar** num canal (ou no canal onde você está) e
+  **Sair**, e **Copiar link de convite do bot**.
+- **Foundry VTT** (se a porta local responde), **Módulo no Foundry** (se o
+  Foundry do mestre está conectado no bot, com o nome do usuário e do mundo),
+  **Discord** e **Canal de voz** (ouvindo / fora da call).
+- **Atividade**, a mais recente em cima: conexões, entradas e saídas da call,
+  erros. Marque *mostrar falas* para ver cada começo/fim de fala.
 
-Fechar a janela encerra o bot. Se o bot cair, o Ouvidor reinicia sozinho.
+Fechar a janela encerra o bot. Se o bot cair, o Foundry Listener reinicia sozinho.
 
 Erros comuns aparecem com a solução na própria janela: Node.js não instalado,
 token recusado, bot fora do servidor, porta em uso.
 
-### Sem o Ouvidor (opcional)
+### Dentro do Foundry Dock
+
+Aberto pelo [Foundry Dock](https://github.com/juliodcj/foundry_dock), o app
+recebe `--dock=<janela do Dock>`: a janela já nasce fora da tela e entra no
+Dock sem barra de título nem botão na barra de tarefas, e o Dock a encaixa na
+moldura dela. Aberto do jeito normal, nada muda.
+
+### Sem o Foundry Listener (opcional)
 
 O bot também roda sozinho num prompt:
 
@@ -116,7 +129,7 @@ Só uma cópia do bot pode rodar por vez (as duas usariam a mesma porta).
 No Foundry: **Add-on Modules** → **Install Module** → em *Manifest URL* cole:
 
 ```
-https://github.com/juliodcj/ouvidor/releases/latest/download/module.json
+https://github.com/juliodcj/foundry_listener/releases/latest/download/module.json
 ```
 
 (Ou extraia `retratos-falantes.zip` em `Data/modules/retratos-falantes`.)
@@ -149,7 +162,7 @@ Quem está na call sem ID configurado é ignorado.
 
 | Configuração | Escopo | O que faz |
 |---|---|---|
-| Porta do bot | mundo | Porta do WebSocket do bot (igual à do Ouvidor). |
+| Porta do bot | mundo | Porta do WebSocket do bot (igual à do Foundry Listener). |
 | Card do mestre | mundo | Mostrar o card do mestre só quando fala, sempre ou nunca. |
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
@@ -222,12 +235,12 @@ Só o mestre vê a bolinha de status na barra: **verde** = conectado ao bot,
 
 ## 5. Rotina de cada sessão
 
-1. Abra o **Ouvidor.exe** (ele liga o bot sozinho).
+1. Abra o **FoundryListener.exe** (ele liga o bot sozinho).
 2. Abra o **Foundry** (o executável, em `localhost:30000`) e o mundo como mestre.
-   No Ouvidor, *Módulo no Foundry* fica verde.
+   No Foundry Listener, *Módulo no Foundry* fica verde.
 3. Abra o túnel da Cloudflare e mande o link para os jogadores.
 4. Entre no canal de voz do Discord. O bot entra junto (ou use `/entrar`).
-5. Jogue. Quando terminar, feche o Ouvidor.
+5. Jogue. Quando terminar, feche o Foundry Listener.
 
 Se você der F5 no Foundry ou o bot reiniciar, a conexão volta sozinha em
 alguns segundos. Jogadores que recarregam a página recebem o estado atual.
@@ -236,7 +249,7 @@ alguns segundos. Jogadores que recarregam a página recebem o estado atual.
 
 ## Problemas comuns
 
-- **Ninguém anima**: confira no Ouvidor se *Canal de voz* está "Ouvindo" e
+- **Ninguém anima**: confira no Foundry Listener se *Canal de voz* está "Ouvindo" e
   *Módulo no Foundry* está "Conectado"; confira os IDs do Discord na
   configuração do módulo.
 - **"Módulo no Foundry: Aguardando"**: o Foundry precisa estar aberto como
@@ -264,19 +277,19 @@ não faz parte desta versão.
 ## Desenvolvimento
 
 - **Bot**: `cd bot && npm install && npm start` (lê `bot/.env`). Com
-  `OUVIDOR_IPC=1`, escreve linhas `@@OUVIDOR {json}` que o Ouvidor lê.
+  `FOUNDRY_LISTENER_IPC=1`, escreve linhas `@@FOUNDRY_LISTENER {json}` que o Foundry Listener lê.
   Mensagens do WebSocket para o Foundry:
   - `{ "type": "state", "channelId", "channelName", "members": [...], "speaking": [...] }` ao conectar e quando o canal ou os membros mudam;
   - `{ "type": "speaking", "discordUserId", "speaking": true|false, "ts" }`;
   - `{ "type": "ping", "ts" }` a cada 15 s.
-- **Ouvidor** (Go 1.26+): compila de qualquer sistema com
-  `cd app && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-H=windowsgui -s -w" -o ../dist/Ouvidor.exe .`
+- **Foundry Listener** (Go 1.26+): compila de qualquer sistema com
+  `cd app && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-H=windowsgui -s -w" -o ../dist/FoundryListener.exe .`
   Em Linux/macOS, `go run .` dentro de `app/` abre a mesma interface em
   `http://127.0.0.1:8766`. O ícone vem de `app/winres/` e é gerado com
   `go run github.com/tc-hib/go-winres@latest make --arch amd64`.
 - **Módulo**: sem build; os arquivos de `module/` vão como estão. A API fica em
   `game.modules.get("retratos-falantes").api` (barra, ponte e estado de fala).
-- **Release**: criar uma tag `vX.Y.Z` publica `Ouvidor.zip`,
+- **Release**: criar uma tag `vX.Y.Z` publica `FoundryListener.zip`,
   `retratos-falantes.zip` e `module.json` (o workflow ajusta a versão do módulo).
 
 Inspirado na [Live Actors](https://github.com/mordachai/live-actors) (MIT),

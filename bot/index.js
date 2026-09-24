@@ -70,7 +70,7 @@ const server = startWsServer({
 // Ping do Discord muda devagar; manda o status de vez em quando para o app.
 setInterval(status, 5_000).unref();
 
-// Comandos do Ouvidor.exe pela entrada padrão, um JSON por linha.
+// Comandos do FoundryListener.exe pela entrada padrão, um JSON por linha.
 if (ipc) {
   const rl = readline.createInterface({ input: process.stdin });
   rl.on("line", async line => {

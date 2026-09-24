@@ -193,7 +193,7 @@
       "CallTitle": "In the Discord call now",
       "InChannel": "Bot connected, in channel <strong>{channel}</strong>. Use this list to fill in the IDs.",
       "NoChannel": "Bot connected but not in a voice channel. Join one (the bot follows) or use /entrar.",
-      "BridgeOff": "The bot is not connected to this Foundry. Open Ouvidor (or iniciar.bat) on this machine.",
+      "BridgeOff": "The bot is not connected to this Foundry. Open Foundry Listener (or iniciar.bat) on this machine.",
       "Players": "Players",
       "PlayersHint": "Call members without an ID here are ignored. Without a chosen actor, the user's character is used. With two arts, the portrait alternates between art 1 and art 2 while speaking; with one, it uses the animation chosen in the settings.",
       "Online": "in Foundry now",
