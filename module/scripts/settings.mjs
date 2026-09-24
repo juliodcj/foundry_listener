@@ -85,6 +85,7 @@ export function registerSettings() {
     choices: {
       cutout: "RF.Settings.PortraitStyle.Cutout",
       frame: "RF.Settings.PortraitStyle.Frame",
+      frameBg: "RF.Settings.PortraitStyle.FrameBg",
     },
     onChange: apply,
   });
@@ -199,6 +200,14 @@ export function registerSettings() {
     },
   });
 
+  // Modo compacto: placa só com nome, jogador e heroísmo, cards colados.
+  reg("slim", {
+    name: "RF.Settings.Slim.Name", hint: "RF.Settings.Slim.Hint",
+    scope: "client", config: true, type: Boolean, default: false,
+    onChange: apply,
+  });
+
+  // Chave antiga do "modo compacto"; hoje é "só quem está falando aparece".
   reg("compact", {
     name: "RF.Settings.Compact.Name", hint: "RF.Settings.Compact.Hint",
     scope: "client", config: true, type: Boolean, default: false,

@@ -50,8 +50,8 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
-/* Modo compacto: só quem está falando (menos o GM em "sempre"). GM "ao falar": idem. */
-#rf-bar.rf-compact .rf-card:not(.rf-speaking):not(.rf-gm-always),
+/* Só quem fala aparece (menos o GM em "sempre"). GM "ao falar": idem. */
+#rf-bar.rf-speakers-only .rf-card:not(.rf-speaking):not(.rf-gm-always),
 #rf-bar .rf-card.rf-gm-auto:not(.rf-speaking) { display: none; }
 
 #rf-bar .rf-portrait {
@@ -133,7 +133,7 @@
   font-size: 13px;
   font-weight: 700;
   line-height: 1.1;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
@@ -238,6 +238,39 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Moldura com fundo: fundo opaco atrás da arte, para partes transparentes
+   do personagem não se misturarem com o cenário. */
+#rf-bar.rf-style-frame-bg .rf-portrait {
+  background:
+    radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--rf-color) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--rf-plate-2), #120c07);
+  box-shadow: inset 0 0 0 2px var(--rf-gold-dark);
+}
+
+/* Pontos de heroísmo clicáveis (mestre e dono do personagem). */
+#rf-bar .rf-hero.rf-hero-edit { cursor: pointer; }
+#rf-bar .rf-hero.rf-hero-edit:hover { filter: brightness(1.25); }
+
+/* ---- modo compacto: placa só com nome, jogador e heroísmo; cards colados, quadrados */
+
+#rf-bar.rf-slim .rf-cards { gap: 0; }
+#rf-bar.rf-slim.rf-horizontal .rf-card + .rf-card { margin-left: -2px; }
+#rf-bar.rf-slim.rf-vertical .rf-card + .rf-card { margin-top: -2px; }
+#rf-bar.rf-slim .rf-portrait,
+#rf-bar.rf-slim .rf-plate,
+#rf-bar.rf-slim.rf-style-cutout .rf-plate { border-radius: 0; }
+#rf-bar.rf-slim .rf-hp,
+#rf-bar.rf-slim .rf-sub { display: none; }
+#rf-bar.rf-slim .rf-plate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 4px;
+  align-items: center;
+}
+#rf-bar.rf-slim .rf-name { grid-column: 1 / -1; }
+#rf-bar.rf-slim .rf-player-row { grid-column: 1; grid-row: 2; }
+#rf-bar.rf-slim .rf-stats-row { grid-column: 2; grid-row: 2; margin-top: 0; }
 
 /* ---- estilo "recorte": PNG sem fundo em pé sobre a placa ------------------- */
 
@@ -481,7 +514,7 @@
   border-radius: 6px;
 }
 #rf-bar.rf-unlocked.rf-no-cards .rf-empty,
-#rf-bar.rf-unlocked.rf-compact.rf-idle .rf-empty { display: block; }
+#rf-bar.rf-unlocked.rf-speakers-only.rf-idle .rf-empty { display: block; }
 #rf-bar.rf-locked.rf-no-cards { min-width: 40px; min-height: 16px; }
 
 /* ---- janela de mapeamento --------------------------------------------------- */

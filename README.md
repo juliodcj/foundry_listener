@@ -153,7 +153,7 @@ Quem está na call sem ID configurado é ignorado.
 | Card do mestre | mundo | Mostrar o card do mestre só quando fala, sempre ou nunca. |
 | Quais jogadores mostrar | mundo | Todos com personagem, ou só quem está conectado no Foundry. |
 | Mostrar dados da ficha | mundo | PV, nível, classe e pontos de heroísmo (círculos) do PF2e. |
-| Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. |
+| Estilo do retrato | mundo | **Recorte** (padrão): a arte PNG sem fundo fica em pé sobre a placa, sem moldura, e o brilho segue o contorno do personagem. **Moldura**: a arte fica dentro de um quadro. **Moldura com fundo**: igual, com um fundo opaco atrás da arte, para partes transparentes do personagem não se misturarem com o cenário. |
 | Tamanho da placa | mundo | Aumenta ou diminui a placa (nome, PV, nível) sem mexer na arte. O + e − da barra aumentam tudo junto. |
 | Tamanho do personagem | mundo | Aumenta ou diminui a arte do personagem sem mexer na placa. |
 | Virar para quem fala | mundo | Desligado por padrão. Quando duas pessoas conversam, uma delas espelha a arte para olhar para a outra (só na barra horizontal). O mestre fica de fora: não vira e não conta como parte da conversa. Diga para que lado as artes olham: se olham para a direita, vira o card mais à direita; se para a esquerda, o mais à esquerda. Só conta quem falou pelo menos meio segundo, e cada card fica pelo menos 1,5 s virado antes de mudar de novo. |
@@ -167,7 +167,8 @@ Quem está na call sem ID configurado é ignorado.
 | Espera ao parar de falar | mundo | Atraso antes de voltar ao normal, para não piscar entre palavras (padrão 300 ms). |
 | Durante o combate | mundo | Nada, pausar a animação ou esconder a barra. |
 | Esconder a barra | cliente | Cada pessoa esconde na própria tela. |
-| Modo compacto | cliente | Mostra só quem está falando. |
+| Modo compacto | cliente | Placa só com nome, jogador e pontos de heroísmo; cards colados, com cantos retos. |
+| Só quem está falando aparece | cliente | Esconde os cards de quem não está falando. |
 | Apagar a barra inteira quando ninguém fala | cliente | Opacidade da barra toda em repouso (volta ao normal com o mouse em cima). Padrão 1 = desligado. |
 
 ---
@@ -183,7 +184,9 @@ para ver os botões:
 - **− 100% +**: ajusta a **escala**. A bolinha dourada no canto inferior
   direito também redimensiona, arrastando.
 - ↔ / ↕: barra horizontal ou vertical.
-- **Compacto**: só quem está falando.
+- **Compacto**: placa só com o nome do personagem, do jogador e os pontos de
+  heroísmo; os cards ficam colados, com cantos retos.
+- 🎙 **Só quem fala**: esconde os cards de quem não está falando.
 - ⌃ **Recolher**: esconde os retratos e deixa só uma abinha "Retratos" (clique
   nela para voltar). Serve para ver algo que está atrás da barra; vale só na
   sua tela.
@@ -200,6 +203,8 @@ para ver os botões:
   esquerda), **Alt+Shift+R**, ou nas Configurações. O mestre ganha um ícone
   redondo de retratos no lugar onde a barra estava: um clique e ela volta.
 - Duplo clique num card abre a ficha (se você tiver permissão).
+- **Pontos de heroísmo**: clique dá um ponto, botão direito tira um (o mestre e
+  o dono do personagem).
 
 **Posição de cada um, padrão do mestre.** Cada jogador pode mover e
 redimensionar a barra na própria tela, e isso fica salvo só para ele. Quem
