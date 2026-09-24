@@ -28,7 +28,8 @@
       "Show": "Mostrar a barra de retratos",
       "HiddenHintGm": "Barra de retratos escondida na sua tela. Clique no ícone de retratos no topo da tela para mostrar de novo.",
       "HiddenByGm": "O mestre escondeu a barra de retratos para os jogadores.",
-      "HiddenByCombat": "A barra de retratos fica escondida durante o combate (configuração do mestre)."
+      "HiddenByCombat": "A barra de retratos fica escondida durante o combate (configuração do mestre).",
+      "Restored": "Barra de retratos de volta: visível, aberta e na posição padrão."
     },
     "Card": {
       "HP": "PV",
@@ -50,8 +51,8 @@
         "Hint": "Mostra ou esconde a barra nesta tela."
       },
       "Reset": {
-        "Name": "Resetar posição da barra",
-        "Hint": "Volta a barra para a posição padrão definida pelo mestre."
+        "Name": "Trazer a barra de volta",
+        "Hint": "Mostra a barra, abre se estiver recolhida e volta para a posição padrão do mestre."
       },
       "Lock": {
         "Name": "Travar/destravar a barra",
@@ -63,6 +64,11 @@
       }
     },
     "Settings": {
+      "Restore": {
+        "Name": "Perdeu a barra?",
+        "Label": "Trazer a barra de volta",
+        "Hint": "Só nesta tela. Mostra a barra, abre se estiver recolhida e volta para a posição e o tamanho padrão do mestre."
+      },
       "Mapping": {
         "Name": "Jogadores, Discord e artes",
         "Label": "Configurar",

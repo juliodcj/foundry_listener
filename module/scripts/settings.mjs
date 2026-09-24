@@ -3,6 +3,14 @@ import { bar } from "./bar.mjs";
 import { bridge } from "./bridge.mjs";
 import { MappingConfig } from "./mapping-app.mjs";
 
+/** Botão nas configurações: não abre janela, só traz a barra de volta. */
+class RestoreBarMenu extends foundry.applications.api.ApplicationV2 {
+  async render() {
+    await bar.restoreBar();
+    return this;
+  }
+}
+
 export function registerSettings() {
   const reg = (key, data) => game.settings.register(MODULE_ID, key, data);
   const rebuild = () => bar.rebuild();
@@ -17,6 +25,15 @@ export function registerSettings() {
     icon: "fa-solid fa-users-gear",
     type: MappingConfig,
     restricted: true,
+  });
+
+  game.settings.registerMenu(MODULE_ID, "restoreMenu", {
+    name: "RF.Settings.Restore.Name",
+    label: "RF.Settings.Restore.Label",
+    hint: "RF.Settings.Restore.Hint",
+    icon: "fa-solid fa-rotate-left",
+    type: RestoreBarMenu,
+    restricted: false,
   });
 
   reg("mapping", {
@@ -213,7 +230,7 @@ export function registerKeybindings() {
     hint: "RF.Keys.Reset.Hint",
     editable: [],
     onDown: () => {
-      bar.resetPosition();
+      bar.restoreBar();
       return true;
     },
   });

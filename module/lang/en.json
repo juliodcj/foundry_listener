@@ -28,7 +28,8 @@
       "Show": "Show the portrait bar",
       "HiddenHintGm": "Portrait bar hidden on your screen. Click the portraits icon at the top of the screen to show it again.",
       "HiddenByGm": "The GM hid the portrait bar from players.",
-      "HiddenByCombat": "The portrait bar stays hidden during combat (GM setting)."
+      "HiddenByCombat": "The portrait bar stays hidden during combat (GM setting).",
+      "Restored": "Portrait bar is back: visible, expanded and in the default position."
     },
     "Card": {
       "HP": "HP",
@@ -50,8 +51,8 @@
         "Hint": "Shows or hides the bar on this screen."
       },
       "Reset": {
-        "Name": "Reset bar position",
-        "Hint": "Moves the bar back to the GM's default position."
+        "Name": "Bring the bar back",
+        "Hint": "Shows the bar, expands it if collapsed and moves it back to the GM's default position."
       },
       "Lock": {
         "Name": "Lock/unlock the bar",
@@ -63,6 +64,11 @@
       }
     },
     "Settings": {
+      "Restore": {
+        "Name": "Lost the bar?",
+        "Label": "Bring the bar back",
+        "Hint": "This screen only. Shows the bar, expands it if collapsed and moves it back to the GM's default position and size."
+      },
       "Mapping": {
         "Name": "Players, Discord and art",
         "Label": "Configure",

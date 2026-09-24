@@ -356,11 +356,25 @@ class PortraitBar {
     ui.notifications.info(t("Bar.ResetDone"));
   }
 
+  /** Perdeu a barra: mostra, abre (sem recolher) e volta à posição padrão. */
+  async restoreBar() {
+    await setSetting("hidden", false);
+    await setSetting("collapsed", false);
+    await setSetting("layout", {});
+    ui.notifications.info(t("Bar.Restored"));
+    this._explainStillHidden();
+  }
+
   async toggleHidden(force) {
     const hidden = force ?? !getSetting("hidden");
     await setSetting("hidden", hidden);
     if (hidden) ui.notifications.info(t(game.user.isGM ? "Bar.HiddenHintGm" : "Bar.HiddenHint"));
-    else if (getSetting("hiddenForPlayers") && !game.user.isGM) ui.notifications.info(t("Bar.HiddenByGm"));
+    else this._explainStillHidden();
+  }
+
+  /** Avisa quando a barra continua escondida por algo que este cliente não controla. */
+  _explainStillHidden() {
+    if (getSetting("hiddenForPlayers") && !game.user.isGM) ui.notifications.info(t("Bar.HiddenByGm"));
     else if (this.combatActive && getSetting("combatMode") === "hide") ui.notifications.info(t("Bar.HiddenByCombat"));
   }
 

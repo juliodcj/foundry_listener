@@ -237,8 +237,10 @@ alguns segundos. Jogadores que recarregam a página recebem o estado atual.
 - **O bot entra mas ninguém fala**: o bot precisa entrar sem estar ensurdecido
   (ele já faz isso). Se alguém moveu o bot ou o ensurdeceu no servidor, use
   `/sair` e `/entrar`.
-- **A barra sumiu**: mestre, clique no ícone redondo de retratos na tela. Nos
-  jogadores: botão da barra de tokens, Alt+Shift+R ou Resetar. Se o jogador
+- **A barra sumiu**: Configurações → Retratos Falantes → **Trazer a barra de
+  volta** (mostra, abre e volta para a posição padrão; qualquer um pode usar).
+  O mestre também tem o ícone redondo de retratos na tela. Nos jogadores:
+  botão da barra de tokens, Alt+Shift+R ou Resetar. Se o jogador
   vê o aviso "O mestre escondeu a barra", é o olho do mestre que está ligado:
   só o mestre pode mostrar de novo.
 
