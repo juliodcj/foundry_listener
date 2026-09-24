@@ -47,8 +47,8 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
 }
 
-/* Modo compacto: só quem está falando. GM "ao falar": idem. */
-#rf-bar.rf-compact .rf-card:not(.rf-speaking),
+/* Modo compacto: só quem está falando (menos o GM em "sempre"). GM "ao falar": idem. */
+#rf-bar.rf-compact .rf-card:not(.rf-speaking):not(.rf-gm-always),
 #rf-bar .rf-card.rf-gm-auto:not(.rf-speaking) { display: none; }
 
 #rf-bar .rf-portrait {

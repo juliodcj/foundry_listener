@@ -74,7 +74,7 @@
       },
       "ShowGm": {
         "Name": "GM card",
-        "Hint": "When to show the GM card (or the selected NPC).",
+        "Hint": "When to show the GM card (or the selected NPC). With \"Always\", it stays visible even in compact mode.",
         "Speaking": "Only while speaking",
         "Always": "Always",
         "Never": "Never"

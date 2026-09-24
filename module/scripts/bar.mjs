@@ -157,6 +157,7 @@ class PortraitBar {
     el.style.setProperty("--rf-color", card.color);
     el.classList.toggle("rf-gm", card.isGM);
     el.classList.toggle("rf-gm-auto", card.isGM && card.gmMode === "speaking");
+    el.classList.toggle("rf-gm-always", card.isGM && card.gmMode === "always");
     el.classList.toggle("rf-has-open", !!card.open);
     el.classList.toggle("rf-no-discord", !card.discordId);
 

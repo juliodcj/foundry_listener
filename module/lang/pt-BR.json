@@ -74,7 +74,7 @@
       },
       "ShowGm": {
         "Name": "Card do mestre",
-        "Hint": "Quando mostrar o card do mestre (ou do NPC selecionado).",
+        "Hint": "Quando mostrar o card do mestre (ou do NPC selecionado). Em \"Sempre\", ele continua aparecendo mesmo no modo compacto.",
         "Speaking": "Só quando está falando",
         "Always": "Sempre",
         "Never": "Nunca"
