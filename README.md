@@ -185,11 +185,15 @@ para ver os botões:
 - 👁 **Esconder dos jogadores** (só o mestre vê): some com a barra na tela de
   todos os jogadores, por exemplo no começo de um combate. Clique de novo para
   mostrar. Enquanto estiver escondida, o mestre continua vendo a barra, meio
-  apagada e com o aviso "oculta para os jogadores".
+  apagada e com o aviso "oculta para os jogadores". Também dá para ligar e
+  desligar nas Configurações (**Esconder a barra dos jogadores**) ou com um
+  atalho que o mestre define em Configurar Controles.
 - ↺ **Resetar**: volta para a posição e o tamanho padrão do mestre (útil se
   a barra sumiu da vista).
-- 👁 **Esconder**. Para mostrar de novo: botão **Retratos Falantes** na barra de
-  ferramentas de tokens (à esquerda), **Alt+Shift+R**, ou nas Configurações.
+- ✖ **Esconder só na minha tela** (com a barra destravada). Para mostrar de
+  novo: botão **Retratos Falantes** na barra de ferramentas de tokens (à
+  esquerda), **Alt+Shift+R**, ou nas Configurações. O mestre ganha um ícone
+  redondo de retratos no lugar onde a barra estava: um clique e ela volta.
 - Duplo clique num card abre a ficha (se você tiver permissão).
 
 **Posição de cada um, padrão do mestre.** Cada jogador pode mover e
@@ -231,7 +235,10 @@ alguns segundos. Jogadores que recarregam a página recebem o estado atual.
 - **O bot entra mas ninguém fala**: o bot precisa entrar sem estar ensurdecido
   (ele já faz isso). Se alguém moveu o bot ou o ensurdeceu no servidor, use
   `/sair` e `/entrar`.
-- **A barra sumiu**: botão da barra de tokens, Alt+Shift+R ou Resetar.
+- **A barra sumiu**: mestre, clique no ícone redondo de retratos na tela. Nos
+  jogadores: botão da barra de tokens, Alt+Shift+R ou Resetar. Se o jogador
+  vê o aviso "O mestre escondeu a barra", é o olho do mestre que está ligado:
+  só o mestre pode mostrar de novo.
 
 Observação: o Discord só informa "começou/parou de falar", sem áudio. Por
 isso as artes alternam num ritmo fixo; sincronia labial por fonema

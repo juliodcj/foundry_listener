@@ -395,6 +395,42 @@
 #rf-bar.rf-is-gm.rf-players-off .rf-players-off-badge { display: inline-block; }
 #rf-bar.rf-is-gm.rf-players-off .rf-cards { opacity: 0.55; }
 
+/* Ícone fixo para o mestre mostrar a barra de novo depois de escondê-la. */
+#rf-restore {
+  position: fixed;
+  left: calc(50% - 20px);
+  top: 8px;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid #c9a14a;
+  border-radius: 50%;
+  background: rgba(20, 14, 8, 0.9);
+  color: #f6efe2;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(201, 161, 74, 0.6);
+  opacity: 0.8;
+}
+#rf-restore.rf-show { display: flex; }
+#rf-restore:hover { opacity: 1; box-shadow: 0 0 10px rgba(201, 161, 74, 0.9); }
+#rf-restore .rf-restore-eye {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #c9a14a;
+  color: #2a1d12;
+  font-size: 9px;
+}
+
 /* ---- destravada: mover e redimensionar ------------------------------------------ */
 
 #rf-bar.rf-unlocked {

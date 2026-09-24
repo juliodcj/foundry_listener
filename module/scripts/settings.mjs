@@ -120,7 +120,8 @@ export function registerSettings() {
 
   // Botão de olho do mestre: esconde a barra de todos os jogadores.
   reg("hiddenForPlayers", {
-    scope: "world", config: false, type: Boolean, default: false,
+    name: "RF.Settings.HiddenForPlayers.Name", hint: "RF.Settings.HiddenForPlayers.Hint",
+    scope: "world", config: true, restricted: true, type: Boolean, default: false,
     onChange: apply,
   });
 
@@ -179,6 +180,16 @@ export function registerKeybindings() {
     editable: [{ key: "KeyR", modifiers: ["Alt", "Shift"] }],
     onDown: () => {
       bar.toggleHidden();
+      return true;
+    },
+  });
+  game.keybindings.register(MODULE_ID, "togglePlayers", {
+    name: "RF.Keys.TogglePlayers.Name",
+    hint: "RF.Keys.TogglePlayers.Hint",
+    editable: [],
+    restricted: true,
+    onDown: () => {
+      bar.togglePlayersView();
       return true;
     },
   });

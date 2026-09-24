@@ -61,7 +61,7 @@ class PortraitBar {
           <button type="button" data-action="compact"><i class="fa-solid fa-compress"></i></button>
           <button type="button" data-action="reset" data-tooltip="${esc(t("Bar.Reset"))}"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" data-action="setDefault" class="rf-gm-only" data-tooltip="${esc(t("Bar.SetDefault"))}"><i class="fa-solid fa-users-viewfinder"></i></button>
-          <button type="button" data-action="hide" data-tooltip="${esc(t("Bar.Hide"))}"><i class="fa-solid fa-eye-slash"></i></button>
+          <button type="button" data-action="hide" data-tooltip="${esc(t("Bar.Hide"))}"><i class="fa-solid fa-rectangle-xmark"></i></button>
         </span>
       </div>
       <div class="rf-cards"></div>
@@ -76,6 +76,20 @@ class PortraitBar {
     this.statusEl = this.el.querySelector(".rf-status");
     this.el.classList.toggle("rf-is-gm", game.user.isGM);
     document.body.append(this.el);
+
+    // Mestre com a barra escondida na própria tela: um ícone fixo para trazê-la de volta.
+    this.restoreEl = document.createElement("button");
+    this.restoreEl.type = "button";
+    this.restoreEl.id = "rf-restore";
+    this.restoreEl.dataset.tooltip = t("Bar.Show");
+    this.restoreEl.setAttribute("aria-label", t("Bar.Show"));
+    this.restoreEl.innerHTML = `<i class="fa-solid fa-users-rectangle"></i><i class="fa-solid fa-eye rf-restore-eye"></i>`;
+    this.restoreEl.addEventListener("click", ev => {
+      ev.preventDefault();
+      this.restoreEl.blur();
+      this.toggleHidden(false);
+    });
+    document.body.append(this.restoreEl);
 
     this.el.addEventListener("click", ev => this._onClick(ev));
     this.el.addEventListener("pointerdown", ev => this._onPointerDown(ev));
@@ -238,7 +252,9 @@ class PortraitBar {
     const hiddenForPlayers = getSetting("hiddenForPlayers");
     const hiddenByGm = hiddenForPlayers && !game.user.isGM;
     const collapsed = getSetting("collapsed");
-    this.el.classList.toggle("rf-hidden", getSetting("hidden") || hiddenByCombat || hiddenByGm);
+    const hiddenHere = getSetting("hidden");
+    this.el.classList.toggle("rf-hidden", hiddenHere || hiddenByCombat || hiddenByGm);
+    this.restoreEl.classList.toggle("rf-show", game.user.isGM && hiddenHere);
     this.el.classList.toggle("rf-players-off", hiddenForPlayers);
     this.el.classList.toggle("rf-collapsed", collapsed);
     this.el.classList.toggle("rf-locked", locked);
@@ -297,12 +313,17 @@ class PortraitBar {
    */
   _place(xFrac, yFrac) {
     const rect = this.el.getBoundingClientRect();
+    // Escondida (display: none) não tem tamanho; reposiciona quando voltar.
+    if (!rect.width && !rect.height) return;
     const freeX = Math.max(0, window.innerWidth - rect.width);
     const freeY = Math.max(0, window.innerHeight - rect.height);
     const left = Math.round(freeX * clamp(xFrac, 0, 1));
     const top = Math.round(freeY * clamp(yFrac, 0, 1));
     this.el.style.left = `${left}px`;
     this.el.style.top = `${top}px`;
+    // O ícone de mostrar fica onde a barra estava.
+    this.restoreEl.style.left = `${clamp(left, 4, window.innerWidth - 44)}px`;
+    this.restoreEl.style.top = `${clamp(top, 4, window.innerHeight - 44)}px`;
     this._placeToolbar(top, rect.height);
   }
 
@@ -335,7 +356,17 @@ class PortraitBar {
   async toggleHidden(force) {
     const hidden = force ?? !getSetting("hidden");
     await setSetting("hidden", hidden);
-    if (hidden) ui.notifications.info(t("Bar.HiddenHint"));
+    if (hidden) ui.notifications.info(t(game.user.isGM ? "Bar.HiddenHintGm" : "Bar.HiddenHint"));
+    else if (getSetting("hiddenForPlayers") && !game.user.isGM) ui.notifications.info(t("Bar.HiddenByGm"));
+    else if (this.combatActive && getSetting("combatMode") === "hide") ui.notifications.info(t("Bar.HiddenByCombat"));
+  }
+
+  /** Mestre: esconde ou mostra a barra para todos os jogadores. */
+  async togglePlayersView() {
+    if (!game.user.isGM) return;
+    const off = !getSetting("hiddenForPlayers");
+    await setSetting("hiddenForPlayers", off);
+    ui.notifications.info(off ? t("Bar.PlayersHidden") : t("Bar.PlayersShown"));
   }
 
   async changeScale(delta) {
@@ -384,13 +415,9 @@ class PortraitBar {
       case "collapse":
         await setSetting("collapsed", !getSetting("collapsed"));
         break;
-      case "playersView": {
-        if (!game.user.isGM) return;
-        const off = !getSetting("hiddenForPlayers");
-        await setSetting("hiddenForPlayers", off);
-        ui.notifications.info(off ? t("Bar.PlayersHidden") : t("Bar.PlayersShown"));
+      case "playersView":
+        await this.togglePlayersView();
         break;
-      }
       case "hide":
         await this.toggleHidden(true);
         break;

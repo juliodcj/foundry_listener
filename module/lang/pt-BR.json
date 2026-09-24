@@ -7,7 +7,7 @@
       "Orientation": "Horizontal / vertical",
       "Reset": "Voltar à posição padrão do mestre",
       "SetDefault": "Usar esta posição e tamanho como padrão para todos",
-      "Hide": "Esconder a barra",
+      "Hide": "Esconder a barra só na minha tela",
       "Empty": "Retratos Falantes",
       "Resize": "Arraste para mudar o tamanho",
       "Unlock": "Destravar para mover e redimensionar",
@@ -24,7 +24,11 @@
       "PlayersShow": "Mostrar a barra para os jogadores",
       "PlayersHidden": "Barra de retratos escondida para os jogadores.",
       "PlayersShown": "Barra de retratos visível para os jogadores.",
-      "PlayersOffBadge": "oculta para os jogadores"
+      "PlayersOffBadge": "oculta para os jogadores",
+      "Show": "Mostrar a barra de retratos",
+      "HiddenHintGm": "Barra de retratos escondida na sua tela. Clique no ícone de retratos no topo da tela para mostrar de novo.",
+      "HiddenByGm": "O mestre escondeu a barra de retratos para os jogadores.",
+      "HiddenByCombat": "A barra de retratos fica escondida durante o combate (configuração do mestre)."
     },
     "Card": {
       "HP": "PV",
@@ -52,6 +56,10 @@
       "Lock": {
         "Name": "Travar/destravar a barra",
         "Hint": "Destravada, a barra pode ser arrastada e redimensionada."
+      },
+      "TogglePlayers": {
+        "Name": "Esconder/mostrar a barra para os jogadores",
+        "Hint": "Só o mestre. Mesmo que o botão de olho na barra."
       }
     },
     "Settings": {
@@ -99,6 +107,10 @@
       "Hidden": {
         "Name": "Esconder a barra de retratos",
         "Hint": "Só nesta tela. Também dá para usar o botão na barra de tokens ou Alt+Shift+R."
+      },
+      "HiddenForPlayers": {
+        "Name": "Esconder a barra dos jogadores",
+        "Hint": "Os jogadores deixam de ver a barra; o mestre continua vendo. Mesmo que o botão de olho na barra."
       },
       "Compact": {
         "Name": "Modo compacto",

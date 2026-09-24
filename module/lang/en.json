@@ -7,7 +7,7 @@
       "Orientation": "Horizontal / vertical",
       "Reset": "Back to the GM's default position",
       "SetDefault": "Use this position and size as the default for everyone",
-      "Hide": "Hide the bar",
+      "Hide": "Hide the bar on my screen only",
       "Empty": "Talking Portraits",
       "Resize": "Drag to resize",
       "Unlock": "Unlock to move and resize",
@@ -24,7 +24,11 @@
       "PlayersShow": "Show the bar to players",
       "PlayersHidden": "Portrait bar hidden from players.",
       "PlayersShown": "Portrait bar visible to players.",
-      "PlayersOffBadge": "hidden from players"
+      "PlayersOffBadge": "hidden from players",
+      "Show": "Show the portrait bar",
+      "HiddenHintGm": "Portrait bar hidden on your screen. Click the portraits icon at the top of the screen to show it again.",
+      "HiddenByGm": "The GM hid the portrait bar from players.",
+      "HiddenByCombat": "The portrait bar stays hidden during combat (GM setting)."
     },
     "Card": {
       "HP": "HP",
@@ -52,6 +56,10 @@
       "Lock": {
         "Name": "Lock/unlock the bar",
         "Hint": "When unlocked, the bar can be dragged and resized."
+      },
+      "TogglePlayers": {
+        "Name": "Hide/show the bar for players",
+        "Hint": "GM only. Same as the eye button on the bar."
       }
     },
     "Settings": {
@@ -99,6 +107,10 @@
       "Hidden": {
         "Name": "Hide the portrait bar",
         "Hint": "This screen only. You can also use the token controls button or Alt+Shift+R."
+      },
+      "HiddenForPlayers": {
+        "Name": "Hide the bar from players",
+        "Hint": "Players stop seeing the bar; the GM still sees it. Same as the eye button on the bar."
       },
       "Compact": {
         "Name": "Compact mode",
