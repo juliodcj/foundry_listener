@@ -62,10 +62,10 @@ class PortraitBar {
         <button type="button" data-action="collapse"><i class="fa-solid fa-chevron-up"></i></button>
         <button type="button" data-action="playersView" class="rf-gm-only"><i class="fa-solid fa-eye"></i></button>
         <span class="rf-unlocked-only">
-          <span class="rf-gm-only rf-gm-tools">
           <button type="button" data-action="smaller" data-tooltip="${esc(t("Bar.Smaller"))}"><i class="fa-solid fa-minus"></i></button>
           <span class="rf-scale-label"></span>
           <button type="button" data-action="bigger" data-tooltip="${esc(t("Bar.Bigger"))}"><i class="fa-solid fa-plus"></i></button>
+          <span class="rf-gm-only rf-gm-tools">
           <button type="button" data-action="orientation" data-tooltip="${esc(t("Bar.Orientation"))}"><i class="fa-solid fa-arrows-left-right"></i></button>
           <button type="button" data-action="compact"><i class="fa-solid fa-compress"></i></button>
           <button type="button" data-action="speakersOnly"><i class="fa-solid fa-microphone-lines"></i></button>
@@ -392,9 +392,8 @@ class PortraitBar {
     const base = { ...DEFAULT_LAYOUT, ...validLayout(getSetting("defaultLayout")) };
     const own = validLayout(getSetting("layout"));
     if (game.user.isGM) return { ...base, ...own };
-    // Jogadores: só a posição é deles; tamanho e orientação seguem o mestre.
-    if ("xFrac" in own) base.xFrac = own.xFrac;
-    if ("yFrac" in own) base.yFrac = own.yFrac;
+    // Jogadores: posição e tamanho são deles; a orientação segue o mestre.
+    for (const key of ["xFrac", "yFrac", "scale"]) if (key in own) base[key] = own[key];
     return base;
   }
 
@@ -523,8 +522,8 @@ class PortraitBar {
     ev.preventDefault();
     btn.blur();
     const layout = this.layout();
-    // Jogadores só travam, recolhem e voltam à posição padrão; o resto é do mestre.
-    if (!game.user.isGM && !["lock", "collapse", "reset"].includes(btn.dataset.action)) return;
+    // Jogadores só travam, recolhem, mudam o tamanho e voltam ao padrão; o resto é do mestre.
+    if (!game.user.isGM && !["lock", "collapse", "reset", "smaller", "bigger"].includes(btn.dataset.action)) return;
     switch (btn.dataset.action) {
       case "lock":
         await setSetting("locked", !getSetting("locked"));
@@ -590,7 +589,7 @@ class PortraitBar {
     if (ev.button !== 0) return;
     const grip = ev.target.closest(".rf-grip");
     const locked = getSetting("locked");
-    if (grip && !locked && game.user.isGM) return this._startResize(ev);
+    if (grip && !locked) return this._startResize(ev);
     if (ev.target.closest("button, .rf-hero-edit")) return;
     // Destravada: arrasta por qualquer parte. Travada: só com Alt.
     if (locked && !ev.altKey) return;

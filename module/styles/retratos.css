@@ -396,8 +396,7 @@
   font-size: 10px;
   font-variant-numeric: tabular-nums;
 }
-#rf-bar:not(.rf-is-gm) .rf-gm-only,
-#rf-bar:not(.rf-is-gm) .rf-grip { display: none !important; }
+#rf-bar:not(.rf-is-gm) .rf-gm-only { display: none !important; }
 #rf-bar .rf-gm-tools { display: inline-flex; align-items: center; gap: 2px; }
 
 /* Status da ponte com o bot: só para o GM. */

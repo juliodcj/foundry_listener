@@ -207,10 +207,11 @@ para ver os botões:
 - **Pontos de heroísmo** (só o mestre): clique dá um ponto, botão direito tira um.
 
 **O que é de cada jogador, o que é do mestre.** Jogadores só **recolhem**,
-**travam/destravam** e **movem** a barra (e **Resetar** volta para a posição
-padrão); a posição fica salva só para eles. Todo o resto segue o mestre:
-tamanho, horizontal/vertical, modo compacto, só quem fala, transparência e
-esconder. Quando o mestre muda o tamanho ou a orientação, muda para todos. A
+**travam/destravam**, **movem** e **mudam o tamanho** da barra (e **Resetar**
+volta ao padrão do mestre); isso fica salvo só para eles. Todo o resto segue o
+mestre: horizontal/vertical, modo compacto, só quem fala, transparência e
+esconder. Quando o mestre muda a orientação, muda para todos; o tamanho do
+mestre vale para quem ainda não ajustou o seu. A
 posição de quem nunca mexeu é a que o mestre definiu em **Usar esta posição e
 tamanho como padrão para todos** (botão que só o mestre vê).
 
