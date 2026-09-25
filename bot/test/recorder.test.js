@@ -5,6 +5,7 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { PassThrough } from "node:stream";
+import { performance } from "node:perf_hooks";
 import { setTimeout as sleep } from "node:timers/promises";
 import { MANIFEST, Recorder, safeName } from "../src/recorder.js";
 import { readOgg } from "./helpers.js";
@@ -68,11 +69,13 @@ test("grava uma faixa alinhada por pessoa e o sessao.json", async () => {
     const { watcher, announced, send, talk } = fakeVoice();
     const rec = new Recorder(watcher, { onChange() {} });
     const res = rec.start({ dir, exclude: [BIA], notify: true });
+    const t0 = performance.now();
     assert.ok(res.ok, res.text);
     assert.equal(rec.start({ dir }).ok, false, "não grava duas vezes");
 
     // Ana fala 10 pacotes, pausa ~700 ms e fala mais 10; Bia (excluída) e o bot também falam.
     await sleep(200);
+    const firstAt = (performance.now() - t0) / 1000; // a máquina pode demorar mais que 200 ms
     await talk(ANA, 10);
     send(BIA);
     send(BOT);
@@ -103,7 +106,7 @@ test("grava uma faixa alinhada por pessoa e o sessao.json", async () => {
     assert.ok(session.endsWith(`${manifest.stamp}_Taverna`));
     assert.equal(manifest.mix.file, `${manifest.stamp}_sessao-completa.ogg`);
     assert.equal(track.segments.length, 2, JSON.stringify(track.segments));
-    assert.ok(track.firstAudioAt >= 0.1 && track.firstAudioAt < 0.5, `firstAudioAt ${track.firstAudioAt}`);
+    assert.ok(Math.abs(track.firstAudioAt - firstAt) < 0.1, `firstAudioAt ${track.firstAudioAt}, esperado ~${firstAt}`);
     assert.ok(track.segments[1][0] > track.segments[0][1] + 0.4, "pausa entre as falas");
     assert.deepEqual(manifest.markers.map(m => m.label), ["combate"]);
     assert.equal(manifest.mix.status, "pending");
