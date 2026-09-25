@@ -25,6 +25,11 @@ type Config struct {
 	WSPort         int    `json:"wsPort"`
 	FoundryPort    int    `json:"foundryPort"`
 	AutoStart      bool   `json:"autoStart"`
+
+	// Gravação
+	RecordDir     string   `json:"recordDir"`
+	RecordExclude []string `json:"recordExclude"` // IDs do Discord que não são gravados
+	RecordNotify  bool     `json:"recordNotify"`  // avisa no chat do canal de voz
 }
 
 func dataDir() string {
@@ -44,7 +49,7 @@ func configPath() string {
 }
 
 func defaultConfig() Config {
-	return Config{WSPort: 8770, FoundryPort: 30000, AutoStart: true}
+	return Config{WSPort: 8770, FoundryPort: 30000, AutoStart: true, RecordNotify: true}
 }
 
 func (c *Config) normalize() {
@@ -57,6 +62,14 @@ func (c *Config) normalize() {
 	}
 	if c.FoundryPort < 1 || c.FoundryPort > 65535 {
 		c.FoundryPort = 30000
+	}
+	c.RecordDir = strings.TrimSpace(c.RecordDir)
+	if c.RecordDir == "" {
+		c.RecordDir = defaultRecordDir()
+	}
+	c.RecordExclude, _ = parseIDList(strings.Join(c.RecordExclude, ","))
+	if c.RecordExclude == nil {
+		c.RecordExclude = []string{}
 	}
 }
 
@@ -162,6 +175,9 @@ type uiConfig struct {
 	WSPort         int    `json:"wsPort"`
 	FoundryPort    int    `json:"foundryPort"`
 	AutoStart      bool   `json:"autoStart"`
+	RecordDir      string `json:"recordDir"`
+	RecordExclude  string `json:"recordExclude"`
+	RecordNotify   bool   `json:"recordNotify"`
 }
 
 type uiState struct {
@@ -180,6 +196,12 @@ type configInput struct {
 	AutoStart      bool    `json:"autoStart"`
 }
 
+type recordConfigInput struct {
+	Dir     string `json:"dir"`
+	Exclude string `json:"exclude"`
+	Notify  bool   `json:"notify"`
+}
+
 // Call runs one UI action. arg is a plain string (may be empty or JSON).
 func (a *App) Call(name, arg string) (any, error) {
 	switch name {
@@ -190,6 +212,7 @@ func (a *App) Call(name, arg string) (any, error) {
 		return uiState{State: a.mgr.Snapshot(), Config: uiConfig{
 			HasToken: c.Token != "", GuildID: c.GuildID, GMID: c.GMID, VoiceChannelID: c.VoiceChannelID,
 			WSPort: c.WSPort, FoundryPort: c.FoundryPort, AutoStart: c.AutoStart,
+			RecordDir: c.RecordDir, RecordExclude: strings.Join(c.RecordExclude, ", "), RecordNotify: c.RecordNotify,
 		}, Docked: isDocked()}, nil
 	case "start":
 		a.mgr.Start()
@@ -201,6 +224,62 @@ func (a *App) Call(name, arg string) (any, error) {
 		return nil, a.mgr.Send(map[string]string{"cmd": "join", "channelId": strings.TrimSpace(arg)})
 	case "leave":
 		return nil, a.mgr.Send(map[string]string{"cmd": "leave"})
+	case "recordStart":
+		c := a.config()
+		if err := os.MkdirAll(c.RecordDir, 0o755); err != nil {
+			return nil, fmt.Errorf("não consegui criar a pasta das gravações: %w", err)
+		}
+		return nil, a.mgr.Send(map[string]any{
+			"cmd": "record-start", "dir": c.RecordDir, "exclude": c.RecordExclude, "notify": c.RecordNotify,
+		})
+	case "recordStop":
+		return nil, a.mgr.Send(map[string]string{"cmd": "record-stop"})
+	case "recordMark":
+		return nil, a.mgr.Send(map[string]string{"cmd": "record-mark", "label": strings.TrimSpace(arg)})
+	case "recordMix":
+		dir, err := recordingDir(a.config().RecordDir, arg)
+		if err != nil {
+			return nil, err
+		}
+		return nil, a.mgr.Send(map[string]string{"cmd": "record-mix", "dir": dir})
+	case "recordings":
+		return listRecordings(a.config().RecordDir, 5), nil
+	case "openRecordings":
+		dir := a.config().RecordDir
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return nil, err
+		}
+		return nil, openURL(dir)
+	case "openRecording":
+		dir, err := recordingDir(a.config().RecordDir, arg)
+		if err != nil {
+			return nil, err
+		}
+		return nil, openURL(dir)
+	case "saveRecordConfig":
+		var in recordConfigInput
+		if err := json.Unmarshal([]byte(arg), &in); err != nil {
+			return nil, errors.New("configuração inválida")
+		}
+		dir := strings.TrimSpace(in.Dir)
+		if dir != "" && !filepath.IsAbs(dir) {
+			return nil, errors.New("a pasta precisa ser um caminho completo, como D:\\Gravações")
+		}
+		ids, bad := parseIDList(in.Exclude)
+		if len(bad) > 0 {
+			return nil, fmt.Errorf("isto não parece um ID do Discord: %s", strings.Join(bad, ", "))
+		}
+		a.mu.Lock()
+		c := a.cfg
+		c.RecordDir, c.RecordExclude, c.RecordNotify = dir, ids, in.Notify
+		c.normalize()
+		a.cfg = c
+		a.mu.Unlock()
+		if err := saveConfig(c); err != nil {
+			return nil, err
+		}
+		a.mgr.SetConfig(c)
+		return nil, nil
 	case "copy":
 		return nil, copyToClipboard(arg)
 	case "open":
@@ -243,6 +322,12 @@ func (a *App) Call(name, arg string) (any, error) {
 		return nil, fmt.Errorf("ação desconhecida: %s", name)
 	}
 	return nil, nil
+}
+
+func (a *App) config() Config {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.cfg
 }
 
 func (a *App) AutoStart() bool {

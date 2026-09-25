@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"syscall"
 )
@@ -29,6 +30,11 @@ func attachToJob(cmd *exec.Cmd) {}
 func copyToClipboard(text string) error { return errors.New("área de transferência indisponível") }
 
 func openURL(url string) error { return exec.Command("xdg-open", url).Start() }
+
+func defaultRecordDir() string {
+	home, _ := os.UserHomeDir()
+	return filepath.Join(home, "Foundry Listener", "Gravações")
+}
 
 // isDocked is only true in the Windows build, inside the Foundry Dock.
 func isDocked() bool { return false }

@@ -60,6 +60,7 @@ jobs:
         run: |
           npm ci --omit=dev --no-audit --no-fund
           npm run check
+          npm test
       - name: Montar pasta do Foundry Listener
         run: |
           mkdir -p dist/FoundryListener/bot

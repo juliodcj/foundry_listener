@@ -96,6 +96,29 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .field input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .settings .note{font-size:12px;color:var(--muted);line-height:1.45}
 .settings .err{font-size:12.5px;color:var(--red-text)}
+
+.rec-card{padding:14px;display:flex;flex-direction:column;gap:10px}
+.rec-state{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rec-state i{width:8px;height:8px;border-radius:4px;background:var(--grey)}
+.rec-state.on{color:var(--red-text)}
+.rec-state.on i{background:var(--red);animation:pulse 1.2s ease-in-out infinite}
+.rec-state.busy{color:var(--amber-text)}
+.rec-state.busy i{background:var(--amber)}
+.btn.rec-go{background:var(--red);border-color:var(--red);color:#fff}
+.btn.rec-go:not(:disabled):hover{background:var(--red-text)}
+.rec-card .err{font-size:12.5px;color:var(--red-text)}
+.voice-controls input[type=text]{flex-grow:1;min-width:0;height:32px;border:1px solid var(--btn-line);border-radius:6px;padding:0 8px;background:#fff;-webkit-user-select:text;user-select:text}
+.members li.rec::after{content:"";width:7px;height:7px;border-radius:4px;background:var(--red);margin-left:1px}
+.sessions{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column}
+.sessions li{display:flex;align-items:center;gap:6px;padding:7px 0}
+.sessions li + li{border-top:1px solid var(--line-soft)}
+.sessions .btn{flex-shrink:0;white-space:nowrap}
+.sess-body{display:flex;flex-direction:column;gap:1px;flex-grow:1;min-width:0}
+.sess-body span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sess-body span:first-child{font-size:13px;font-weight:500}
+.rec-opts summary{cursor:pointer;font-size:13px;color:var(--muted);padding:2px 0}
+.rec-opts form{display:flex;flex-direction:column;gap:10px;padding-top:10px}
+.rec-opts .note{font-size:12px;color:var(--muted);line-height:1.45}
 </style>
 </head>
 <body>
@@ -144,6 +167,56 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
         <span id="inviteLabel">Copiar link de convite do bot</span>
       </button>
     </div>
+  </section>
+
+  <section class="card rec-card" aria-label="Gravação">
+    <div class="call-head">
+      <span class="eyebrow">Gravação</span>
+      <span class="rec-state" id="recState"><i></i><span id="recLabel">Parada</span></span>
+    </div>
+    <div class="small muted" id="recDetail"></div>
+    <div class="row">
+      <button type="button" class="btn small-btn grow rec-go" id="recStartBtn">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>Gravar
+      </button>
+      <button type="button" class="btn small-btn grow" id="recStopBtn">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Parar gravação
+      </button>
+    </div>
+    <div class="voice-controls hidden" id="markRow">
+      <input type="text" id="markInput" maxlength="200" placeholder="Marcador (opcional): início do combate…" aria-label="Descrição do marcador">
+      <button type="button" class="btn small-btn" id="markBtn" title="Guarda este instante no sessao.json">Marcar momento</button>
+    </div>
+    <div class="err hidden" id="recErr"></div>
+    <div class="small muted hidden" id="ffmpegNote"></div>
+    <div>
+      <span class="small muted">Últimas gravações</span>
+      <ul class="sessions" id="sessions"></ul>
+      <div class="small muted" id="noSessions" style="padding-top:4px">Nenhuma ainda.</div>
+    </div>
+    <details class="rec-opts">
+      <summary>Opções de gravação</summary>
+      <form id="recForm" autocomplete="off">
+        <div class="field">
+          <label for="recDirInput">Pasta das gravações</label>
+          <input type="text" id="recDirInput" placeholder="vazio = Documentos">
+        </div>
+        <div class="field">
+          <label for="recExcludeInput">Não gravar (IDs)</label>
+          <input type="text" id="recExcludeInput" inputmode="numeric" placeholder="IDs separados por vírgula">
+        </div>
+        <div class="field">
+          <label for="recNotifyInput">Avisar no chat do canal de voz</label>
+          <input type="checkbox" id="recNotifyInput">
+        </div>
+        <div class="err hidden" id="recFormErr"></div>
+        <div class="row">
+          <button type="submit" class="btn small-btn primary grow" id="recSaveBtn">Salvar</button>
+          <button type="button" class="btn small-btn" id="recFolderBtn">Abrir pasta</button>
+        </div>
+        <div class="note">Cada pessoa vira uma faixa <span class="cmd">.ogg</span>, todas começando no mesmo instante, com silêncio onde a pessoa não fala. O <span class="cmd">sessao.json</span> guarda os trechos de fala e os marcadores. Ao parar, o ffmpeg junta tudo em <span class="cmd">sessao-completa.ogg</span>. Quem estiver em "Não gravar" fica fora das faixas e do mix. O aviso no chat precisa da permissão "Enviar mensagens": se o bot foi convidado antes, convide de novo com o link.</div>
+      </form>
+    </details>
   </section>
 
   <section class="card" aria-label="Serviços">
@@ -252,6 +325,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     grey:  ['var(--grey)', 'var(--grey-tint)', 'var(--muted)']
   };
   var state = null, busy = false, settingsDirty = false, showSpeak = false;
+  var recordings = [], recBusy = false, recDirty = false;
   try { showSpeak = localStorage.getItem('showSpeak') === '1'; } catch (e) {}
   $('showSpeak').checked = showSpeak;
 
@@ -259,6 +333,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   function fmtDuration(ms) {
     var s = Math.max(0, Math.floor(ms / 1000));
     return pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
+  }
+  function fmtBytes(n) {
+    if (n < 1024 * 1024) return Math.max(1, Math.round(n / 1024)) + ' KB';
+    if (n < 1024 * 1024 * 1024) return (n / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB';
+    return (n / 1024 / 1024 / 1024).toFixed(2).replace('.', ',') + ' GB';
   }
   function fmtTime(t) { var d = new Date(t); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
   function show(id, on) { $(id).classList.toggle('hidden', !on); }
@@ -380,14 +459,18 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     else paint('fDot', 'fVal', 'red', 'Offline');
 
     // Quem está na call
+    var rec = (running && b && b.recording) || null;
+    var recOn = !!(rec && rec.active);
+    var recIds = {};
+    if (recOn) rec.tracks.forEach(function (t) { recIds[t.id] = true; });
     var list = $('members');
-    var key = members.map(function (m) { return m.id + (m.speaking ? '*' : ''); }).join(',');
+    var key = members.map(function (m) { return m.id + (m.speaking ? '*' : '') + (recIds[m.id] ? '#' : ''); }).join(',');
     if (list.dataset.key !== key) {
       list.dataset.key = key;
       list.textContent = '';
       members.forEach(function (m) {
-        var li = el('li', m.speaking ? 'speaking' : '');
-        li.title = m.username + ' · ' + m.id;
+        var li = el('li', (m.speaking ? 'speaking ' : '') + (recIds[m.id] ? 'rec' : ''));
+        li.title = m.username + ' · ' + m.id + (recIds[m.id] ? ' · sendo gravado' : '');
         if (m.avatar) { var img = el('img'); img.src = m.avatar; img.alt = ''; li.appendChild(img); }
         else li.appendChild(el('span', 'ph'));
         li.appendChild(el('span', '', m.name));
@@ -417,6 +500,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     $('joinBtn').disabled = !canVoice;
     $('leaveBtn').disabled = !canVoice || !b.channel;
     $('inviteBtn').disabled = !(b && b.invite);
+
+    renderRecording(s, b, rec, recOn, !!(canVoice && voice === 'ready' && b.channel));
 
     // Atividade
     // Newest first, like the Foundry Tunnel.
@@ -461,6 +546,109 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     }
   }
 
+  function renderRecording(s, b, rec, recOn, canRecord) {
+    var mix = rec && rec.mix;
+    var mixing = !!(mix && mix.state === 'running');
+    var st = $('recState');
+    st.classList.toggle('on', recOn);
+    st.classList.toggle('busy', !recOn && mixing);
+    if (recOn) $('recLabel').textContent = 'Gravando · ' + fmtDuration(Date.now() - rec.startedAt);
+    else if (mixing) $('recLabel').textContent = 'Mixando · ' + Math.round((mix.progress || 0) * 100) + '%';
+    else $('recLabel').textContent = 'Parada';
+
+    var detail;
+    if (recOn) {
+      var names = rec.tracks.map(function (t) { return t.name; });
+      detail = fmtBytes(rec.bytes) + ' · ' + (names.length ? names.length + (names.length === 1 ? ' faixa: ' : ' faixas: ') + names.join(', ') : 'esperando alguém falar');
+      if (rec.markers) detail += ' · ' + rec.markers + (rec.markers === 1 ? ' marcador' : ' marcadores');
+      if (!b.channel) detail += ' · o bot saiu da call; a gravação continua quando ele voltar';
+    } else if (canRecord) {
+      detail = 'Cada pessoa numa faixa separada, em ' + ((s.config && s.config.recordDir) || 'Documentos') + '.';
+    } else {
+      detail = 'Para gravar, o bot precisa estar numa call.';
+    }
+    $('recDetail').textContent = detail;
+    $('recStartBtn').disabled = recBusy || recOn || !canRecord;
+    $('recStopBtn').disabled = recBusy || !recOn;
+    show('markRow', recOn);
+
+    show('ffmpegNote', !s.ffmpeg);
+    if (!s.ffmpeg) $('ffmpegNote').innerHTML = 'ffmpeg não encontrado: as faixas são gravadas, mas o arquivo com todo mundo junto não. Instale com ' + code('winget install Gyan.FFmpeg') + ' e reinicie o bot.';
+
+    // Últimas gravações
+    var botUp = s.phase === 'running' && !!b;
+    var ul = $('sessions');
+    var skey = JSON.stringify(recordings) + '|' + (recOn ? rec.dir : '') + '|' + (mix ? mix.dir + mix.state + Math.round((mix.progress || 0) * 100) : '') + '|' + botUp;
+    if (ul.dataset.key !== skey) {
+      ul.dataset.key = skey;
+      ul.textContent = '';
+      recordings.forEach(function (r) {
+        var li = el('li');
+        var body = el('div', 'sess-body');
+        body.appendChild(el('span', '', r.name));
+        var live = recOn && rec.dir === r.dir;
+        var thisMix = mix && mix.dir === r.dir ? mix : null;
+        var mixState = thisMix ? thisMix.state : r.mixStatus;
+        var parts = [fmtDuration(r.duration * 1000), r.tracks + (r.tracks === 1 ? ' faixa' : ' faixas'), fmtBytes(r.bytes)];
+        if (live) parts.push('gravando…');
+        else if (mixState === 'running') parts.push('mixando ' + Math.round(((thisMix && thisMix.progress) || 0) * 100) + '%');
+        else if (r.hasMix) parts.push('mix pronto');
+        else if (mixState === 'no-ffmpeg') parts.push('sem mix (falta o ffmpeg)');
+        else if (mixState === 'failed') parts.push('o mix falhou');
+        else if (!r.ended) parts.push('interrompida');
+        else if (r.tracks) parts.push('sem mix');
+        body.appendChild(el('span', 'small muted', parts.join(' · ')));
+        li.appendChild(body);
+        if (!live && r.tracks > 0 && !r.hasMix && mixState !== 'running') {
+          var mixBtn = el('button', 'btn small-btn', 'Gerar mix');
+          mixBtn.type = 'button';
+          mixBtn.disabled = !botUp || mixing;
+          mixBtn.title = botUp ? 'Junta as faixas em sessao-completa.ogg' : 'Inicie o bot para mixar';
+          mixBtn.addEventListener('click', function () { recAction('recordMix', r.dir); });
+          li.appendChild(mixBtn);
+        }
+        var open = el('button', 'btn small-btn', 'Abrir');
+        open.type = 'button';
+        open.addEventListener('click', function () { recAction('openRecording', r.dir); });
+        li.appendChild(open);
+        ul.appendChild(li);
+      });
+    }
+    show('noSessions', recordings.length === 0);
+
+    var c = s.config || {};
+    if (!recDirty) {
+      $('recDirInput').value = c.recordDir || '';
+      $('recExcludeInput').value = c.recordExclude || '';
+      $('recNotifyInput').checked = !!c.recordNotify;
+    }
+  }
+
+  function loadRecordings() {
+    return call('recordings').then(function (list) { recordings = list || []; render(); }).catch(function () {});
+  }
+
+  function recAction(name, arg) {
+    recBusy = true;
+    show('recErr', false);
+    render();
+    return call(name, arg).catch(function (err) {
+      $('recErr').textContent = (err && err.message) || String(err);
+      show('recErr', true);
+    }).then(function () {
+      recBusy = false;
+      return refresh().then(loadRecordings);
+    });
+  }
+
+  function recording() {
+    var b = state && state.bot;
+    return !!(state && state.phase === 'running' && b && b.recording && b.recording.active);
+  }
+  function confirmEndRecording() {
+    return !recording() || confirm('A gravação em andamento será encerrada (o mix fica para depois, em "Gerar mix"). Continuar?');
+  }
+
   function refresh() {
     return call('state').then(function (s) { state = s; render(); }).catch(function () {});
   }
@@ -471,8 +659,37 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   }
 
   $('startBtn').addEventListener('click', function () { action('start'); });
-  $('stopBtn').addEventListener('click', function () { action('stop'); });
-  $('restartBtn').addEventListener('click', function () { action('restart'); });
+  $('stopBtn').addEventListener('click', function () { if (confirmEndRecording()) action('stop'); });
+  $('restartBtn').addEventListener('click', function () { if (confirmEndRecording()) action('restart'); });
+  $('recStartBtn').addEventListener('click', function () { recAction('recordStart'); });
+  $('recStopBtn').addEventListener('click', function () { recAction('recordStop'); });
+  function mark() {
+    var label = $('markInput').value;
+    $('markInput').value = '';
+    recAction('recordMark', label);
+  }
+  $('markBtn').addEventListener('click', mark);
+  $('markInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') mark(); });
+  $('recFolderBtn').addEventListener('click', function () { recAction('openRecordings'); });
+  $('recForm').addEventListener('input', function () { recDirty = true; });
+  $('recForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var data = {
+      dir: $('recDirInput').value.trim(),
+      exclude: $('recExcludeInput').value.trim(),
+      notify: $('recNotifyInput').checked
+    };
+    call('saveRecordConfig', JSON.stringify(data)).then(function () {
+      recDirty = false;
+      show('recFormErr', false);
+      $('recSaveBtn').textContent = 'Salvo';
+      setTimeout(function () { $('recSaveBtn').textContent = 'Salvar'; }, 1500);
+      return refresh().then(loadRecordings);
+    }).catch(function (err) {
+      $('recFormErr').textContent = 'Não foi possível salvar: ' + ((err && err.message) || err);
+      show('recFormErr', true);
+    });
+  });
   $('joinBtn').addEventListener('click', function () { action('join', $('channelSelect').value); });
   $('leaveBtn').addEventListener('click', function () { action('leave'); });
   $('showSpeak').addEventListener('change', function (e) {
@@ -547,8 +764,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     if (!e.target.closest('input, .events ol, .alert')) e.preventDefault();
   });
 
-  refresh();
+  refresh().then(loadRecordings);
   setInterval(refresh, 400);
+  setInterval(loadRecordings, 3000);
 })();
 </script>
 </body>

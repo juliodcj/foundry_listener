@@ -6,8 +6,9 @@ import {
 } from "@discordjs/voice";
 import { log } from "./report.js";
 
-// View Channel + Connect
-export const INVITE_PERMISSIONS = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.Connect;
+// View Channel + Connect + Send Messages (aviso de gravação no chat do canal de voz)
+export const INVITE_PERMISSIONS = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.Connect
+  | PermissionFlagsBits.SendMessages;
 
 const commands = [
   new SlashCommandBuilder()
@@ -22,7 +23,7 @@ const commands = [
 
 /**
  * Cuida da conexão com o Discord: segue o GM pelos canais de voz e avisa
- * quando alguém começa ou para de falar (sem gravar nem decodificar áudio).
+ * quando alguém começa ou para de falar. A gravação fica no Recorder.
  *
  * Callbacks:
  *  onSpeaking(userId, speaking)
@@ -68,6 +69,28 @@ export class VoiceWatcher {
         avatar: m.displayAvatarURL({ size: 64, extension: "png" }),
         speaking: this.speaking.has(m.id),
       }));
+  }
+
+  /** Conexão de voz atual, se houver. */
+  connection() {
+    return this.guild ? getVoiceConnection(this.guild.id) ?? null : null;
+  }
+
+  /** Manda um aviso no chat do canal de voz em que o bot está. */
+  async announce(text) {
+    const channel = this.channelId ? this.guild?.channels.cache.get(this.channelId) : null;
+    if (!channel?.isTextBased()) return;
+    const me = this.guild.members.me;
+    const perms = me ? channel.permissionsFor(me) : null;
+    if (perms && !perms.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages])) {
+      log("warn", `Sem permissão para avisar no chat de "${channel.name}". Reconvide o bot com o link de convite (agora ele pede "Enviar mensagens").`);
+      return;
+    }
+    try {
+      await channel.send({ content: text, allowedMentions: { parse: [] } });
+    } catch (err) {
+      log("warn", `Não consegui avisar no chat de "${channel.name}": ${err.message}`);
+    }
   }
 
   channelInfo() {

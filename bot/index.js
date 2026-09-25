@@ -1,6 +1,7 @@
 import readline from "node:readline";
 import { loadConfig } from "./src/config.js";
 import { VoiceWatcher } from "./src/discord.js";
+import { Recorder } from "./src/recorder.js";
 import { startWsServer } from "./src/wsserver.js";
 import { ipc, log, reportFatal, reportStatus } from "./src/report.js";
 
@@ -21,10 +22,13 @@ const watcher = new VoiceWatcher(cfg, {
     status();
   },
   onChange() {
+    recorder.sync();
     server.broadcast(foundryState());
     status();
   },
 });
+
+const recorder = new Recorder(watcher, { onChange: () => status() });
 
 function foundryState() {
   const members = watcher.members();
@@ -55,6 +59,7 @@ function snapshot() {
     gmInVoice: !!watcher.guild?.voiceStates.cache.get(cfg.gmId)?.channelId,
     wsPort: cfg.port,
     foundry: server ? server.clientInfo() : [],
+    recording: recorder.status(),
   };
 }
 
@@ -85,6 +90,22 @@ if (ipc) {
       watcher.leave("pedido pelo app");
     } else if (cmd.cmd === "status") {
       status();
+    } else if (cmd.cmd === "record-start") {
+      const res = recorder.start({
+        dir: cmd.dir,
+        exclude: Array.isArray(cmd.exclude) ? cmd.exclude.map(String) : [],
+        notify: cmd.notify !== false,
+      });
+      if (!res.ok) log("err", res.text);
+    } else if (cmd.cmd === "record-stop") {
+      const res = recorder.stop("pedido pelo app");
+      if (!res.ok) log("warn", res.text);
+    } else if (cmd.cmd === "record-mark") {
+      const res = recorder.mark(cmd.label);
+      if (!res.ok) log("warn", res.text);
+    } else if (cmd.cmd === "record-mix") {
+      const res = recorder.mixSession(cmd.dir);
+      if (!res.ok) log("warn", res.text);
     }
   });
   rl.on("close", () => shutdown("o app fechou"));
@@ -118,6 +139,7 @@ async function shutdown(reason) {
   if (stopping) return;
   stopping = true;
   log("info", `Encerrando (${reason})…`);
+  try { await recorder.shutdown(); } catch {}
   try { server.close(); } catch {}
   try { await watcher.destroy(); } catch {}
   process.exit(0);

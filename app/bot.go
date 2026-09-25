@@ -51,6 +51,7 @@ type State struct {
 	BotDir      string          `json:"botDir"`
 	FoundryUp   *bool           `json:"foundryUp"`
 	FoundryPort int             `json:"foundryPort"`
+	FFmpeg      string          `json:"ffmpeg"` // "" = não encontrado (sem o mix das gravações)
 	Events      []Event         `json:"events"`
 }
 
@@ -71,6 +72,7 @@ func NewManager(cfg Config) *Manager {
 	m := &Manager{cfg: cfg}
 	m.st.Phase = PhaseStopped
 	m.st.FoundryPort = cfg.FoundryPort
+	m.st.FFmpeg = locateFFmpeg()
 	if err := cfg.Validate(); err != nil {
 		m.st.Message = err.Error()
 	}
@@ -274,6 +276,11 @@ func (m *Manager) run(gen int, cfg Config) {
 		return
 	}
 
+	ffmpeg := locateFFmpeg()
+	m.mu.Lock()
+	m.st.FFmpeg = ffmpeg
+	m.mu.Unlock()
+
 	cmd := exec.Command(node, "index.js")
 	cmd.Dir = dir
 	cmd.Env = append(os.Environ(),
@@ -283,6 +290,7 @@ func (m *Manager) run(gen int, cfg Config) {
 		"GM_DISCORD_ID="+cfg.GMID,
 		"VOICE_CHANNEL_ID="+cfg.VoiceChannelID,
 		"WS_PORT="+strconv.Itoa(cfg.WSPort),
+		"FFMPEG_PATH="+ffmpeg,
 		"NO_COLOR=1",
 	)
 	hideWindow(cmd)
@@ -606,6 +614,43 @@ func nodeRecentEnough(v string) bool {
 		return false
 	}
 	return major > minNodeMajor || (major == minNodeMajor && minor >= minNodeMinor)
+}
+
+// locateFFmpeg finds ffmpeg (used to mix the recordings): next to the app,
+// on PATH, or where winget, Chocolatey and Scoop put it. "" if missing.
+func locateFFmpeg() string {
+	name := "ffmpeg"
+	if runtime.GOOS == "windows" {
+		name = "ffmpeg.exe"
+	}
+	dir := exeDir()
+	candidates := []string{
+		filepath.Join(dir, name),
+		filepath.Join(dir, "ffmpeg", "bin", name),
+		filepath.Join(dir, "ffmpeg", name),
+	}
+	if p, err := exec.LookPath("ffmpeg"); err == nil {
+		candidates = append(candidates, p)
+	}
+	if runtime.GOOS == "windows" {
+		if d := os.Getenv("LOCALAPPDATA"); d != "" {
+			candidates = append(candidates, filepath.Join(d, "Microsoft", "WinGet", "Links", name))
+			found, _ := filepath.Glob(filepath.Join(d, "Microsoft", "WinGet", "Packages", "Gyan.FFmpeg*", "*", "bin", name))
+			candidates = append(candidates, found...)
+		}
+		if d := os.Getenv("ProgramData"); d != "" {
+			candidates = append(candidates, filepath.Join(d, "chocolatey", "bin", name))
+		}
+		if d, err := os.UserHomeDir(); err == nil {
+			candidates = append(candidates, filepath.Join(d, "scoop", "shims", name))
+		}
+	}
+	for _, c := range candidates {
+		if fi, err := os.Stat(c); err == nil && !fi.IsDir() {
+			return c
+		}
+	}
+	return ""
 }
 
 // locateBot finds the bot folder: next to the app (release zip) or in the

@@ -2,12 +2,13 @@
   "name": "retratos-falantes-bot",
   "version": "1.0.0",
   "private": true,
-  "description": "Bot local do Discord que avisa o Foundry quem está falando na call.",
+  "description": "Bot local do Discord que avisa o Foundry quem está falando na call e grava a sessão.",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "check": "node --check index.js && node --check src/config.js && node --check src/discord.js && node --check src/wsserver.js && node --check src/report.js"
+    "check": "node --check index.js && node --check src/config.js && node --check src/discord.js && node --check src/wsserver.js && node --check src/report.js && node --check src/ogg.js && node --check src/recorder.js",
+    "test": "node --test \"test/*.test.js\""
   },
   "engines": {
     "node": ">=22.12.0"

@@ -44,6 +44,17 @@ func messageBox(text string) {
 	windows.MessageBox(0, t, c, windows.MB_ICONINFORMATION)
 }
 
+// defaultRecordDir is Documents\Foundry Listener\Gravações (following
+// Documents if it was moved, to OneDrive for example).
+func defaultRecordDir() string {
+	docs, err := windows.KnownFolderPath(windows.FOLDERID_Documents, 0)
+	if err != nil || docs == "" {
+		home, _ := os.UserHomeDir()
+		docs = filepath.Join(home, "Documents")
+	}
+	return filepath.Join(docs, "Foundry Listener", "Gravações")
+}
+
 func hideWindow(cmd *exec.Cmd) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: createNoWindow}
 }
@@ -151,7 +162,7 @@ func main() {
 
 	initJob()
 	app := NewApp()
-	width, height := windowSize(470, 860)
+	width, height := windowSize(470, 960)
 	minW, minH := windowSize(420, 600)
 
 	// Opened by the Foundry Dock: start off screen, then move inside it.
