@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { PassThrough } from "node:stream";
@@ -98,7 +98,10 @@ test("grava uma faixa alinhada por pessoa e o sessao.json", async () => {
     assert.equal(manifest.tracks.length, 1);
     const track = manifest.tracks[0];
     assert.equal(track.userId, ANA);
-    assert.match(track.file, /^Ana a Barda_1111\.ogg$/);
+    assert.match(track.file, /^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}_Ana a Barda_1111\.ogg$/);
+    assert.ok(track.file.startsWith(manifest.stamp + "_"), "faixa começa com a data da gravação");
+    assert.ok(session.endsWith(`${manifest.stamp}_Taverna`));
+    assert.equal(manifest.mix.file, `${manifest.stamp}_sessao-completa.ogg`);
     assert.equal(track.segments.length, 2, JSON.stringify(track.segments));
     assert.ok(track.firstAudioAt >= 0.1 && track.firstAudioAt < 0.5, `firstAudioAt ${track.firstAudioAt}`);
     assert.ok(track.segments[1][0] > track.segments[0][1] + 0.4, "pausa entre as falas");
@@ -110,7 +113,7 @@ test("grava uma faixa alinhada por pessoa e o sessao.json", async () => {
     const seconds = pages.at(-1).granule / 48_000;
     assert.ok(Math.abs(seconds - manifest.duration) < 0.05, `faixa ${seconds}s, sessão ${manifest.duration}s`);
     assert.equal(packets.filter(p => p.length === 4).length, 20, "as 20 falas estão lá");
-    assert.ok(!existsSync(path.join(session, "Bia_2222.ogg")));
+    assert.ok(!readdirSync(session).some(f => f.includes("Bia")), "Bia não foi gravada");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -135,6 +138,34 @@ test("sem ffmpeg, o mix avisa e as faixas continuam lá", async () => {
   } finally {
     if (old === undefined) delete process.env.FFMPEG_PATH;
     else process.env.FFMPEG_PATH = old;
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("duas gravações no mesmo minuto não repetem nomes de arquivo", async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "rec-"));
+  try {
+    const { conn, watcher, send } = fakeVoice();
+    const rec = new Recorder(watcher, { onChange() {} });
+    const names = [];
+    for (let i = 0; i < 2; i++) {
+      rec.start({ dir, notify: false });
+      send(ANA);
+      const session = rec.status().dir;
+      rec.stop("teste", { mix: false });
+      const manifest = JSON.parse(readFileSync(path.join(session, MANIFEST), "utf8"));
+      names.push(path.basename(session), manifest.tracks[0].file, manifest.mix.file);
+    }
+    assert.equal(new Set(names).size, names.length, names.join(", "));
+
+    // Recomeçar logo depois de parar: a assinatura nova sobrevive ao "close" atrasado da antiga.
+    rec.start({ dir, notify: false });
+    await sleep(50);
+    // Fala contínua: sem novo "start", o pacote só chega se a assinatura ainda estiver no mapa.
+    conn.receiver.subscriptions.get(ANA)?.write(Buffer.from([0xfc, 1, 2, 3]));
+    assert.equal(rec.status().tracks.length, 1, "a voz chega na gravação nova");
+    rec.stop("teste", { mix: false });
+  } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 });

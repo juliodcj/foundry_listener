@@ -189,11 +189,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
     <div class="err hidden" id="recErr"></div>
     <div class="small muted hidden" id="ffmpegNote"></div>
-    <div>
-      <span class="small muted">Últimas gravações</span>
+    <details class="rec-opts" id="sessionsBox" open>
+      <summary>Últimas gravações</summary>
       <ul class="sessions" id="sessions"></ul>
       <div class="small muted" id="noSessions" style="padding-top:4px">Nenhuma ainda.</div>
-    </div>
+    </details>
     <details class="rec-opts">
       <summary>Opções de gravação</summary>
       <form id="recForm" autocomplete="off">
@@ -214,7 +214,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <button type="submit" class="btn small-btn primary grow" id="recSaveBtn">Salvar</button>
           <button type="button" class="btn small-btn" id="recFolderBtn">Abrir pasta</button>
         </div>
-        <div class="note">Cada pessoa vira uma faixa <span class="cmd">.ogg</span>, todas começando no mesmo instante, com silêncio onde a pessoa não fala. O <span class="cmd">sessao.json</span> guarda os trechos de fala e os marcadores. Ao parar, o ffmpeg junta tudo em <span class="cmd">sessao-completa.ogg</span>. Quem estiver em "Não gravar" fica fora das faixas e do mix. O aviso no chat precisa da permissão "Enviar mensagens": se o bot foi convidado antes, convide de novo com o link.</div>
+        <div class="note">Cada pessoa vira uma faixa <span class="cmd">.ogg</span>, todas começando no mesmo instante, com silêncio onde a pessoa não fala. O <span class="cmd">sessao.json</span> guarda os trechos de fala e os marcadores. Ao parar, o ffmpeg junta tudo em <span class="cmd">…_sessao-completa.ogg</span>. Todos os arquivos começam com a data e a hora da gravação. Quem estiver em "Não gravar" fica fora das faixas e do mix. O aviso no chat precisa da permissão "Enviar mensagens": se o bot foi convidado antes, convide de novo com o link.</div>
       </form>
     </details>
   </section>
@@ -603,7 +603,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           var mixBtn = el('button', 'btn small-btn', 'Gerar mix');
           mixBtn.type = 'button';
           mixBtn.disabled = !botUp || mixing;
-          mixBtn.title = botUp ? 'Junta as faixas em sessao-completa.ogg' : 'Inicie o bot para mixar';
+          mixBtn.title = botUp ? 'Junta as faixas num arquivo só' : 'Inicie o bot para mixar';
           mixBtn.addEventListener('click', function () { recAction('recordMix', r.dir); });
           li.appendChild(mixBtn);
         }
@@ -670,6 +670,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   }
   $('markBtn').addEventListener('click', mark);
   $('markInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') mark(); });
+  // Lembra se "Últimas gravações" está aberta ou recolhida.
+  try { if (localStorage.getItem('sessionsOpen') === '0') $('sessionsBox').open = false; } catch (e) {}
+  $('sessionsBox').addEventListener('toggle', function () {
+    try { localStorage.setItem('sessionsOpen', $('sessionsBox').open ? '1' : '0'); } catch (e) {}
+  });
   $('recFolderBtn').addEventListener('click', function () { recAction('openRecordings'); });
   $('recForm').addEventListener('input', function () { recDirty = true; });
   $('recForm').addEventListener('submit', function (e) {

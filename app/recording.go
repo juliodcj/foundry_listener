@@ -13,7 +13,7 @@ import (
 // Arquivos que o bot escreve em cada gravação (bot/src/recorder.js).
 const (
 	manifestName = "sessao.json"
-	mixName      = "sessao-completa.ogg"
+	oldMixName   = "sessao-completa.ogg" // antes de os arquivos levarem a data
 )
 
 // parseIDList reads Discord IDs separated by commas, spaces or new lines.
@@ -55,6 +55,7 @@ type manifest struct {
 	Tracks    []json.RawMessage `json:"tracks"`
 	Markers   []json.RawMessage `json:"markers"`
 	Mix       *struct {
+		File   string `json:"file"`
 		Status string `json:"status"`
 	} `json:"mix"`
 }
@@ -83,15 +84,19 @@ func listRecordings(dir string, limit int) []Recording {
 			Name: e.Name(), Dir: sub, StartedAt: m.StartedAt, Duration: m.Duration,
 			Tracks: len(m.Tracks), Markers: len(m.Markers), Ended: m.EndedAt != nil,
 		}
+		mixFile := oldMixName
 		if m.Mix != nil {
 			r.MixStatus = m.Mix.Status
+			if m.Mix.File != "" {
+				mixFile = m.Mix.File
+			}
 		}
 		if files, err := os.ReadDir(sub); err == nil {
 			for _, f := range files {
 				if info, err := f.Info(); err == nil && !f.IsDir() {
 					r.Bytes += info.Size()
 				}
-				if f.Name() == mixName {
+				if f.Name() == mixFile {
 					r.HasMix = true
 				}
 			}

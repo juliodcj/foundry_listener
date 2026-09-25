@@ -7,7 +7,8 @@ import { OggOpusWriter, RATE, SILENCE_FRAME, opusPacketSamples } from "./ogg.js"
 import { log } from "./report.js";
 
 export const MANIFEST = "sessao.json";
-export const MIX_FILE = "sessao-completa.ogg";
+// Nome do mix antes de os arquivos levarem a data da gravação.
+export const OLD_MIX_FILE = "sessao-completa.ogg";
 
 const FRAME = 960; // 20 ms
 // Sem pacotes por mais que isso, a próxima fala é realinhada ao relógio
@@ -46,9 +47,12 @@ export class Recorder {
     if (!dir || !path.isAbsolute(dir)) return { ok: false, text: "A pasta das gravações não é válida." };
 
     const startedAt = new Date();
-    const base = `${stampName(startedAt)}_${safeName(w.channelInfo()?.name ?? "call")}`;
-    let folder = base;
-    for (let i = 2; existsSync(path.join(dir, folder)); i++) folder = `${base}_${i}`;
+    // Data e hora da gravação no começo da pasta e de cada arquivo, para que
+    // arquivos de sessões diferentes nunca tenham o mesmo nome.
+    const channelName = safeName(w.channelInfo()?.name ?? "call");
+    let stamp = stampName(startedAt);
+    for (let i = 2; existsSync(path.join(dir, `${stamp}_${channelName}`)); i++) stamp = `${stampName(startedAt)}_${i}`;
+    const folder = `${stamp}_${channelName}`;
     const sessionDir = path.join(dir, folder);
     try {
       mkdirSync(sessionDir, { recursive: true });
@@ -59,6 +63,7 @@ export class Recorder {
     const s = {
       dir: sessionDir,
       folder,
+      stamp,
       startedAt,
       t0: performance.now(),
       exclude: new Set(exclude),
@@ -153,8 +158,8 @@ export class Recorder {
     }
     const manifest = manifestOf(s, { endedAt, end });
     const willMix = mix && s.tracks.size > 0;
-    if (willMix) manifest.mix = { file: MIX_FILE, status: "running" };
-    else if (s.tracks.size) manifest.mix = { file: MIX_FILE, status: "pending" };
+    if (willMix) manifest.mix = { file: mixFileName(s.stamp), status: "running" };
+    else if (s.tracks.size) manifest.mix = { file: mixFileName(s.stamp), status: "pending" };
     try {
       saveManifest(s.dir, manifest);
     } catch (err) {
@@ -186,8 +191,9 @@ export class Recorder {
     if (!files.length) return { ok: false, text: "Essa gravação não tem faixas para mixar." };
 
     const ffmpeg = process.env.FFMPEG_PATH || "ffmpeg";
-    const tmp = path.join(dir, "sessao-completa.tmp.ogg");
-    const out = path.join(dir, MIX_FILE);
+    const mixFile = manifest.mix?.file || mixFileName(manifest.stamp ?? stampOfFolder(path.basename(dir)));
+    const tmp = path.join(dir, mixFile.replace(/\.ogg$/i, "") + ".tmp.ogg");
+    const out = path.join(dir, mixFile);
     const args = ["-hide_banner", "-nostdin", "-y"];
     for (const f of files) args.push("-i", f);
     // As faixas já estão alinhadas (todas começam no início da gravação):
@@ -200,8 +206,8 @@ export class Recorder {
     const duration = Number(manifest.duration) || 0;
     const mix = { dir, folder: path.basename(dir), state: "running", progress: 0, error: null };
     this.mix = mix;
-    setMixStatus(dir, "running");
-    log("info", `Mixando ${files.length} faixa(s) em ${MIX_FILE}…`);
+    setMixStatus(dir, mixFile, "running");
+    log("info", `Mixando ${files.length} faixa(s) em ${mixFile}…`);
 
     let done = false;
     let lastLine = "";
@@ -219,7 +225,7 @@ export class Recorder {
         if (state === "no-ffmpeg") log("warn", "ffmpeg não encontrado: as faixas foram salvas, mas sem o arquivo mixado. Instale com \"winget install Gyan.FFmpeg\", reinicie o bot e use \"Gerar mix\".");
         else log("err", `O mix falhou: ${error}`);
       }
-      setMixStatus(dir, state, error);
+      setMixStatus(dir, mixFile, state, error);
       this.onChange();
     };
 
@@ -289,7 +295,15 @@ export class Recorder {
   _subscribe(conn, userId) {
     const s = this.session;
     if (!s || s.exclude.has(userId) || !s.listeners.has(conn)) return;
-    if (conn.state.status === "destroyed" || conn.receiver.subscriptions.has(userId)) return;
+    if (conn.state.status === "destroyed") return;
+    // Assinatura de uma gravação que acabou de parar: a biblioteca só a tira
+    // do mapa no próximo ciclo, e subscribe() a devolveria já fechada.
+    const old = conn.receiver.subscriptions.get(userId);
+    if (old?.destroyed) {
+      // Sem isto, o "close" atrasado dela apagaria do mapa a assinatura nova.
+      old.removeAllListeners("close");
+      conn.receiver.subscriptions.delete(userId);
+    } else if (old) return;
     if (this.watcher.guild?.members.cache.get(userId)?.user.bot) return;
     const stream = conn.receiver.subscribe(userId, { end: { behavior: EndBehaviorType.Manual } });
     s.streams.add(stream);
@@ -342,7 +356,7 @@ export class Recorder {
   _newTrack(s, userId) {
     const member = this.watcher.guild?.members.cache.get(userId);
     const name = member?.displayName ?? userId;
-    const base = `${safeName(name)}_${userId.slice(-4)}`;
+    const base = `${s.stamp}_${safeName(name)}_${userId.slice(-4)}`;
     let file = `${base}.ogg`;
     for (let i = 2; s.files.has(file.toLowerCase()); i++) file = `${base}-${i}.ogg`;
     s.files.add(file.toLowerCase());
@@ -417,6 +431,7 @@ function manifestOf(s, { endedAt = null, end = null } = {}) {
   return {
     format: "foundry-listener-recording",
     version: 1,
+    stamp: s.stamp,
     startedAt: s.startedAt.toISOString(),
     endedAt: endedAt ? endedAt.toISOString() : null,
     duration: round2(now / RATE),
@@ -446,10 +461,10 @@ function saveManifest(dir, manifest) {
   renameSync(`${file}.tmp`, file);
 }
 
-function setMixStatus(dir, status, error) {
+function setMixStatus(dir, file, status, error) {
   try {
     const manifest = JSON.parse(readFileSync(path.join(dir, MANIFEST), "utf8"));
-    manifest.mix = { file: MIX_FILE, status };
+    manifest.mix = { file, status };
     if (error) manifest.mix.error = String(error);
     saveManifest(dir, manifest);
   } catch {}
@@ -471,6 +486,15 @@ export function safeName(name) {
 
 function pad2(n) {
   return String(n).padStart(2, "0");
+}
+
+export function mixFileName(stamp) {
+  return stamp ? `${stamp}_sessao-completa.ogg` : OLD_MIX_FILE;
+}
+
+// "2026-09-24_21-30" (ou "2026-09-24_21-30_2") do começo do nome da pasta.
+function stampOfFolder(folder) {
+  return /^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}(?:_\d+)?(?=_|$)/.exec(folder)?.[0] ?? null;
 }
 
 function stampName(d) {

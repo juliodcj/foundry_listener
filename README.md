@@ -96,7 +96,7 @@ para os dois ficarem harmônicos lado a lado no [Foundry Dock](https://github.co
   Dá para mandar o bot **Entrar** num canal (ou no canal onde você está) e
   **Sair**, e **Copiar link de convite do bot**.
 - **Gravação**: gravar e parar, marcar momentos, as últimas gravações e as
-  opções (veja [Gravar a sessão](#gravar-a-sessão)).
+  opções (as duas partes recolhem) (veja [Gravar a sessão](#gravar-a-sessão)).
 - **Foundry VTT** (se a porta local responde), **Módulo no Foundry** (se o
   Foundry do mestre está conectado no bot, com o nome do usuário e do mundo),
   **Discord** e **Canal de voz** (ouvindo / fora da call).
@@ -125,11 +125,15 @@ Cada gravação vira uma pasta, por padrão em `Documentos\Foundry Listener\Grav
 
 ```
 2026-09-24_21-30_Taverna\
-  sessao.json               ← dados da gravação (abaixo)
-  Julio_1234.ogg            ← uma faixa por pessoa: nome + fim do ID do Discord
-  Pedro_5678.ogg
-  sessao-completa.ogg       ← todo mundo junto (gerado ao parar)
+  sessao.json                               ← dados da gravação (abaixo)
+  2026-09-24_21-30_Julio_1234.ogg           ← uma faixa por pessoa: data, nome e fim do ID do Discord
+  2026-09-24_21-30_Pedro_5678.ogg
+  2026-09-24_21-30_sessao-completa.ogg      ← todo mundo junto (gerado ao parar)
 ```
+
+Todo arquivo começa com a data e a hora da gravação, então dá para juntar
+arquivos de várias sessões numa pasta só sem nome repetido. Duas gravações no
+mesmo minuto ganham um `_2` depois da hora.
 
 - As faixas são Ogg Opus comuns: abrem no VLC, no Audacity, no navegador. A
   criptografia do Discord só vale no caminho: o bot recebe o áudio já aberto,
@@ -143,7 +147,7 @@ Cada gravação vira uma pasta, por padrão em `Documentos\Foundry Listener\Grav
 - Se o bot trocar de canal ou reconectar, a gravação continua. Parar ou
   reiniciar o bot encerra a gravação (sem o mix; use **Gerar mix** depois).
 
-**O arquivo com todo mundo junto** (`sessao-completa.ogg`) é feito pelo
+**O arquivo com todo mundo junto** (`…_sessao-completa.ogg`) é feito pelo
 **ffmpeg**, que precisa estar instalado (uma vez só):
 `winget install Gyan.FFmpeg`. Depois, reinicie o bot. Sem o ffmpeg, as faixas
 são gravadas normalmente e o botão **Gerar mix** das *Últimas gravações* faz o
@@ -164,6 +168,7 @@ O `sessao.json` serve para outros programas (transcrição, por exemplo):
 {
   "format": "foundry-listener-recording",
   "version": 1,
+  "stamp": "2026-09-24_21-30",
   "startedAt": "2026-09-25T00:30:00.000Z",
   "endedAt": "2026-09-25T04:10:12.480Z",
   "duration": 13212.48,
@@ -173,13 +178,13 @@ O `sessao.json` serve para outros programas (transcrição, por exemplo):
   "tracks": [
     {
       "userId": "…", "name": "Julio", "username": "julio",
-      "file": "Julio_1234.ogg",
+      "file": "2026-09-24_21-30_Julio_1234.ogg",
       "firstAudioAt": 3.42,
       "segments": [[3.42, 7.9], [12.1, 15.36]]
     }
   ],
   "markers": [{ "at": 1830.5, "label": "início do combate" }],
-  "mix": { "file": "sessao-completa.ogg", "status": "ok" }
+  "mix": { "file": "2026-09-24_21-30_sessao-completa.ogg", "status": "ok" }
 }
 ```
 
@@ -354,7 +359,7 @@ alguns segundos. Jogadores que recarregam a página recebem o estado atual.
   `/sair` e `/entrar`.
 - **"Sem permissão para avisar no chat"**: convide o bot de novo com o link
   do Foundry Listener (ele agora pede *Enviar mensagens*).
-- **A gravação não tem o arquivo `sessao-completa.ogg`**: instale o ffmpeg
+- **A gravação não tem o arquivo `…_sessao-completa.ogg`**: instale o ffmpeg
   (`winget install Gyan.FFmpeg`), reinicie o bot e clique em **Gerar mix**
   na gravação.
 - **A barra sumiu**: Configurações → Retratos Falantes → **Trazer a barra de

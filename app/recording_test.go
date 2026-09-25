@@ -52,14 +52,20 @@ func TestListRecordings(t *testing.T) {
 	root := t.TempDir()
 	writeSession(t, root, "2026-09-20_20-00_Taverna",
 		`{"startedAt":"2026-09-20T23:00:00.000Z","endedAt":"2026-09-21T02:00:00.000Z","duration":10800,
-		  "tracks":[{"file":"a.ogg"},{"file":"b.ogg"}],"markers":[{"at":1,"label":"x"}],"mix":{"status":"ok"}}`,
-		"a.ogg", "b.ogg", mixName)
+		  "tracks":[{"file":"a.ogg"},{"file":"b.ogg"}],"markers":[{"at":1,"label":"x"}],
+		  "mix":{"file":"2026-09-20_20-00_sessao-completa.ogg","status":"ok"}}`,
+		"a.ogg", "b.ogg", "2026-09-20_20-00_sessao-completa.ogg")
 	writeSession(t, root, "2026-09-24_21-30_Taverna",
 		`{"startedAt":"2026-09-25T00:30:00.000Z","endedAt":null,"duration":60,"tracks":[],"markers":[],"mix":null}`)
+	// Gravação de antes da data nos nomes: o mix se chamava sessao-completa.ogg.
+	writeSession(t, root, "2026-09-10_20-00_Taverna",
+		`{"startedAt":"2026-09-10T23:00:00.000Z","endedAt":"2026-09-11T00:00:00.000Z","duration":3600,
+		  "tracks":[{"file":"a.ogg"}],"markers":[],"mix":{"status":"ok"}}`,
+		"a.ogg", oldMixName)
 	_ = os.MkdirAll(filepath.Join(root, "outra-pasta"), 0o755)
 
 	got := listRecordings(root, 5)
-	if len(got) != 2 {
+	if len(got) != 3 {
 		t.Fatalf("got %d recordings: %+v", len(got), got)
 	}
 	if got[0].Name != "2026-09-24_21-30_Taverna" || got[0].Ended {
@@ -71,6 +77,9 @@ func TestListRecordings(t *testing.T) {
 	}
 	if old.Bytes <= 0 {
 		t.Errorf("bytes not counted: %+v", old)
+	}
+	if !got[2].HasMix {
+		t.Errorf("old mix name not found: %+v", got[2])
 	}
 	if got := listRecordings(filepath.Join(root, "nao-existe"), 5); got == nil || len(got) != 0 {
 		t.Errorf("missing folder should give an empty list, got %v", got)
