@@ -381,9 +381,11 @@ export class Recorder {
     if (packet[0] === 0 && packet.reduce((n, b) => n + (b === 0), 0) >= packet.length - 1) return;
     const samples = opusPacketSamples(packet);
     if (!samples) return;
+    // Hora de chegada antes de criar a faixa: abrir o arquivo pode demorar
+    // (antivírus) e atrasaria a primeira fala da pessoa.
+    const t = performance.now();
     try {
       const tr = s.tracks.get(userId) ?? this._newTrack(s, userId);
-      const t = performance.now();
       const target = Math.round((t - s.t0) * RATE / 1000) - samples;
       const gap = tr.lastAt ? t - tr.lastAt : Infinity;
       if (gap > NEW_BURST_MS || target - tr.written > MAX_DRIFT) padTo(tr, target);
