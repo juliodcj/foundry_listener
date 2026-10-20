@@ -619,9 +619,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           joinBtn.disabled = !botUp || mixing || merging;
           joinBtn.title = botUp ? 'Junta esta gravação com a de baixo (' + prev.name + ') numa só' : 'Inicie o bot para juntar';
           joinBtn.addEventListener('click', function () {
-            if (!confirm('Juntar "' + prev.name + '" e "' + r.name + '" numa gravação só?
-
-' +
+            if (!confirm('Juntar "' + prev.name + '" e "' + r.name + '" numa gravação só?\n\n' +
               'A segunda continua logo depois do fim da primeira, com um marcador no ponto da emenda. ' +
               'As duas originais vão para a pasta "originais", dentro da gravação nova.')) return;
             recAction('recordMerge', JSON.stringify([prev.dir, r.dir]));
