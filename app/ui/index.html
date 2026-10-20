@@ -214,7 +214,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <button type="submit" class="btn small-btn primary grow" id="recSaveBtn">Salvar</button>
           <button type="button" class="btn small-btn" id="recFolderBtn">Abrir pasta</button>
         </div>
-        <div class="note">Cada pessoa vira uma faixa <span class="cmd">.ogg</span>, todas começando no mesmo instante, com silêncio onde a pessoa não fala. O <span class="cmd">sessao.json</span> guarda os trechos de fala e os marcadores. Ao parar, o ffmpeg junta tudo em <span class="cmd">…_sessao-completa.ogg</span>. Todos os arquivos começam com a data e a hora da gravação. Quem estiver em "Não gravar" fica fora das faixas e do mix. O aviso no chat precisa da permissão "Enviar mensagens": se o bot foi convidado antes, convide de novo com o link.</div>
+        <div class="note">Cada pessoa vira uma faixa <span class="cmd">.ogg</span>, todas começando no mesmo instante, com silêncio onde a pessoa não fala. O <span class="cmd">sessao.json</span> guarda os trechos de fala e os marcadores. Ao parar, o ffmpeg junta tudo em <span class="cmd">…_sessao-completa.ogg</span>. Todos os arquivos começam com a data e a hora da gravação. Se uma sessão ficou dividida em duas no mesmo dia, "Juntar" (em "Últimas gravações") emenda a gravação na de baixo, sem perder qualidade. Quem estiver em "Não gravar" fica fora das faixas e do mix. O aviso no chat precisa da permissão "Enviar mensagens": se o bot foi convidado antes, convide de novo com o link.</div>
       </form>
     </details>
   </section>
@@ -549,10 +549,13 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   function renderRecording(s, b, rec, recOn, canRecord) {
     var mix = rec && rec.mix;
     var mixing = !!(mix && mix.state === 'running');
+    var merge = rec && rec.merge;
+    var merging = !!(merge && merge.state === 'running');
     var st = $('recState');
     st.classList.toggle('on', recOn);
-    st.classList.toggle('busy', !recOn && mixing);
+    st.classList.toggle('busy', !recOn && (mixing || merging));
     if (recOn) $('recLabel').textContent = 'Gravando · ' + fmtDuration(Date.now() - rec.startedAt);
+    else if (merging) $('recLabel').textContent = 'Juntando · ' + Math.round((merge.progress || 0) * 100) + '%';
     else if (mixing) $('recLabel').textContent = 'Mixando · ' + Math.round((mix.progress || 0) * 100) + '%';
     else $('recLabel').textContent = 'Parada';
 
@@ -578,11 +581,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     // Últimas gravações
     var botUp = s.phase === 'running' && !!b;
     var ul = $('sessions');
-    var skey = JSON.stringify(recordings) + '|' + (recOn ? rec.dir : '') + '|' + (mix ? mix.dir + mix.state + Math.round((mix.progress || 0) * 100) : '') + '|' + botUp;
+    var skey = JSON.stringify(recordings) + '|' + (recOn ? rec.dir : '') + '|' + (mix ? mix.dir + mix.state + Math.round((mix.progress || 0) * 100) : '') + '|' + (merge ? merge.state + Math.round((merge.progress || 0) * 100) : '') + '|' + botUp;
     if (ul.dataset.key !== skey) {
       ul.dataset.key = skey;
       ul.textContent = '';
-      recordings.forEach(function (r) {
+      recordings.forEach(function (r, i) {
         var li = el('li');
         var body = el('div', 'sess-body');
         body.appendChild(el('span', '', r.name));
@@ -602,10 +605,28 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
         if (!live && r.tracks > 0 && !r.hasMix && mixState !== 'running') {
           var mixBtn = el('button', 'btn small-btn', 'Gerar mix');
           mixBtn.type = 'button';
-          mixBtn.disabled = !botUp || mixing;
+          mixBtn.disabled = !botUp || mixing || merging;
           mixBtn.title = botUp ? 'Junta as faixas num arquivo só' : 'Inicie o bot para mixar';
           mixBtn.addEventListener('click', function () { recAction('recordMix', r.dir); });
           li.appendChild(mixBtn);
+        }
+        // Junta com a gravação de baixo (a anterior), para quando uma sessão
+        // ficou dividida em duas: só se as duas começaram no mesmo dia.
+        var prev = recordings[i + 1];
+        if (prev && sameDay(prev.startedAt, r.startedAt) && !live && !(recOn && rec.dir === prev.dir)) {
+          var joinBtn = el('button', 'btn small-btn', 'Juntar');
+          joinBtn.type = 'button';
+          joinBtn.disabled = !botUp || mixing || merging;
+          joinBtn.title = botUp ? 'Junta esta gravação com a de baixo (' + prev.name + ') numa só' : 'Inicie o bot para juntar';
+          joinBtn.addEventListener('click', function () {
+            if (!confirm('Juntar "' + prev.name + '" e "' + r.name + '" numa gravação só?
+
+' +
+              'A segunda continua logo depois do fim da primeira, com um marcador no ponto da emenda. ' +
+              'As duas originais vão para a pasta "originais", dentro da gravação nova.')) return;
+            recAction('recordMerge', JSON.stringify([prev.dir, r.dir]));
+          });
+          li.appendChild(joinBtn);
         }
         var open = el('button', 'btn small-btn', 'Abrir');
         open.type = 'button';
@@ -622,6 +643,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       $('recExcludeInput').value = c.recordExclude || '';
       $('recNotifyInput').checked = !!c.recordNotify;
     }
+  }
+
+  function sameDay(a, b) {
+    var da = new Date(a), db = new Date(b);
+    return !isNaN(da) && !isNaN(db) && da.toDateString() === db.toDateString();
   }
 
   function loadRecordings() {

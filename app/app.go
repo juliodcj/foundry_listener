@@ -242,6 +242,24 @@ func (a *App) Call(name, arg string) (any, error) {
 			return nil, err
 		}
 		return nil, a.mgr.Send(map[string]string{"cmd": "record-mix", "dir": dir})
+	case "recordMerge":
+		var paths []string
+		if err := json.Unmarshal([]byte(arg), &paths); err != nil || len(paths) != 2 {
+			return nil, errors.New("escolha duas gravações para juntar")
+		}
+		root := a.config().RecordDir
+		dirs := make([]string, 2)
+		for i, p := range paths {
+			dir, err := recordingDir(root, p)
+			if err != nil {
+				return nil, err
+			}
+			dirs[i] = dir
+		}
+		if strings.EqualFold(dirs[0], dirs[1]) {
+			return nil, errors.New("escolha duas gravações diferentes")
+		}
+		return nil, a.mgr.Send(map[string]any{"cmd": "record-merge", "dirs": dirs})
 	case "recordings":
 		return listRecordings(a.config().RecordDir, 5), nil
 	case "openRecordings":

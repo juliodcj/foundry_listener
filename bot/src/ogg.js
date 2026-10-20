@@ -136,6 +136,34 @@ export class OggOpusWriter {
   }
 }
 
+/**
+ * Pacotes de um arquivo Ogg, na ordem. Para no primeiro trecho quebrado (o
+ * fim de um arquivo que ficou pela metade quando o PC caiu, por exemplo).
+ */
+export function* readOggPackets(buf) {
+  let partial = [];
+  let pos = 0;
+  while (pos + 27 <= buf.length && buf.toString("ascii", pos, pos + 4) === "OggS") {
+    const nsegs = buf[pos + 26];
+    let off = pos + 27 + nsegs;
+    if (off > buf.length) return;
+    const lacing = buf.subarray(pos + 27, off);
+    const end = off + lacing.reduce((a, b) => a + b, 0);
+    if (end > buf.length) return;
+    // Página que continua um pacote que não começou aqui: descarta o pedaço.
+    if (buf[pos + 5] & 1 && !partial.length) partial = null;
+    for (const l of lacing) {
+      if (partial) partial.push(buf.subarray(off, off + l));
+      off += l;
+      if (l < 255) {
+        if (partial) yield partial.length === 1 ? partial[0] : Buffer.concat(partial);
+        partial = [];
+      }
+    }
+    pos = end;
+  }
+}
+
 function u32(n) {
   const b = Buffer.alloc(4);
   b.writeUInt32LE(n);

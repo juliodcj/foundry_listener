@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import { performance } from "node:perf_hooks";
 import path from "node:path";
 import { EndBehaviorType } from "@discordjs/voice";
+import { mergeRecordings } from "./merge.js";
 import { OggOpusWriter, RATE, SILENCE_FRAME, opusPacketSamples } from "./ogg.js";
 import { log } from "./report.js";
 
@@ -32,6 +33,7 @@ export class Recorder {
     this.last = null; // última gravação encerrada
     this.mix = null; // mix em andamento ou o último feito
     this.mixProc = null;
+    this.merging = null; // junção em andamento ou a última feita
     this.timer = null;
   }
 
@@ -181,6 +183,7 @@ export class Recorder {
   mixSession(dir) {
     if (this.mixProc) return { ok: false, text: "Já estou mixando outra gravação." };
     if (this.session?.dir === dir) return { ok: false, text: "Essa gravação ainda está em andamento." };
+    if (this.merging?.state === "running") return { ok: false, text: "Espere a junção das gravações terminar." };
     let manifest;
     try {
       manifest = JSON.parse(readFileSync(path.join(dir, MANIFEST), "utf8"));
@@ -262,6 +265,52 @@ export class Recorder {
     return { ok: true, text: "Mixando." };
   }
 
+  /**
+   * Junta duas gravações numa pasta nova (as originais vão para dentro dela)
+   * e gera o mix da junção.
+   */
+  async mergeSessions(dirs) {
+    if (!Array.isArray(dirs) || dirs.length !== 2 || dirs[0] === dirs[1]) return { ok: false, text: "Escolha duas gravações diferentes para juntar." };
+    if (this.merging?.state === "running") return { ok: false, text: "Já estou juntando outras gravações." };
+    if (this.mixProc) return { ok: false, text: "Espere o mix em andamento terminar para juntar gravações." };
+    if (this.session && dirs.includes(this.session.dir)) return { ok: false, text: "Uma dessas gravações ainda está em andamento." };
+
+    const job = { dirs, state: "running", progress: 0, error: null, dir: null, folder: null };
+    this.merging = job;
+    log("info", `Juntando ${dirs.map(d => path.basename(d)).join(" e ")}…`);
+    this.onChange();
+    let last = 0;
+    try {
+      const res = await mergeRecordings(dirs, {
+        manifestName: MANIFEST,
+        mixFileName,
+        safeName,
+        onProgress: p => {
+          job.progress = Math.min(0.99, p);
+          if (p - last >= 0.01) {
+            last = p;
+            this.onChange();
+          }
+        },
+      });
+      job.state = "ok";
+      job.progress = 1;
+      job.dir = res.dir;
+      job.folder = res.folder;
+      log("ok", `Gravações juntadas em ${res.dir} (${fmtClock(res.manifest.duration)}).`);
+      if (res.kept.length) log("warn", `Não consegui mover ${res.kept.join(" e ")} para "originais" (algum arquivo aberto?). Elas continuam onde estavam.`);
+      this.onChange();
+      if (res.manifest.tracks.length) this.mixSession(res.dir);
+      return { ok: true, text: "Gravações juntadas." };
+    } catch (err) {
+      job.state = "failed";
+      job.error = err.message;
+      log("err", `Não consegui juntar as gravações: ${err.message}`);
+      this.onChange();
+      return { ok: false, text: err.message };
+    }
+  }
+
   /** Bot encerrando: fecha a gravação (sem mix) e para um mix pela metade. */
   async shutdown() {
     const res = this.stop("o bot foi encerrado", { mix: false });
@@ -283,6 +332,7 @@ export class Recorder {
       markers: s?.markers.length ?? 0,
       last: this.last,
       mix: this.mix,
+      merge: this.merging,
     };
   }
 

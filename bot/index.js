@@ -106,6 +106,9 @@ if (ipc) {
     } else if (cmd.cmd === "record-mix") {
       const res = recorder.mixSession(cmd.dir);
       if (!res.ok) log("warn", res.text);
+    } else if (cmd.cmd === "record-merge") {
+      const res = await recorder.mergeSessions(cmd.dirs);
+      if (!res.ok && recorder.merging?.state !== "failed") log("warn", res.text);
     }
   });
   rl.on("close", () => shutdown("o app fechou"));

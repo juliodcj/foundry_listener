@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "check": "node --check index.js && node --check src/config.js && node --check src/discord.js && node --check src/wsserver.js && node --check src/report.js && node --check src/ogg.js && node --check src/recorder.js",
+    "check": "node --check index.js && node --check src/config.js && node --check src/discord.js && node --check src/wsserver.js && node --check src/report.js && node --check src/ogg.js && node --check src/recorder.js && node --check src/merge.js",
     "test": "node --test \"test/*.test.js\""
   },
   "engines": {
