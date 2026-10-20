@@ -69,7 +69,9 @@ test("grava uma faixa alinhada por pessoa e o sessao.json", async () => {
     const { watcher, announced, send, talk } = fakeVoice();
     const rec = new Recorder(watcher, { onChange() {} });
     const res = rec.start({ dir, exclude: [BIA], notify: true });
-    const t0 = performance.now();
+    // O relógio da gravação começa antes de start() escrever o sessao.json,
+    // o que na CI pode levar centenas de ms.
+    const t0 = rec.session.t0;
     assert.ok(res.ok, res.text);
     assert.equal(rec.start({ dir }).ok, false, "não grava duas vezes");
 
